@@ -6,13 +6,13 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["800"], variabl
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter" });
 
 const teamMembers = [
-  { name: "Anita Sharma", role: "Financial Education Advisor", image: "/Image (1).svg" },
-  { name: "Priya Singh", role: "Investment Strategist", image: "/Image (2).svg" },
-  { name: "Meera Reddy", role: "Community Director", image: "/Image (3).svg" },
-  { name: "Sonal Kapoor", role: "Wealth Coach", image: "/Image (4).svg" },
-  { name: "Ananya Iyer", role: "Tech Lead", image: "/Image (5).svg" },
+  { name: "Anjali Bhatt Manda", role: "Founder", image: "/Image 7.svg" },
+  { name: "CA Diksha Chainwala Surana", role: "Insurance & Tax Consultant", image: "/Image 6.svg" },
+  { name: "Anu Khetan", role: "Partner - Markets", image: "/Image 5.svg" },
+  { name: "Jyothi Dt", role: "Consultant - Legal (Wills, Estate Planning)", image: "/Image 4.svg" },
+  { name: "Anushka Goyal", role: "Consultant - Technology", image: "/Image 3.svg" },
+  { name: "Dilip Singh", role: "Consultant - Technology", image: "/Image 2.svg" },
 ];
-
 export default function TeamExperts() {
   return (
     <section
