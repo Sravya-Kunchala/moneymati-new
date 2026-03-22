@@ -10,7 +10,7 @@ export default function HeroSection() {
     <section
       className="relative w-full overflow-visible px-16 py-16 flex items-center justify-center gap-20"
       style={{
-        backgroundImage: "url('/section (5).svg')",
+        backgroundImage: "url('/Section (5).svg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
