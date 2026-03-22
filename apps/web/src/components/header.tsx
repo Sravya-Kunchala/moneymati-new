@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -25,6 +26,7 @@ export default function Header() {
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -45,6 +47,7 @@ export default function Header() {
       setDropdownPos({ top: rect.bottom + 8, left: rect.left });
     }
     setAboutOpen((v) => !v);
+    router.push("/About");
   };
 
   const dropdown = mounted && aboutOpen
@@ -156,7 +159,6 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Portal dropdown — renders directly into document.body, escapes all stacking contexts */}
       {dropdown}
     </>
   );
