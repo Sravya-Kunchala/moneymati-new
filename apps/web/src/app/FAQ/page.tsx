@@ -98,7 +98,7 @@ export default function FAQSection() {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: "url('/Gradient (2).svg')",
+            backgroundImage: "url('/Gradient.svg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

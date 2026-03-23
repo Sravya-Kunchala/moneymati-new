@@ -21,7 +21,7 @@ const navLinks = [
 
 const aboutDropdown = [
   { label: "Home Teams", href: "/hometeams" },
-  { label: "Home Contact", href: "/homecontact" },
+  { label: "Home Contact", href: "/home-contact" },
   { label: "Home FAQ", href: "/FAQ" },
 ];
 
