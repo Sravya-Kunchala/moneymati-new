@@ -4,220 +4,8 @@ import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
-// ── Notification Preferences Modal ──────────────────────────────────────────
-function NotificationModal({ onClose }) {
-  const [prefs, setPrefs] = useState({
-    webinarUpdates: true,
-    newBlogResources: true,
-    monthlyWealthReport: false,
-    upcomingBookingReminders: true,
-    communityMentions: false,
-  });
-
-  const toggle = (key) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
-
-  // Prevent body scroll while modal open
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
-  return (
-    <div
-      style={{
-        position: "fixed", inset: 0, zIndex: 1000,
-        background: "rgba(0,0,0,0.40)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "24px",
-        animation: "fadeInBg 0.2s ease both",
-      }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <style>{`
-        @keyframes fadeInBg { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
-
-        .notif-modal {
-          background: #fff;
-          border-radius: 24px;
-          width: 100%;
-          max-width: 560px;
-          padding: 32px 28px 24px;
-          box-shadow: 0 24px 80px rgba(0,0,0,0.18);
-          animation: slideUp 0.28s cubic-bezier(0.34,1.3,0.64,1) both;
-          font-family: 'Inter', sans-serif;
-          max-height: 90vh;
-          overflow-y: auto;
-        }
-
-        /* Toggle switch */
-        .toggle-track {
-          position: relative;
-          width: 44px;
-          height: 26px;
-          border-radius: 9999px;
-          background: #e0e0e0;
-          cursor: pointer;
-          transition: background 0.22s;
-          flex-shrink: 0;
-          border: none;
-          outline: none;
-          padding: 0;
-        }
-        .toggle-track.on { background: #0EAF50; }
-        .toggle-thumb {
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #fff;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-          transition: transform 0.22s cubic-bezier(0.34,1.3,0.64,1);
-        }
-        .toggle-track.on .toggle-thumb { transform: translateX(18px); }
-
-        .notif-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          padding: 14px 0;
-          border-bottom: 1px solid #f2f2f2;
-        }
-        .notif-row:last-child { border-bottom: none; }
-
-        .section-label {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin: 20px 0 4px;
-        }
-        .section-label:first-of-type { margin-top: 8px; }
-
-        .save-btn {
-          background: #0EAF50;
-          color: #fff;
-          border: none;
-          border-radius: 9999px;
-          padding: 13px 28px;
-          font-size: 14px;
-          font-weight: 700;
-          cursor: pointer;
-          font-family: 'Inter', sans-serif;
-          transition: background 0.2s;
-          white-space: nowrap;
-        }
-        .save-btn:hover { background: #0c9a46; }
-
-        .cancel-modal-btn {
-          background: none;
-          border: none;
-          font-size: 14px;
-          font-weight: 600;
-          color: #555;
-          cursor: pointer;
-          font-family: 'Inter', sans-serif;
-          padding: 13px 20px;
-          border-radius: 9999px;
-          transition: color 0.15s;
-        }
-        .cancel-modal-btn:hover { color: #111; }
-      `}</style>
-
-      <div className="notif-modal">
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 4 }}>
-          <h2 style={{ fontWeight: 800, fontSize: 22, color: "#111", margin: "0 0 8px", letterSpacing: "-0.5px" }}>
-            Notification Preferences
-          </h2>
-          <p style={{ fontSize: 13, color: "#888", margin: 0, lineHeight: 1.5 }}>
-            Curate your communication flow. Choose how you want to receive<br />
-            wealth insights and community updates.
-          </p>
-        </div>
-
-        {/* Email Notifications */}
-        <div className="section-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-          <span style={{ fontWeight: 800, fontSize: 15, color: "#111" }}>Email Notifications</span>
-        </div>
-
-        <div style={{ background: "#fafafa", borderRadius: 14, padding: "0 16px" }}>
-          {[
-            { prefKey: "webinarUpdates", label: "Webinar updates", sub: "Receive invitations to exclusive financial masterclasses." },
-            { prefKey: "newBlogResources", label: "New blog resources", sub: "Get notified when new wealth strategies are published." },
-            { prefKey: "monthlyWealthReport", label: "Monthly wealth report", sub: "Your portfolio performance and market outlook delivered monthly." },
-          ].map(({ prefKey, label, sub }) => (
-            <div key={prefKey} className="notif-row">
-              <div>
-                <p style={{ fontWeight: 700, fontSize: 13, color: "#111", margin: "0 0 2px" }}>{label}</p>
-                <p style={{ fontSize: 12, color: "#888", margin: 0 }}>{sub}</p>
-              </div>
-              <button
-                className={`toggle-track ${prefs[prefKey] ? "on" : ""}`}
-                onClick={() => toggle(prefKey)}
-                aria-pressed={prefs[prefKey]}
-              >
-                <div className="toggle-thumb" />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Push Notifications */}
-        <div className="section-label">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <span style={{ fontWeight: 800, fontSize: 15, color: "#111" }}>Push Notifications</span>
-        </div>
-
-        <div style={{ background: "#fafafa", borderRadius: 14, padding: "0 16px" }}>
-          {[
-            { prefKey: "upcomingBookingReminders", label: "Upcoming booking reminders", sub: "Alerts for your scheduled advisor sessions." },
-            { prefKey: "communityMentions", label: "Community mentions", sub: "Real-time alerts when investors engage with your posts." },
-          ].map(({ prefKey, label, sub }) => (
-            <div key={prefKey} className="notif-row">
-              <div>
-                <p style={{ fontWeight: 700, fontSize: 13, color: "#111", margin: "0 0 2px" }}>{label}</p>
-                <p style={{ fontSize: 12, color: "#888", margin: 0 }}>{sub}</p>
-              </div>
-              <button
-                className={`toggle-track ${prefs[prefKey] ? "on" : ""}`}
-                onClick={() => toggle(prefKey)}
-                aria-pressed={prefs[prefKey]}
-              >
-                <div className="toggle-thumb" />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <p style={{ fontSize: 11, color: "#aaa", margin: 0, flex: 1, lineHeight: 1.4 }}>
-            Changes may take up to 24 hours to reflect across all systems.
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-            <button className="cancel-modal-btn" onClick={onClose}>Cancel</button>
-            <button className="save-btn" onClick={onClose}>Save Preferences</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Main Profile Page ────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const [user, setUser] = useState({ name: "User Name", email: "username@gmail.com", phone: "+91 98765 43210", avatarSrc: "" });
-  const [showNotifModal, setShowNotifModal] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("auth_user");
@@ -232,10 +20,6 @@ export default function ProfilePage() {
   return (
     <>
       <Header />
-
-      {/* Notification Preferences Modal */}
-      {showNotifModal && <NotificationModal onClose={() => setShowNotifModal(false)} />}
-
       <div style={{ minHeight: "100vh", background: "#f0f5f0", fontFamily: "'Inter', sans-serif", padding: "40px 0 60px" }}>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -249,8 +33,10 @@ export default function ProfilePage() {
           .view-all { font-size: 13px; font-weight: 600; color: #0EAF50; text-decoration: none; }
           .view-all:hover { text-decoration: underline; }
 
+          /* Webinar Grid */
           .webinar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+          /* Webinar Card Base */
           .webinar-card {
             background: #fff;
             border-radius: 16px;
@@ -259,72 +45,105 @@ export default function ProfilePage() {
             position: relative;
             overflow: hidden;
           }
-          .webinar-card.upcoming { border-left: 4px solid #0EAF50; }
-          .webinar-card.past { background: #f8f8f6; border-left: 4px solid transparent; }
+          /* Upcoming card: left green border accent */
+          .webinar-card.upcoming {
+            border-left: 4px solid #0EAF50;
+          }
+          /* Past card: grey tinted background, no accent border */
+          .webinar-card.past {
+            background: #f8f8f6;
+            border-left: 4px solid transparent;
+          }
 
           .badge-upcoming {
-            display: inline-block; background: #e6f9ef; color: #0EAF50;
-            padding: 3px 12px; border-radius: 9999px; font-size: 11px;
-            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            display: inline-block;
+            background: #e6f9ef;
+            color: #0EAF50;
+            padding: 3px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
           }
           .badge-past {
-            display: inline-block; background: #f0f0f0; color: #888;
-            padding: 3px 12px; border-radius: 9999px; font-size: 11px;
-            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            display: inline-block;
+            background: #f0f0f0;
+            color: #888;
+            padding: 3px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
           }
 
           .join-btn {
-            background: #0EAF50; color: #fff; border: none; border-radius: 9999px;
-            padding: 8px 18px; font-size: 13px; font-weight: 700; cursor: pointer;
-            font-family: 'Inter', sans-serif; transition: background 0.2s;
+            background: #0EAF50;
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
           }
           .join-btn:hover { background: #0c9a46; }
 
           .watch-link { font-size: 13px; font-weight: 600; color: #0EAF50; text-decoration: none; }
           .watch-link:hover { text-decoration: underline; }
 
+          /* Booking Card */
           .booking-card {
-            display: flex; align-items: center; gap: 16px;
-            background: #fff; border-radius: 16px; padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 20px;
             box-shadow: 0 1px 8px rgba(0,0,0,0.07);
           }
 
           .resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-          .resource-card {
-            background: #fff; border-radius: 16px; padding: 18px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 12px;
-          }
+          .resource-card { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 1px 8px rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 12px; }
 
-          .download-btn {
-            background: #0EAF50; color: #fff; border: none; border-radius: 9999px;
-            padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer;
-            font-family: 'Inter', sans-serif; transition: background 0.2s;
-          }
+          .download-btn { background: #0EAF50; color: #fff; border: none; border-radius: 9999px; padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
           .download-btn:hover { background: #0c9a46; }
-          .view-btn {
-            background: #f0f0f0; color: #555; border: none; border-radius: 9999px;
-            padding: 7px 16px; font-size: 12px; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif; transition: background 0.2s;
-          }
+          .view-btn { background: #f0f0f0; color: #555; border: none; border-radius: 9999px; padding: 7px 16px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
           .view-btn:hover { background: #e5e5e5; }
 
-          .settings-item {
-            display: flex; align-items: center; gap: 14px; padding: 16px 0;
-            cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s;
-          }
+          .settings-item { display: flex; align-items: center; gap: 14px; padding: 16px 0; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
           .settings-item:last-child { border-bottom: none; }
           .settings-item:hover { background: #fafafa; }
 
+          /* Cancel text button */
           .cancel-btn {
-            background: none; border: none; font-size: 13px; color: #555;
-            cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; padding: 0 4px;
+            background: none;
+            border: none;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            padding: 0 4px;
           }
           .cancel-btn:hover { color: #111; }
 
+          /* Reschedule button */
           .reschedule-btn {
-            background: #111; color: #fff; border: none; border-radius: 9999px;
-            padding: 9px 20px; font-size: 13px; font-weight: 700; cursor: pointer;
-            font-family: 'Inter', sans-serif; transition: background 0.2s; white-space: nowrap;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            padding: 9px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+            white-space: nowrap;
           }
           .reschedule-btn:hover { background: #333; }
 
@@ -381,6 +200,8 @@ export default function ProfilePage() {
               <a href="#" className="view-all">View All</a>
             </div>
             <div className="webinar-grid">
+
+              {/* Upcoming Card — left green border, calendar icon top-right */}
               <div className="webinar-card upcoming">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                   <span className="badge-upcoming">Upcoming</span>
@@ -402,6 +223,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {/* Past Card — grey bg, no accent border */}
               <div className="webinar-card past">
                 <div style={{ marginBottom: 12 }}>
                   <span className="badge-past">Past</span>
@@ -410,6 +232,7 @@ export default function ProfilePage() {
                 <p style={{ fontSize: 12, color: "#888", margin: "0 0 16px" }}>February 12, 4:30 PM</p>
                 <a href="#" className="watch-link">Watch Recording →</a>
               </div>
+
             </div>
           </div>
 
@@ -419,9 +242,21 @@ export default function ProfilePage() {
               <span className="section-title">My Bookings</span>
             </div>
             <div className="booking-card">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "#fff0eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              {/* Icon */}
+              <div style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: "#fff0eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}>
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.31254 20.3886V3.31254C3.31254 3.31254 3.31254 3.76431 3.31254 4.66784C3.31254 5.57137 3.31254 6.72739 3.31254 8.1359V15.6006C3.31254 17.0091 3.31254 18.1592 3.31254 19.051C3.31254 19.9427 3.31254 20.3886 3.31254 20.3886ZM3.31254 23.7011C2.38952 23.7011 1.60668 23.3798 0.964006 22.7371C0.321335 22.0945 0 21.3116 0 20.3886V3.31254C0 2.38952 0.321335 1.60668 0.964006 0.964006C1.60668 0.321335 2.38952 0 3.31254 0H20.3886C21.3116 0 22.0945 0.321335 22.7371 0.964006C23.3798 1.60668 23.7011 2.38952 23.7011 3.31254V6.22557H20.3886V3.31254H3.31254V20.3886H20.3886V17.4756H23.7011V20.3886C23.7011 21.3116 23.3798 22.0945 22.7371 22.7371C22.0945 23.3798 21.3116 23.7011 20.3886 23.7011H3.31254ZM13.1359 18.1006C12.4387 18.1006 11.8418 17.8587 11.3453 17.375C10.8488 16.8913 10.6006 16.2999 10.6006 15.6006V8.1359C10.6006 7.43869 10.8488 6.84183 11.3453 6.34533C11.8418 5.84883 12.4387 5.60057 13.1359 5.60057H22.4335C23.1328 5.60057 23.7272 5.84883 24.2168 6.34533C24.7064 6.84183 24.9511 7.43869 24.9511 8.1359V15.6094C24.9511 16.2945 24.7064 16.8809 24.2168 17.3688C23.7272 17.8566 23.1328 18.1006 22.4335 18.1006H13.1359ZM22.4688 15.6006V8.10057H13.1006V15.6006H22.4688ZM16.8506 13.7256C17.3714 13.7256 17.8141 13.5433 18.1787 13.1787C18.5433 12.8141 18.7256 12.3714 18.7256 11.8506C18.7256 11.3297 18.5433 10.887 18.1787 10.5224C17.8141 10.1579 17.3714 9.97557 16.8506 9.97557C16.3297 9.97557 15.887 10.1579 15.5224 10.5224C15.1579 10.887 14.9756 11.3297 14.9756 11.8506C14.9756 12.3714 15.1579 12.8141 15.5224 13.1787C15.887 13.5433 16.3297 13.7256 16.8506 13.7256Z" fill="#93492F"/></svg>
               </div>
+
+              {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <h3 style={{ fontWeight: 700, fontSize: 15, color: "#111", margin: "0 0 5px" }}>Financial Consultation</h3>
                 <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
@@ -442,6 +277,8 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+
+              {/* Actions */}
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 <button className="cancel-btn">Cancel</button>
                 <button className="reschedule-btn">Reschedule</button>
@@ -496,27 +333,10 @@ export default function ProfilePage() {
             </div>
             <div className="card" style={{ padding: "4px 20px" }}>
               {[
-                {
-                  icon: <svg width="17" height="22" viewBox="0 0 17 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65003 21.8055C1.92127 21.8055 1.29741 21.546 0.778447 21.027C0.259482 20.5081 0 19.8842 0 19.1554V9.49459C0 8.76583 0.259482 8.14197 0.778447 7.623C1.29741 7.10404 1.92127 6.84456 2.65003 6.84456H3.26849V5.25436C3.26849 3.79566 3.77483 2.55526 4.78752 1.53316C5.8002 0.511052 7.03118 0 8.48046 0C9.92974 0 11.1607 0.511052 12.1734 1.53316C13.1861 2.55526 13.6924 3.79566 13.6924 5.25436V6.84456H14.3109C15.0396 6.84456 15.6635 7.10404 16.1825 7.623C16.7014 8.14197 16.9609 8.76583 16.9609 9.49459V19.1554C16.9609 19.8842 16.7014 20.5081 16.1825 21.027C15.6635 21.546 15.0396 21.8055 14.3109 21.8055H2.65003ZM2.65003 19.1554H14.3109V9.49459H2.65003V19.1554ZM8.48046 16.325C9.03046 16.325 9.50129 16.1292 9.89296 15.7375C10.2846 15.3458 10.4805 14.875 10.4805 14.325C10.4805 13.775 10.2846 13.3042 9.89296 12.9125C9.50129 12.5209 9.03046 12.325 8.48046 12.325C7.93046 12.325 7.45963 12.5209 7.06796 12.9125C6.67629 13.3042 6.48046 13.775 6.48046 14.325C6.48046 14.875 6.67629 15.3458 7.06796 15.7375C7.45963 16.1292 7.93046 16.325 8.48046 16.325ZM5.91853 6.84456H11.0424V5.25436C11.0424 4.53094 10.7955 3.91603 10.3016 3.40963C9.8078 2.90323 9.20074 2.65003 8.48046 2.65003C7.76018 2.65003 7.15312 2.90323 6.65928 3.40963C6.16544 3.91603 5.91853 4.53094 5.91853 5.25436V6.84456ZM2.65003 19.1554V9.49459V19.1554Z" fill="#475569"/></svg>,
-                  label: "Password",
-                  sub: "Update your security credentials",
-                  onClick: undefined,
-                },
-                {
-                  icon: <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8.86961C0 7.03325 0.406621 5.34839 1.21986 3.81503C2.0331 2.28167 3.12504 1.01 4.49567 0L5.98156 2.02393C4.92503 2.79495 4.0821 3.77648 3.45275 4.96851C2.8234 6.16054 2.50872 7.46091 2.50872 8.86961H0ZM19.4696 8.86961C19.4696 7.46091 19.155 6.16054 18.5256 4.96851C17.8963 3.77648 17.0533 2.79495 15.9968 2.02393L17.4827 0C18.8533 1.01 19.9453 2.28167 20.7585 3.81503C21.5717 5.34839 21.9784 7.03325 21.9784 8.86961H19.4696ZM2.50872 18.0251V15.375H4.33915V8.85548C4.33915 7.34967 4.78172 6.00039 5.66687 4.80763C6.55202 3.61487 7.71778 2.83769 9.16416 2.4761V1.88915C9.16416 1.3822 9.34062 0.951292 9.69352 0.596428C10.0464 0.241563 10.4783 0.0641312 10.9892 0.0641312C11.5001 0.0641312 11.9319 0.241563 12.2848 0.596428C12.6377 0.951292 12.8142 1.3822 12.8142 1.88915V2.4761C14.27 2.83769 15.4381 3.61252 16.3186 4.80057C17.199 5.98862 17.6392 7.34025 17.6392 8.85548V15.375H19.4696V18.0251H2.50872ZM11.0033 21.1805C10.4067 21.1805 9.89593 20.9694 9.47105 20.5473C9.04618 20.1252 8.83374 19.6178 8.83374 19.0251H13.1588C13.1588 19.6222 12.9477 20.1307 12.5256 20.5506C12.1035 20.9705 11.5961 21.1805 11.0033 21.1805ZM6.98918 15.375H14.9892V8.85548C14.9892 7.75548 14.5975 6.81381 13.8142 6.03048C13.0308 5.24714 12.0892 4.85548 10.9892 4.85548C9.88918 4.85548 8.94752 5.24714 8.16418 6.03048C7.38085 6.81381 6.98918 7.75548 6.98918 8.85548V15.375Z" fill="#475569"/></svg>,
-                  label: "Notifications",
-                  sub: "Manage how you receive updates",
-                  onClick: () => setShowNotifModal(true),
-                },
+                { icon: <svg width="17" height="22" viewBox="0 0 17 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65003 21.8055C1.92127 21.8055 1.29741 21.546 0.778447 21.027C0.259482 20.5081 0 19.8842 0 19.1554V9.49459C0 8.76583 0.259482 8.14197 0.778447 7.623C1.29741 7.10404 1.92127 6.84456 2.65003 6.84456H3.26849V5.25436C3.26849 3.79566 3.77483 2.55526 4.78752 1.53316C5.8002 0.511052 7.03118 0 8.48046 0C9.92974 0 11.1607 0.511052 12.1734 1.53316C13.1861 2.55526 13.6924 3.79566 13.6924 5.25436V6.84456H14.3109C15.0396 6.84456 15.6635 7.10404 16.1825 7.623C16.7014 8.14197 16.9609 8.76583 16.9609 9.49459V19.1554C16.9609 19.8842 16.7014 20.5081 16.1825 21.027C15.6635 21.546 15.0396 21.8055 14.3109 21.8055H2.65003ZM2.65003 19.1554H14.3109V9.49459H2.65003V19.1554ZM8.48046 16.325C9.03046 16.325 9.50129 16.1292 9.89296 15.7375C10.2846 15.3458 10.4805 14.875 10.4805 14.325C10.4805 13.775 10.2846 13.3042 9.89296 12.9125C9.50129 12.5209 9.03046 12.325 8.48046 12.325C7.93046 12.325 7.45963 12.5209 7.06796 12.9125C6.67629 13.3042 6.48046 13.775 6.48046 14.325C6.48046 14.875 6.67629 15.3458 7.06796 15.7375C7.45963 16.1292 7.93046 16.325 8.48046 16.325ZM5.91853 6.84456H11.0424V5.25436C11.0424 4.53094 10.7955 3.91603 10.3016 3.40963C9.8078 2.90323 9.20074 2.65003 8.48046 2.65003C7.76018 2.65003 7.15312 2.90323 6.65928 3.40963C6.16544 3.91603 5.91853 4.53094 5.91853 5.25436V6.84456ZM2.65003 19.1554V9.49459V19.1554Z" fill="#475569"/></svg>, label: "Password", sub: "Update your security credentials" },
+                { icon: <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8.86961C0 7.03325 0.406621 5.34839 1.21986 3.81503C2.0331 2.28167 3.12504 1.01 4.49567 0L5.98156 2.02393C4.92503 2.79495 4.0821 3.77648 3.45275 4.96851C2.8234 6.16054 2.50872 7.46091 2.50872 8.86961H0ZM19.4696 8.86961C19.4696 7.46091 19.155 6.16054 18.5256 4.96851C17.8963 3.77648 17.0533 2.79495 15.9968 2.02393L17.4827 0C18.8533 1.01 19.9453 2.28167 20.7585 3.81503C21.5717 5.34839 21.9784 7.03325 21.9784 8.86961H19.4696ZM2.50872 18.0251V15.375H4.33915V8.85548C4.33915 7.34967 4.78172 6.00039 5.66687 4.80763C6.55202 3.61487 7.71778 2.83769 9.16416 2.4761V1.88915C9.16416 1.3822 9.34062 0.951292 9.69352 0.596428C10.0464 0.241563 10.4783 0.0641312 10.9892 0.0641312C11.5001 0.0641312 11.9319 0.241563 12.2848 0.596428C12.6377 0.951292 12.8142 1.3822 12.8142 1.88915V2.4761C14.27 2.83769 15.4381 3.61252 16.3186 4.80057C17.199 5.98862 17.6392 7.34025 17.6392 8.85548V15.375H19.4696V18.0251H2.50872ZM11.0033 21.1805C10.4067 21.1805 9.89593 20.9694 9.47105 20.5473C9.04618 20.1252 8.83374 19.6178 8.83374 19.0251H13.1588C13.1588 19.6222 12.9477 20.1307 12.5256 20.5506C12.1035 20.9705 11.5961 21.1805 11.0033 21.1805ZM6.98918 15.375H14.9892V8.85548C14.9892 7.75548 14.5975 6.81381 13.8142 6.03048C13.0308 5.24714 12.0892 4.85548 10.9892 4.85548C9.88918 4.85548 8.94752 5.24714 8.16418 6.03048C7.38085 6.81381 6.98918 7.75548 6.98918 8.85548V15.375Z" fill="#475569"/></svg>, label: "Notifications", sub: "Manage how you receive updates" },
               ].map((item) => (
-                <div
-                  key={item.label}
-                  className="settings-item"
-                  onClick={item.onClick}
-                  role={item.onClick ? "button" : undefined}
-                  tabIndex={item.onClick ? 0 : undefined}
-                  onKeyDown={item.onClick ? (e) => e.key === "Enter" && item.onClick() : undefined}
-                >
+                <div key={item.label} className="settings-item">
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     {item.icon}
                   </div>
