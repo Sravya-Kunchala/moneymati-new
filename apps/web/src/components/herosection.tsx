@@ -60,14 +60,20 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-12 pb-8 flex flex-col lg:flex-row items-center gap-10" style={{ minHeight: "600px" }}>
         {/* LEFT: Text Content */}
         <div className="flex-1 flex flex-col justify-center max-w-xl">
+
           {/* Eyebrow */}
           <p
             data-animate
-            className="text-xs tracking-widest uppercase mb-6"
+            className="mb-6"
             style={{
-              color: "#a8c4a2",
+              color: "#C6A553",
               fontFamily: "var(--font-dm-sans), sans-serif",
-              letterSpacing: "0.2em",
+              fontWeight: 500,
+              fontSize: "14px",
+              lineHeight: "20px",
+              letterSpacing: "0.7px",
+              textTransform: "uppercase",
+              verticalAlign: "middle",
             }}
           >
             Empowering Women to Take Control of Their Finances
@@ -76,13 +82,14 @@ export default function HeroSection() {
           {/* Headline */}
           <h1
             data-animate
-            className="mb-6 leading-tight"
+            className="mb-6"
             style={{ color: "#ffffff" }}
           >
             <span
               className="block font-bold"
               style={{
                 fontSize: "clamp(2.5rem, 5vw, 4rem)",
+                lineHeight: 1.15,
                 fontFamily: "var(--font-playfair), serif",
               }}
             >
@@ -92,6 +99,7 @@ export default function HeroSection() {
               className="block font-bold"
               style={{
                 fontSize: "clamp(2.5rem, 5vw, 4rem)",
+                lineHeight: 1.15,
                 fontFamily: "var(--font-playfair), serif",
               }}
             >
@@ -106,12 +114,17 @@ export default function HeroSection() {
                 Confidence
               </em>
             </span>
+
+            {/* & Clarity — updated to match design specs */}
             <span
-              className="block font-bold"
+              className="block"
               style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
+                fontSize: "72px",
+                lineHeight: "72px",
+                letterSpacing: "0",
                 fontFamily: "var(--font-dancing), cursive",
-                color: "#d4a82a",
+                fontWeight: 700,
+                color: "#C6A553",
               }}
             >
               &amp; Clarity
@@ -136,19 +149,27 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div data-animate className="flex flex-wrap gap-4 mb-14">
+
+            {/* Book a Free Appointment */}
             <button
-              className="px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+              className="transition-all duration-200 hover:scale-105 active:scale-95"
               style={{
-                backgroundColor: "#d4a82a",
+                width: "243px",
+                height: "50px",
+                borderRadius: "9999px",
+                backgroundColor: "#FFB600",
                 color: "#1a3a2a",
                 fontFamily: "var(--font-dm-sans), sans-serif",
+                fontWeight: 600,
+                fontSize: "14px",
                 border: "none",
                 cursor: "pointer",
-                boxShadow: "0 4px 20px rgba(212,168,42,0.35)",
+                boxShadow: "0 4px 20px rgba(255,182,0,0.35)",
               }}
             >
               Book a Free Appointment
             </button>
+
             <button
               className="px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-white/10"
               style={{
@@ -198,13 +219,13 @@ export default function HeroSection() {
         {/* RIGHT: Image Card */}
         <div data-animate className="flex-1 flex justify-center lg:justify-end items-center relative" style={{ minHeight: "560px" }}>
 
-          {/* Financial chart — behind, bottom-left overlapping */}
+          {/* Financial chart — moved down */}
           <img
             src="/Financial chart.svg"
             alt="Financial chart"
             className="absolute"
             style={{
-              bottom: "-20px",
+              bottom: "-60px",
               left: "-10px",
               width: "65%",
               zIndex: 1,

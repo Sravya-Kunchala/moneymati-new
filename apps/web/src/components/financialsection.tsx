@@ -1,67 +1,105 @@
 "use client";
 
-import { Dancing_Script, Playfair_Display, DM_Sans } from "next/font/google";
+import { Dancing_Script, Playfair_Display, Inter } from "next/font/google";
 
 const dancingScript = Dancing_Script({ subsets: ["latin"], variable: "--font-dancing", weight: ["700"] });
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function FinancialConfidence() {
   return (
     <section
-      className={`${dancingScript.variable} ${playfairDisplay.variable} ${dmSans.variable}`}
+      className={`${dancingScript.variable} ${playfairDisplay.variable} ${inter.variable}`}
       style={{
         position: "relative",
         overflow: "hidden",
-        background: "radial-gradient(ellipse at center, #2d5a3d 0%, #1a3a2a 50%, #0f2218 100%)",
-        minHeight: "260px",
+        minHeight: "420px",
       }}
     >
-      {/* Group 4 — Vector 12 (rotation 180°) z-index 1 */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", zIndex: 1, lineHeight: 0 }}>
-        <svg width="100%" height="80" viewBox="0 0 1440 299" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: "rotate(180deg)" }}>
-          <path d="M691.642 147.795C1059.45 207.882 1343.8 74.3013 1440 6.10352e-05L0 6.10352e-05V298.013C77.2952 222.904 323.837 87.7079 691.642 147.795Z" fill="#214533"/>
-        </svg>
-      </div>
+      {/* Rectangle 3 — base background */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "url('/Rectangle 3.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 0,
+        }}
+      />
 
-      {/* Group 4 — Vector 11 (rotation 180°) z-index 2 */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", zIndex: 2, lineHeight: 0 }}>
-        <svg width="100%" height="60" viewBox="0 0 1440 201" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: "rotate(180deg)" }}>
-          <path d="M691.642 99.6247C1059.45 140.128 1343.8 50.0845 1440 0L0 0V200.883C77.2952 150.254 323.837 59.1216 691.642 99.6247Z" fill="#1B3226"/>
-          <path d="M691.642 99.6247C1059.45 140.128 1343.8 50.0845 1440 0L0 0V200.883C77.2952 150.254 323.837 59.1216 691.642 99.6247Z" fill="url(#g4_v11_grad)"/>
-          <defs>
-            <linearGradient id="g4_v11_grad" x1="706.01" y1="181.653" x2="707.663" y2="-0.112218" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#1B3226"/>
-              <stop offset="1" stopColor="#214533"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      {/* finac.svg — wave overlay */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "url('/finac.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 1,
+        }}
+      />
 
-      {/* Group 3 — Vector 12 z-index 3 */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, width: "100%", zIndex: 3, lineHeight: 0 }}>
-        <svg width="100%" height="80" viewBox="0 0 1440 299" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M748.358 150.218C380.554 90.1306 96.2008 223.711 0 298.013H1440V0C1362.7 75.1089 1116.16 210.305 748.358 150.218Z" fill="#214533"/>
-        </svg>
-      </div>
+      {/* SVG 1 — wide subtle curve */}
+      <svg
+        width="100%"
+        height="96"
+        viewBox="0 0 1441 96"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          top: "55%",
+          left: 0,
+          zIndex: 2,
+          opacity: 0.1,
+        }}
+      >
+        <path d="M0.0931396 47.6235C288.093 -15.2931 576.093 -15.2931 864.093 47.6235C1152.09 110.54 1344.09 110.54 1440.09 47.6235" stroke="white" strokeWidth="0.87225"/>
+      </svg>
 
-      {/* Group 3 — Vector 11 z-index 4 */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, width: "100%", zIndex: 4, lineHeight: 0 }}>
-        <svg width="100%" height="60" viewBox="0 0 1440 201" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M748.358 101.258C380.554 60.7547 96.2008 150.798 0 200.883H1440V0C1362.7 50.6289 1116.16 141.761 748.358 101.258Z" fill="url(#g3_v11_grad)"/>
-          <defs>
-            <linearGradient id="g3_v11_grad" x1="733.99" y1="19.2298" x2="732.337" y2="200.995" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#214533"/>
-              <stop offset="1" stopColor="#122B1F"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      {/* SVG 2 — wider subtle curve */}
+      <svg
+        width="100%"
+        height="119"
+        viewBox="0 0 1441 119"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        style={{
+          position: "absolute",
+          top: "40%",
+          left: 0,
+          zIndex: 2,
+          opacity: 0.1,
+        }}
+      >
+        <path d="M0.135498 59.2935C240.136 -19.1831 480.136 -19.1831 720.136 59.2935C960.136 137.77 1200.14 137.77 1440.14 59.2935" stroke="white" strokeWidth="0.87225"/>
+      </svg>
+
+      {/* SVG 3 — dashed diagonal, right side */}
+      <svg
+        width="1028"
+        height="309"
+        viewBox="0 0 1028 309"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{
+          position: "absolute",
+          top: "0.025%",
+          right: 0,
+          zIndex: 2,
+          opacity: 0.1,
+        }}
+      >
+        <path d="M0 307.77C8 307.77 688 102.909 1027 0.478516" stroke="white" strokeDasharray="22 22"/>
+      </svg>
 
       {/* Content */}
       <div
         className="relative text-center mx-auto px-6"
-        style={{ maxWidth: "760px", padding: "48px 24px", zIndex: 10 }}
+        style={{ maxWidth: "760px", padding: "80px 24px", zIndex: 10 }}
       >
         {/* Heading */}
         <h2 style={{ marginBottom: "16px", lineHeight: "48px" }}>
@@ -112,10 +150,11 @@ export default function FinancialConfidence() {
         {/* Body */}
         <p
           style={{
-            fontFamily: "var(--font-dm-sans), sans-serif",
+            fontFamily: "var(--font-inter), sans-serif",
             fontWeight: 600,
             fontSize: "18px",
             lineHeight: "29.25px",
+            letterSpacing: "0px",
             color: "#D1FAE5",
             textAlign: "center",
           }}

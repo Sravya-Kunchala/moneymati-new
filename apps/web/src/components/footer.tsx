@@ -5,15 +5,43 @@ import { Playfair_Display, DM_Sans } from "next/font/google";
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
-const companyLinks = ["About Us", "FAQ", "Our Team", "Contact"];
-const resourceLinks = ["Blog", "Courses", "Webinars"];
-const legalLinks = [
-  "Privacy Policy",
-  "Terms and Conditions",
-  "Pricing Policy",
-  "Refund and Return Policy",
-  "Cancellation Policy",
+// ─── CONFIGURE ALL YOUR LINKS HERE ───────────────────────────────────────────
+
+const companyLinks = [
+  { label: "About Us",  href: "/About" },
+  { label: "FAQ",       href: "/FAQ" },
+  { label: "Our Team",  href: "/hometeams" },
+  { label: "Contact",   href: "/home-contact" },
 ];
+
+const resourceLinks = [
+  { label: "Blog",      href: "/Blog" },
+  { label: "Courses",   href: "/Courses" },
+  { label: "Webinars",  href: "/Webinars" },
+];
+
+const legalLinks = [
+  { label: "Privacy Policy",            href: "#" },
+  { label: "Terms and Conditions",      href: "#" },
+  { label: "Pricing Policy",            href: "#" },
+  { label: "Refund and Return Policy",  href: "#" },
+  { label: "Cancellation Policy",       href: "#" },
+];
+
+const socialLinks = {
+  linkedin:  "#",
+  instagram: "#",
+  facebook:  "#",
+  twitter:   "#",
+};
+
+const contactInfo = {
+  email: "support@moneymati.com",
+  phone: "+91 78426 99006",
+  views: "12,085 Views",
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Footer() {
   return (
@@ -37,7 +65,6 @@ export default function Footer() {
             style={{
               width: "100px",
               height: "100px",
-           
               overflow: "hidden",
               backgroundColor: "#ffffff",
               marginBottom: "8px",
@@ -60,7 +87,7 @@ export default function Footer() {
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
               <circle cx="12" cy="12" r="3" />
             </svg>
-            <span>12,085 Views</span>
+            <span>{contactInfo.views}</span>
           </div>
 
           {/* Email */}
@@ -69,7 +96,13 @@ export default function Footer() {
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
-            <span>support@moneymati.com</span>
+            <a
+              href={`mailto:${contactInfo.email}`}
+              style={{ color: "inherit", textDecoration: "none" }}
+              className="hover:opacity-75 transition-opacity"
+            >
+              {contactInfo.email}
+            </a>
           </div>
 
           {/* Phone */}
@@ -77,20 +110,26 @@ export default function Footer() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
-            <span>+91 78426 99006</span>
+            <a
+              href={`tel:${contactInfo.phone.replace(/\s/g, "")}`}
+              style={{ color: "inherit", textDecoration: "none" }}
+              className="hover:opacity-75 transition-opacity"
+            >
+              {contactInfo.phone}
+            </a>
           </div>
 
           {/* Social icons */}
           <div className="flex items-center gap-4 mt-1">
             {/* LinkedIn */}
-            <a href="#" style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
+            <a href={socialLinks.linkedin} style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z" />
                 <circle cx="4" cy="4" r="2" />
               </svg>
             </a>
             {/* Instagram */}
-            <a href="#" style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
+            <a href={socialLinks.instagram} style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -98,13 +137,13 @@ export default function Footer() {
               </svg>
             </a>
             {/* Facebook */}
-            <a href="#" style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
+            <a href={socialLinks.facebook} style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
               </svg>
             </a>
             {/* X / Twitter */}
-            <a href="#" style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
+            <a href={socialLinks.twitter} style={{ color: "#ffffff" }} className="hover:opacity-75 transition-opacity">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
@@ -126,14 +165,14 @@ export default function Footer() {
             Company
           </h4>
           <ul className="flex flex-col gap-3">
-            {companyLinks.map((link) => (
-              <li key={link}>
+            {companyLinks.map(({ label, href }) => (
+              <li key={label}>
                 <a
-                  href="#"
+                  href={href}
                   style={{ fontSize: "0.85rem", color: "#a8c4a8" }}
                   className="hover:text-white transition-colors"
                 >
-                  {link}
+                  {label}
                 </a>
               </li>
             ))}
@@ -154,14 +193,14 @@ export default function Footer() {
             Resources
           </h4>
           <ul className="flex flex-col gap-3">
-            {resourceLinks.map((link) => (
-              <li key={link}>
+            {resourceLinks.map(({ label, href }) => (
+              <li key={label}>
                 <a
-                  href="#"
+                  href={href}
                   style={{ fontSize: "0.85rem", color: "#a8c4a8" }}
                   className="hover:text-white transition-colors"
                 >
-                  {link}
+                  {label}
                 </a>
               </li>
             ))}
@@ -182,14 +221,14 @@ export default function Footer() {
             Legal
           </h4>
           <ul className="flex flex-col gap-3">
-            {legalLinks.map((link) => (
-              <li key={link}>
+            {legalLinks.map(({ label, href }) => (
+              <li key={label}>
                 <a
-                  href="#"
+                  href={href}
                   style={{ fontSize: "0.85rem", color: "#a8c4a8" }}
                   className="hover:text-white transition-colors"
                 >
-                  {link}
+                  {label}
                 </a>
               </li>
             ))}

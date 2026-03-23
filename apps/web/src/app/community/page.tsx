@@ -32,7 +32,7 @@ export default function Home() {
         style={{
           marginTop: "-40px",
           paddingTop: "80px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#F8F6F1",
           position: "relative",
           zIndex: 2,
         }}

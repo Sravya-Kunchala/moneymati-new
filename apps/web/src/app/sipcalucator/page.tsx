@@ -45,7 +45,6 @@ export default function SIPCalculatorPage() {
           border: none;
         }
 
-        /* ── Animations ── */
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-24px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -145,12 +144,25 @@ export default function SIPCalculatorPage() {
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
 
         {/* Calculator */}
-        <div className="anim-calculator" style={{ marginBottom: 32, position: "relative", zIndex: 1, background: "#f5f0e8", isolation: "isolate" }}>
+        <div className="anim-calculator" style={{ marginBottom: 32, position: "relative", zIndex: 1, background: "#f5f0e8" }}>
 
-          {/* Vector3 diagonal lines */}
-          <svg viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }}>
-            <line x1="1200" y1="150" x2="600" y2="450" stroke="#064E3B" strokeOpacity="0.10" strokeWidth="1.5"/>
-            <line x1="1100" y1="150" x2="500" y2="450" stroke="#064E3B" strokeOpacity="0.10" strokeWidth="1.5"/>
+          {/* Vector3 diagonal lines — centered on Pro Tip */}
+          <svg
+            viewBox="0 0 1200 300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              position: "absolute",
+              top: "260px",
+              right: "-48px",
+              width: "60%",
+              height: "350px",
+              pointerEvents: "none",
+              zIndex: 3,
+            }}
+          >
+            <line x1="1200" y1="0" x2="600" y2="300" stroke="#064E3B" strokeOpacity="0.35" strokeWidth="1.5"/>
+            <line x1="1100" y1="0" x2="500" y2="300" stroke="#064E3B" strokeOpacity="0.35" strokeWidth="1.5"/>
           </svg>
 
           {/* Target Goal Amount */}

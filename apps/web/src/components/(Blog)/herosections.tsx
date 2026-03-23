@@ -34,7 +34,7 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
           borderRadius: "16px",
           overflow: "hidden",
           display: "flex",
-          minHeight: "360px",
+          minHeight: "520px",
         }}
       >
         {/* Background image */}
@@ -67,11 +67,11 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
           style={{
             position: "relative",
             zIndex: 2,
-            padding: "40px 40px",
+            padding: "60px 48px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            gap: "14px",
+            gap: "18px",
             maxWidth: "720px",
           }}
         >
@@ -105,8 +105,8 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
           <h2
             style={{
               margin: 0,
-              fontSize: "36px",
-              lineHeight: "42px",
+              fontSize: "42px",
+              lineHeight: "52px",
               color: "#ffffff",
             }}
           >
@@ -135,8 +135,8 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
               margin: 0,
               fontFamily: "var(--font-dm-sans), sans-serif",
               fontWeight: 400,
-              fontSize: "14px",
-              lineHeight: "22px",
+              fontSize: "15px",
+              lineHeight: "24px",
               color: "#CBD5E1",
             }}
           >
@@ -153,7 +153,7 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                padding: "12px 24px",
+                padding: "14px 28px",
                 borderRadius: "49px",
                 backgroundColor: "#004D40",
                 border: "none",

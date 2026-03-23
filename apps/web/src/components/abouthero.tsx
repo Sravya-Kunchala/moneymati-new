@@ -31,10 +31,9 @@ export default function AboutHero() {
       style={{
         backgroundColor: "#122B1F",
         fontFamily: "var(--font-dm-sans), sans-serif",
-        minHeight: "480px",
+        minHeight: "650px",
       }}
     >
-      {/* Perspective Grid overlay */}
       {/* Perspective Grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -47,45 +46,52 @@ export default function AboutHero() {
         }}
       />
 
-      {/* Vector2 — exact Figma specs */}
-      <img
-        src="/vector2.svg"
-        alt=""
-        aria-hidden="true"
+      {/* Vector2 */}
+      <svg
+        width="1374"
+        height="558"
+        viewBox="0 0 1374 558"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
         className="absolute pointer-events-none"
         style={{
-          top: "243.44px",
+          top: "150px",
           left: "11px",
-          width: "1371.5px",
-          height: "648.56px",
-          opacity: 0.08,
-          transform: "rotate(-180deg)",
-          zIndex: 1,
+          opacity: 0.3,
+          zIndex: 15,
         }}
-      />
+      >
+        <path
+          d="M1372.45 649.556C1332.12 551.556 1200.05 357.156 994.45 363.556C737.45 371.556 695.532 224.639 650.95 180.056C615.45 144.556 118.45 -131.944 36.9497 80.5564C-28.2503 250.556 9.78304 459.056 36.9497 542.056"
+          stroke="white"
+          strokeOpacity="0.2"
+          strokeWidth="2"
+          strokeDasharray="49 49"
+        />
+      </svg>
 
-      {/* Vector3 — exact Figma specs */}
+      {/* Vector3 */}
       <img
         src="/vector3.svg"
         alt=""
         aria-hidden="true"
         className="absolute pointer-events-none"
         style={{
-          top: "126.5px",
+          top: "-40px",
           left: "140px",
           width: "1169px",
           height: "723px",
-          opacity: 0.08,
-          zIndex: 1,
+          opacity: 0.6,
+          zIndex: 15,
         }}
       />
 
       <div
-        className="relative z-10 mx-auto px-6 lg:px-16 py-16 flex flex-col lg:flex-row items-center gap-12"
-        style={{ maxWidth: "1100px", minHeight: "480px" }}
+        className="relative z-10 mx-auto px-6 lg:px-16 py-20 flex flex-col lg:flex-row items-center gap-12"
+        style={{ maxWidth: "1100px", minHeight: "650px" }}
       >
-        {/* LEFT: Image */}
-        <div data-animate className="flex-shrink-0">
+        {/* LEFT: Image — stays below vectors */}
+        <div data-animate className="flex-shrink-0" style={{ zIndex: 10 }}>
           <div
             style={{
               width: "clamp(260px, 32vw, 380px)",
@@ -103,8 +109,8 @@ export default function AboutHero() {
           </div>
         </div>
 
-        {/* RIGHT: Text */}
-        <div className="flex flex-col justify-center" style={{ maxWidth: "480px" }}>
+        {/* RIGHT: Text — above vectors */}
+        <div className="flex flex-col justify-center" style={{ maxWidth: "480px", zIndex: 20 }}>
           {/* Heading */}
           <h1
             data-animate

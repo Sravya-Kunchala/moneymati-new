@@ -146,20 +146,21 @@ export default function CommunityTestimonials() {
         }}
       >
         {/* Heading */}
-        <h2
-          style={{
-            margin: 0,
-            textAlign: "center",
-            fontSize: "36px",
-            fontWeight: 700,
-            color: "#004D40",
-            fontFamily: "var(--font-playfair), serif",
-            fontStyle: "italic",
-            letterSpacing: "-0.5px",
-          }}
-        >
-          What Our Community Says
-        </h2>
+       <h2
+  style={{
+    margin: 0,
+    textAlign: "center",
+    fontSize: "30px",
+    lineHeight: "36px",
+    fontWeight: 700,
+    color: "#004D40",
+    fontFamily: "var(--font-playfair), serif",
+    fontStyle: "normal",
+    letterSpacing: "4px",
+  }}
+>
+  What Our Community Says
+</h2>
 
         {/* Cards */}
         <div

@@ -8,13 +8,27 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 export default function HeroSection() {
   return (
     <section
-      className="relative w-full overflow-visible px-16 py-16 flex items-center justify-center gap-20"
+      className="relative w-full overflow-visible px-16 py-28 flex items-center justify-center gap-20"
       style={{
         backgroundImage: "url('/Section (5).svg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        minHeight: "600px",
+         opacity: 0.8,
       }}
     >
+
+      {/* bg-image.png layered on top of Section 5 svg */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url('/bg-image.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: 0.9,
+          zIndex: 0,
+        }}
+      />
 
       {/* Left Content */}
       <div className="flex flex-col gap-5 max-w-md z-10">

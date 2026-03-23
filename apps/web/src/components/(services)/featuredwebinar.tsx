@@ -7,16 +7,35 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: "700" });
 
 export default function FeaturedWebinar() {
   return (
-    <section className="w-full bg-[#f5f0e8] py-12 px-8">
-      <div className="max-w-6xl mx-auto">
+    <section className="w-full bg-[#f5f0e8] py-12 px-8 relative overflow-hidden">
+
+      {/* Top diagonal line */}
+      <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg"
+        style={{ position: "absolute", top: 0, right: 0, zIndex: 0, pointerEvents: "none" }}>
+        <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
+      </svg>
+
+      {/* Bottom diagonal line — pulled up closer to top line */}
+      <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg"
+        style={{ position: "absolute", top: "30px", right: 0, zIndex: 0, pointerEvents: "none" }}>
+        <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
+      </svg>
+
+      <div className="max-w-6xl mx-auto relative z-10">
 
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className={`${playfair.className} text-lg font-bold text-[#1a3a2a]`}>
+            <h2
+              className={`${playfair.className}`}
+              style={{ fontWeight: 700, fontSize: "30px", lineHeight: "36px", letterSpacing: "0px", color: "#004D40" }}
+            >
               Featured Webinar
             </h2>
-            <p className={`${inter.className} text-xs text-gray-400 mt-1`}>
+            <p
+              className={`${inter.className} mt-1`}
+              style={{ fontWeight: 400, fontSize: "16px", lineHeight: "24px", letterSpacing: "0px", color: "#475569" }}
+            >
               Our most requested session of the month.
             </p>
           </div>
@@ -37,12 +56,7 @@ export default function FeaturedWebinar() {
 
           {/* Left — Image */}
           <div className="relative w-[500px] flex-shrink-0">
-            <Image
-              src="/webinar-featured.svg"
-              alt="Featured Webinar"
-              fill
-              className="object-cover"
-            />
+            <Image src="/webinar-featured.svg" alt="Featured Webinar" fill className="object-cover" />
           </div>
 
           {/* Right — Content */}
@@ -62,12 +76,18 @@ export default function FeaturedWebinar() {
             </div>
 
             {/* Title */}
-            <h3 className={`${playfair.className} text-xl font-bold text-[#1a3a2a] leading-snug`}>
+            <h3
+              className={`${inter.className}`}
+              style={{ fontWeight: 700, fontSize: "36px", lineHeight: "45px", letterSpacing: "0px", color: "#004D40" }}
+            >
               Investing for the Future: A Woman's Guide to Wealth
             </h3>
 
             {/* Description */}
-            <p className={`${inter.className} text-sm text-gray-500 leading-relaxed max-w-lg`}>
+            <p
+              className={`${inter.className} max-w-lg`}
+              style={{ fontWeight: 400, fontSize: "18px", lineHeight: "29.25px", letterSpacing: "0px", color: "#475569" }}
+            >
               Learn how to build a diversified portfolio that aligns with
               your life values. This session covers tax-efficient
               investing and long-term asset allocation specifically for
@@ -78,18 +98,12 @@ export default function FeaturedWebinar() {
             <div className="flex items-center gap-4 mt-2">
               <button
                 className={`${inter.className} font-bold text-[#004D40]`}
-                style={{
-                  backgroundColor: "#FFB600",
-                  borderRadius: "9999px",
-                  padding: "10px 24px",
-                  fontSize: "14px",
-                  whiteSpace: "nowrap",
-                }}
+                style={{ backgroundColor: "#FFB600", borderRadius: "9999px", padding: "10px 24px", fontSize: "14px", whiteSpace: "nowrap" }}
               >
                 Register Now
               </button>
 
-              {/* Avatars */}
+              {/* Avatars — unchanged */}
               <div className="flex items-center -space-x-2">
 
                 {/* Avatar 1 */}

@@ -85,6 +85,13 @@ export default function NPSArticlePage() {
         .anim-rel-card-1  { animation: cardIn      0.6s ease 0.6s both; }
         .anim-rel-card-2  { animation: cardIn      0.6s ease 0.7s both; }
         .anim-rel-card-3  { animation: cardIn      0.6s ease 0.8s both; }
+
+        .decorative-lines-wrapper {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
       `}</style>
 
       {/* ── Breadcrumb + Title ── */}
@@ -136,7 +143,7 @@ export default function NPSArticlePage() {
       </div>
 
       {/* ── Article Body ── */}
-      <div style={{ paddingBottom: 8 }}>
+      <div style={{ paddingBottom: 8, position: "relative" }}>
         <div className="page-container">
           <p className="anim-body-p1" style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#222", marginBottom: 28 }}>
             India's National Pension System (NPS) has undergone a monumental shift. The
@@ -145,9 +152,23 @@ export default function NPSArticlePage() {
             evolving economy.
           </p>
 
-          {/* Key Highlights */}
-          <div className="anim-highlights" style={{ background: "rgba(17,29,70,0.05)", borderRadius: 16, borderLeft: "4px solid #11D462", padding: "32px", marginBottom: 36, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+          {/* Key Highlights — with decorative diagonal line */}
+          <div className="anim-highlights" style={{ position: "relative", background: "rgba(17,29,70,0.05)", borderRadius: 16, borderLeft: "4px solid #11D462", padding: "32px", marginBottom: 0, display: "flex", flexDirection: "column", gap: 16, overflow: "hidden" }}>
+
+            {/* Decorative diagonal line 1 */}
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+              <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} viewBox="0 0 965 306" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73" fillOpacity="0.5"/>
+              </svg>
+            </div>
+            {/* Decorative diagonal line 2 — offset slightly downward */}
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+              <svg style={{ position: "absolute", top: "13%", left: 0, width: "100%", height: "100%" }} viewBox="0 0 965 306" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73" fillOpacity="0.5"/>
+              </svg>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, position: "relative", zIndex: 1 }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 16L10 12.95L14 16L12.5 11.05L16.5 8.2H11.6L10 3L8.4 8.2H3.5L7.5 11.05L6 16ZM10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 11.3833 19.7375 12.6833 19.2125 13.9C18.6875 15.1167 17.975 16.175 17.075 17.075C16.175 17.975 15.1167 18.6875 13.9 19.2125C12.6833 19.7375 11.3833 20 10 20ZM10 18C12.2333 18 14.125 17.225 15.675 15.675C17.225 14.125 18 12.2333 18 10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18Z" fill="#11D462"/>
               </svg>
@@ -158,7 +179,7 @@ export default function NPSArticlePage() {
               { bold: "PAN-Based Diversification:", text: "Simplified asset allocation tracking across multiple PRANs linked to a single PAN." },
               { bold: "Tax Benefits:", text: "Continued deduction under Section 80CCD(1) and 80CCD(1B), making it one of the most tax-efficient tools." },
             ].map((item) => (
-              <div key={item.bold} className="highlight-row">
+              <div key={item.bold} className="highlight-row" style={{ position: "relative", zIndex: 1 }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: 2, flexShrink: 0 }}>
                   <circle cx="12" cy="12" r="10" stroke="#11D462" strokeWidth="2"/>
                   <path d="M8 12l3 3 5-5" stroke="#11D462" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -171,25 +192,28 @@ export default function NPSArticlePage() {
           </div>
 
           {/* Cost Advantages */}
-          <h2 className="anim-cost-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 26, color: "#0d1f0d", marginBottom: 14 }}>Cost Advantages</h2>
-          <p className="anim-cost-p" style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#333", marginBottom: 24, textAlign: "justify" }}>
-            One of the most compelling reasons to choose NPS remains its ultra-low cost structure. Compared to mutual funds which can charge 1.5% to 2.5% in expense
-            ratios, NPS charges a fraction of a percent for investment management. This compounding of "saved costs" over 20–30 years can result in a significantly larger
-            retirement corpus for the average Indian worker.
-          </p>
+          <div style={{ position: "relative", marginTop: 36 }}>
 
-          <div className="anim-cost-cards" style={{ display: "flex", gap: 20, marginBottom: 40 }}>
-            <div className="two-col-card">
-              <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#2d8a5e", marginBottom: 10 }}>PFRDA Regulation</div>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                The Pension Fund Regulatory and Development Authority ensures strict oversight, protecting subscriber interests while allowing for market-linked growth.
-              </p>
-            </div>
-            <div className="two-col-card">
-              <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#c8860a", marginBottom: 10 }}>Strategic Asset Mix</div>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                Subscribers can still choose between Active Choice (Manual) and Auto Choice (Life-cycle based) to manage their risk-return profile.
-              </p>
+            <h2 className="anim-cost-title" style={{ position: "relative", zIndex: 1, fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 26, color: "#0d1f0d", marginBottom: 14 }}>Cost Advantages</h2>
+            <p className="anim-cost-p" style={{ position: "relative", zIndex: 1, fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#333", marginBottom: 24, textAlign: "justify" }}>
+              One of the most compelling reasons to choose NPS remains its ultra-low cost structure. Compared to mutual funds which can charge 1.5% to 2.5% in expense
+              ratios, NPS charges a fraction of a percent for investment management. This compounding of "saved costs" over 20–30 years can result in a significantly larger
+              retirement corpus for the average Indian worker.
+            </p>
+
+            <div className="anim-cost-cards" style={{ position: "relative", zIndex: 1, display: "flex", gap: 20, marginBottom: 40 }}>
+              <div className="two-col-card">
+                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#2d8a5e", marginBottom: 10 }}>PFRDA Regulation</div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
+                  The Pension Fund Regulatory and Development Authority ensures strict oversight, protecting subscriber interests while allowing for market-linked growth.
+                </p>
+              </div>
+              <div className="two-col-card">
+                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#c8860a", marginBottom: 10 }}>Strategic Asset Mix</div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
+                  Subscribers can still choose between Active Choice (Manual) and Auto Choice (Life-cycle based) to manage their risk-return profile.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -214,7 +238,7 @@ export default function NPSArticlePage() {
       </div>
 
       {/* ── Newsletter ── */}
-      <div style={{ background: "#f5f3ee", padding: "48px 0 0" }}>
+      <div style={{ background: "#F8F6F1", padding: "48px 0 0" }}>
         <div className="page-container">
           <div className="anim-newsletter" style={{ textAlign: "center", maxWidth: 540, margin: "0 auto", paddingBottom: 56 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", background: "#2d5a3d", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 22, color: "#fff" }}>✉</div>

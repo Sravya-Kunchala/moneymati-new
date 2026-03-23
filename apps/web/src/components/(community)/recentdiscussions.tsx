@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Playfair_Display, DM_Sans, Inter } from "next/font/google";
 import Image from "next/image";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700", "900"], variable: "--font-playfair" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-dm-sans" });
+const inter = Inter({ subsets: ["latin"], weight: ["700"], variable: "--font-inter" });
 
 interface Discussion {
   id: number;
@@ -67,7 +68,16 @@ const discussions: Discussion[] = [
 const categories = ["All Categories", "Investing", "Real Estate", "Tax Planning", "NPS", "Budgeting"];
 
 const DiagonalLine = ({ top, opacity }: { top: string; opacity: number }) => (
-  <div style={{ position: "absolute", top, left: 0, right: 0, zIndex: 0, pointerEvents: "none" }}>
+  <div style={{
+    position: "absolute",
+    top,
+    left: 0,
+    right: 0,
+    zIndex: 0,
+    pointerEvents: "none",
+    height: "400px",
+    overflow: "hidden",
+  }}>
     <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "auto", opacity }}>
       <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
     </svg>
@@ -161,14 +171,16 @@ const DiscussionRow: React.FC<{ discussion: Discussion }> = ({ discussion }) => 
         </span>
       </div>
 
+      {/* Title — updated to Figma specs */}
       <h3
         style={{
           margin: "0 0 8px",
-          fontSize: "16px",
-          fontWeight: 600,
-          color: "#1a1a1a",
-          fontFamily: "var(--font-dm-sans), sans-serif",
-          lineHeight: "22px",
+          fontSize: "20px",
+          fontWeight: 700,
+          color: "#0F172A",
+          fontFamily: "var(--font-inter), Inter, sans-serif",
+          lineHeight: "28px",
+          letterSpacing: "0px",
         }}
       >
         {discussion.title}
@@ -248,34 +260,39 @@ export default function RecentDiscussions() {
 
   return (
     <section
-      className={`${playfair.variable} ${dmSans.variable}`}
+      className={`${playfair.variable} ${dmSans.variable} ${inter.variable}`}
       style={{
-  backgroundColor: "#ffffff",
-  padding: "60px 48px 48px",
-  position: "relative",
-  overflow: "hidden",
-}}
+        backgroundColor: "#F8F6F1",
+        padding: "60px 48px 48px",
+        position: "relative",
+        overflow: "hidden",
+      }}
     >
-      {/* Diagonal line 1 */}
-      <DiagonalLine top="0px" opacity={0.5} />
-      {/* Diagonal line 2 */}
-      <DiagonalLine top="60px" opacity={0.3} />
+      {/* Diagonal lines */}
+      <DiagonalLine top="-60px" opacity={0.4} />
+      <DiagonalLine top="-20px" opacity={0.25} />
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "28px", position: "relative", zIndex: 1 }}>
 
         {/* Search + Filter + Add Topic */}
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+
+          {/* Search bar */}
           <div
             style={{
               flex: 1,
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              backgroundColor: "#ffffff",
-              borderRadius: "9999px",
-              padding: "0 20px",
-              height: "48px",
-              border: "1px solid #e2e8f0",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "24px",
+              height: "64px",
+              paddingTop: "21.5px",
+              paddingBottom: "21.5px",
+              paddingRight: "24px",
+              paddingLeft: "56px",
+              border: "none",
+              boxShadow: "0 4px 6px -4px rgba(6,78,59,0.05), 0 10px 15px -3px rgba(6,78,59,0.05)",
             }}
           >
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94a3b8" strokeWidth="2">
@@ -299,18 +316,21 @@ export default function RecentDiscussions() {
             />
           </div>
 
+          {/* Category dropdown */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              backgroundColor: "#ffffff",
-              borderRadius: "9999px",
-              padding: "0 20px",
-              height: "48px",
-              border: "1px solid #e2e8f0",
+              backgroundColor: "#FFFFFF",
+              borderRadius: "24px",
+              paddingLeft: "20px",
+              paddingRight: "20px",
+              height: "64px",
+              border: "none",
               cursor: "pointer",
-              minWidth: "160px",
+              width: "224px",
+              boxShadow: "0 4px 6px -4px rgba(6,78,59,0.05), 0 10px 15px -3px rgba(6,78,59,0.05)",
             }}
           >
             <select
@@ -334,13 +354,14 @@ export default function RecentDiscussions() {
             </select>
           </div>
 
+          {/* Add Topic button */}
           <button
             style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
               padding: "0 24px",
-              height: "48px",
+              height: "64px",
               borderRadius: "9999px",
               backgroundColor: "#004D40",
               border: "none",
