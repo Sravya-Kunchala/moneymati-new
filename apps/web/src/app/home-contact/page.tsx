@@ -27,7 +27,7 @@ export default function ContactSection() {
     setSubmitted(true);
   };
 
-  const fontClasses = [playfair.className, dancing.className, inter.className].join(" ");
+  const playfair = Playfair_Display({ subsets: ["latin"], weight: ["800"] });
 
   const inputStyle = {
     width: "100%",
@@ -85,7 +85,7 @@ export default function ContactSection() {
       </div>
 
       <section
-        className={fontClasses}
+        className={playfair.variable}
         style={{
           backgroundColor: "#f5f0e8",
           padding: "80px 48px",
