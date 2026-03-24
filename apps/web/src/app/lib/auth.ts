@@ -3,14 +3,30 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@repo/db";
 
+const connectionString = process.env.DATABASE_URL!;
+if (process.env.NODE_ENV !== "production") {
+  // Local dev only: allow self-signed certs for Supabase pooler.
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
+const ssl = {
+  rejectUnauthorized: process.env.NODE_ENV === "production",
+};
+
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
+    connectionString,
+    ssl,
   }),
 });
 
+const baseURL =
+  process.env.NEXT_PUBLIC_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
+  "http://localhost:3000";
+
 export const auth = betterAuth({
-  baseURL: process.env.NEXT_PUBLIC_URL!,
+  baseURL,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
