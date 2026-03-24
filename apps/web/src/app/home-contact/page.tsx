@@ -27,6 +27,8 @@ export default function ContactSection() {
     setSubmitted(true);
   };
 
+  const fontClasses = [playfair.className, dancing.className, inter.className].join(" ");
+
   const inputStyle = {
     width: "100%",
     padding: "10px 14px",
@@ -63,10 +65,6 @@ export default function ContactSection() {
           from { opacity: 0; transform: translateX(40px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.92); }
-          to   { opacity: 1; transform: scale(1); }
-        }
         @keyframes popIn {
           from { opacity: 0; transform: scale(0.88) translateY(20px); }
           to   { opacity: 1; transform: scale(1) translateY(0); }
@@ -87,7 +85,7 @@ export default function ContactSection() {
       </div>
 
       <section
-  className={`${playfair.variable as string} ${dancing.variable as string} ${inter.variable as string}`}
+        className={fontClasses}
         style={{
           backgroundColor: "#f5f0e8",
           padding: "80px 48px",
@@ -285,7 +283,7 @@ export default function ContactSection() {
                 <span style={{ fontWeight: 600, fontSize: 14 }}>
                   {form.firstName} {form.lastName}
                 </span>
-                , thank you for reaching out. We've received your request for a free financial consultation.
+                , thank you for reaching out. We&apos;ve received your request for a free financial consultation.
               </p>
 
               <div style={{ border: "1px solid #e8e8e8", borderRadius: 12, padding: "20px", marginBottom: 24, textAlign: "left" }}>
