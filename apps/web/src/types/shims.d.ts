@@ -9,11 +9,13 @@ declare module "next/navigation" {
 }
 
 declare module "next/font/google" {
-  export function Inter(options?: any): { className: string };
-  export function DM_Sans(options?: any): { variable?: string };
-  export function Inria_Serif(options?: any): { variable?: string };
-  export function Playfair_Display(options?: any): { variable?: string };
-  export function Dancing_Script(options?: any): { variable?: string };
+  type FontStyle = { fontFamily?: string };
+  type FontResult = { className?: string; variable?: string; style?: FontStyle };
+  export function Inter(options?: any): FontResult;
+  export function DM_Sans(options?: any): FontResult;
+  export function Inria_Serif(options?: any): FontResult;
+  export function Playfair_Display(options?: any): FontResult;
+  export function Dancing_Script(options?: any): FontResult;
 }
 
 declare module "lucide-react" {
@@ -22,4 +24,13 @@ declare module "lucide-react" {
   export const CheckCircle2: any;
   export const Circle: any;
   export const ShieldCheck: any;
+  export const ChevronLeft: any;
+  export const ChevronRight: any;
+  export const TrendingUp: any;
+  export const BookOpen: any;
+  export const Users: any;
+  export const Target: any;
+  export const GraduationCap: any;
+  export const ClipboardList: any;
+  export const Video: any;
 }

@@ -10,6 +10,7 @@ export default function CTASection() {
         backgroundImage: "url('/ctabg.svg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        opacity:"50px"
       }}
     >
       {/* Dark overlay to increase bg opacity */}

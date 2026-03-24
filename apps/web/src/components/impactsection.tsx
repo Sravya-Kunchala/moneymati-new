@@ -34,7 +34,7 @@ export default function ImpactSection() {
       <div className="text-center mb-10 relative z-10">
         <h2
           className="text-3xl text-white"
-          style={{ fontFamily: playfair.style.fontFamily, fontWeight: 600 }}
+          style={{ fontFamily: playfair.style?.fontFamily, fontWeight: 600 }}
         >
           The Impact We Are{" "}
           <span
