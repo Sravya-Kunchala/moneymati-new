@@ -2,13 +2,49 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
+
+  const handleOAuth = async (provider: "google" | "linkedin") => {
+    await authClient.signIn.social({
+      provider,
+      callbackURL: "/",
+    });
+  };
+
+  const handleSignup = async () => {
+    if (!fullName || !email || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const res = await authClient.signUp.email({
+        name: fullName,
+        email,
+        password,
+        callbackURL: "/",
+      });
+      if (res.error) {
+        setError(res.error.message ?? "Something went wrong.");
+      } else {
+        router.push("/");
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -26,7 +62,6 @@ export default function SignupPage() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Background blurred green blob — top left */
         .bg-blob {
           position: absolute;
           width: 512px;
@@ -117,8 +152,20 @@ export default function SignupPage() {
           transition: background 0.2s, transform 0.1s;
           letter-spacing: 0.1px;
         }
-        .create-btn:hover { background: #0c9a46; transform: translateY(-1px); }
-        .create-btn:active { transform: translateY(0); }
+        .create-btn:hover:not(:disabled) { background: #0c9a46; transform: translateY(-1px); }
+        .create-btn:active:not(:disabled) { transform: translateY(0); }
+        .create-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .error-msg {
+          background: #fff0f0;
+          border: 1px solid #fca5a5;
+          color: #dc2626;
+          border-radius: 10px;
+          padding: 10px 14px;
+          font-size: 13px;
+          margin-bottom: 14px;
+          text-align: center;
+        }
 
         .divider {
           display: flex;
@@ -208,6 +255,18 @@ export default function SignupPage() {
           to   { opacity: 1; transform: translateY(0); }
         }
         .signup-card { animation: fadeUp 0.5s ease both; }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        .spinner {
+          width: 18px;
+          height: 18px;
+          border: 2.5px solid rgba(255,255,255,0.4);
+          border-top-color: #fff;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
       `}</style>
 
       {/* Background blob */}
@@ -218,7 +277,7 @@ export default function SignupPage() {
 
         {/* Logo */}
         <div style={{ marginBottom: 28 }}>
-          <img src="/logo.svg" alt="MoneyMati" style={{ width: 120, height: 80 }} />
+          <img src="/best new moneymati logo.svg" alt="MoneyMati" style={{ width: 120, height: 80 }} />
         </div>
 
         {/* Card */}
@@ -232,6 +291,9 @@ export default function SignupPage() {
             Join the elite circle of sovereign wealth builders.
           </p>
 
+          {/* Error message */}
+          {error && <div className="error-msg">{error}</div>}
+
           {/* Full Name */}
           <div style={{ marginBottom: 10 }}>
             <label className="field-label">Full Name</label>
@@ -242,7 +304,12 @@ export default function SignupPage() {
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
               </span>
-              <input type="text" placeholder="Sanjana" value={fullName} onChange={e => setFullName(e.target.value)} />
+              <input
+                type="text"
+                placeholder="Sanjana"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+              />
             </div>
           </div>
 
@@ -256,7 +323,12 @@ export default function SignupPage() {
                   <polyline points="22,6 12,13 2,6"/>
                 </svg>
               </span>
-              <input type="email" placeholder="sanju@gmail.com" value={email} onChange={e => setEmail(e.target.value)} />
+              <input
+                type="email"
+                placeholder="sanju@gmail.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
             </div>
           </div>
 
@@ -299,19 +371,20 @@ export default function SignupPage() {
           {/* Create Account Button */}
           <button
             className="create-btn"
-            onClick={() => {
-              if (!fullName || !email || !password) return;
-              // Store user info for after login
-              localStorage.setItem("pending_user", JSON.stringify({ name: fullName, email }));
-              // TODO: replace with your real API call, then redirect
-              router.push("/signin");
-            }}
+            onClick={handleSignup}
+            disabled={loading}
           >
-            Create Account
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
+            {loading ? (
+              <div className="spinner" />
+            ) : (
+              <>
+                Create Account
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </>
+            )}
           </button>
 
           {/* Divider */}
@@ -323,10 +396,10 @@ export default function SignupPage() {
 
           {/* Social buttons */}
           <div style={{ display: "flex", gap: 24, marginBottom: 22, justifyContent: "center", alignItems: "center" }}>
-            <button className="social-btn">
+            <button className="social-btn" onClick={() => handleOAuth("google")}>
               <img src="/google.svg" alt="Google" style={{ width: 84, height: 26 }} />
             </button>
-            <button className="social-btn">
+            <button className="social-btn" onClick={() => handleOAuth("linkedin")}>
               <img src="/linkedin.svg" alt="LinkedIn" style={{ width: 84, height: 26 }} />
             </button>
           </div>

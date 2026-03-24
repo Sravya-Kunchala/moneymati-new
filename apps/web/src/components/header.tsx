@@ -42,7 +42,7 @@ export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [userMenuPos, setUserMenuPos] = useState({ top: 0, left: 0 });
+  const [userMenuPos, setUserMenuPos] = useState({ top: 0, right: 0 });
   const [mounted, setMounted] = useState(false);
   const [authUser, setAuthUser] = useState<{ name: string; email: string; avatarSrc: string } | null>(null);
   const chevronRef = useRef<HTMLButtonElement>(null);
@@ -85,7 +85,9 @@ export default function Header() {
     e.stopPropagation();
     if (userBtnRef.current) {
       const rect = userBtnRef.current.getBoundingClientRect();
-      setUserMenuPos({ top: rect.bottom + 8, left: rect.right - 220 });
+      // Position using a right offset so the dropdown can size itself
+      const right = window.innerWidth - rect.right;
+      setUserMenuPos({ top: rect.bottom + 8, right });
     }
     setUserMenuOpen((v) => !v);
   };
@@ -113,7 +115,7 @@ export default function Header() {
     ? createPortal(
         <div
           id="user-dropdown"
-          style={{ position: "fixed", top: userMenuPos.top, left: userMenuPos.left, backgroundColor: "#fff", borderRadius: "16px", padding: "0", width: "220px", boxShadow: "0 8px 32px rgba(0,0,0,0.18)", border: "1px solid #e5e5e5", zIndex: 99999, animation: "dropFadeIn 0.18s ease both", overflow: "hidden" }}
+          style={{ position: "fixed", top: userMenuPos.top, right: userMenuPos.right, backgroundColor: "#fff", borderRadius: "16px", padding: "0", minWidth: "180px", maxWidth: "360px", boxShadow: "0 8px 32px rgba(0,0,0,0.18)", border: "1px solid #e5e5e5", zIndex: 99999, animation: "dropFadeIn 0.18s ease both", overflow: "hidden" }}
         >
           {/* User header */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "14px 16px", borderBottom: "1.5px solid #e5e5e5", position: "relative", background: "#fff" }}>
