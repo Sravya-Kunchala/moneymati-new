@@ -9,6 +9,7 @@
         "@prisma/adapter-neon": "^7.5.0",
         "@prisma/adapter-pg": "^7.5.0",
         "@prisma/client": "^7.5.0",
+        "@prisma/client-runtime-utils": "^7.5.0",
         "better-auth": "^1.5.6",
         "better-sqlite3": "^12.8.0",
         "dotenv": "^17.3.1",
@@ -47,6 +48,7 @@
       "dependencies": {
         "@prisma/adapter-pg": "^7.5.0",
         "@prisma/client": "^7.5.0",
+        "@prisma/client-runtime-utils": "^7.5.0",
         "@repo/db": "workspace:*",
         "better-auth": "^1.5.6",
         "better-sqlite3": "^12.8.0",
@@ -76,6 +78,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@prisma/client": "^7.5.0",
+        "@prisma/client-runtime-utils": "^7.5.0",
         "prisma": "^7.5.0",
       },
     },

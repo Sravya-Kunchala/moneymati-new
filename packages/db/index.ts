@@ -1,8 +1,9 @@
-export { PrismaClient, Prisma } from "@prisma/client";
+export { PrismaClient, Prisma } from "./generated/client";
 export type {
   User,
   Session,
   Account,
   Appointment,
   Verification,
-} from "@prisma/client";
+  BlogPost,
+} from "./generated/client";

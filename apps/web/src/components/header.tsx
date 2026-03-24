@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { Inria_Serif, DM_Sans } from "next/font/google";
+import { authClient } from "@/app/lib/auth-client";
 
 const inriaSerif = Inria_Serif({ subsets: ["latin"], weight: ["300", "700"], variable: "--font-inria" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
@@ -31,11 +32,6 @@ const signupHref = "/signup";
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── MOCK AUTH — replace with your real auth state ───────────────────────────
-const mockUser = {
-  isLoggedIn: false,
-  name: "UserName",
-  avatarSrc: "",
-};
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Header() {
@@ -44,19 +40,26 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [userMenuPos, setUserMenuPos] = useState({ top: 0, right: 0 });
   const [mounted, setMounted] = useState(false);
-  const [authUser, setAuthUser] = useState<{ name: string; email: string; avatarSrc: string } | null>(null);
   const chevronRef = useRef<HTMLButtonElement>(null);
   const userBtnRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const { data: sessionData, isPending } = authClient.useSession();
 
   const isActive = (href: string) => pathname === href;
 
   useEffect(() => {
     setMounted(true);
-    // Read logged-in user from localStorage
-    const stored = localStorage.getItem("auth_user");
-    if (stored) setAuthUser(JSON.parse(stored));
   }, [pathname]); // re-check on route change
+
+  const sessionUser =
+    (sessionData as any)?.user ?? (sessionData as any)?.data?.user ?? null;
+  const authUser = !isPending && sessionUser
+    ? {
+        name: sessionUser.name || sessionUser.email || "User",
+        email: sessionUser.email || "",
+        avatarSrc: sessionUser.image || sessionUser.avatar || "",
+      }
+    : null;
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -90,6 +93,18 @@ export default function Header() {
       setUserMenuPos({ top: rect.bottom + 8, right });
     }
     setUserMenuOpen((v) => !v);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      window.location.href = "/";
+    } finally {
+      setUserMenuOpen(false);
+    }
   };
 
   const aboutDropdownEl = mounted && aboutOpen
@@ -153,11 +168,7 @@ export default function Header() {
           </Link>
 
           {/* Logout */}
-          <Link href="#" onClick={() => {
-            localStorage.removeItem("auth_user");
-            setAuthUser(null);
-            setUserMenuOpen(false);
-          }}
+          <Link href="#" onClick={handleLogout}
             style={{ display: "flex", alignItems: "center", gap: "12px", padding: "14px 18px", textDecoration: "none", transition: "background 0.15s" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#fff5f5"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; }}

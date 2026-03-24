@@ -53,6 +53,8 @@ model Session {
   token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+  ipAddress String?
+  userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -79,6 +81,23 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
+  ipAddress  String?
+  userAgent  String?
   createdAt  DateTime?
   updatedAt  DateTime?
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  coverImage  String?
+  authorId    String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  tags        String[]  @default([])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

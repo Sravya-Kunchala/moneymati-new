@@ -153,6 +153,8 @@ exports.Prisma.SessionScalarFieldEnum = {
   expiresAt: 'expiresAt',
   token: 'token',
   userId: 'userId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -178,6 +180,23 @@ exports.Prisma.VerificationScalarFieldEnum = {
   identifier: 'identifier',
   value: 'value',
   expiresAt: 'expiresAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BlogPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  content: 'content',
+  coverImage: 'coverImage',
+  authorId: 'authorId',
+  published: 'published',
+  publishedAt: 'publishedAt',
+  tags: 'tags',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -219,7 +238,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  BlogPost: 'BlogPost'
 };
 
 /**

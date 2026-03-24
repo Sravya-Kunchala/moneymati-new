@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, CheckCircle2, Circle, ShieldCheck } from 'lucide-react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { authClient } from "@/app/lib/auth-client";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type NotifPrefs = {
@@ -340,17 +341,19 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
 
 // ── Main Profile Page ────────────────────────────────────────────────────────
 export default function ProfilePage() {
-  const [user, setUser] = useState({ name: "User Name", email: "username@gmail.com", phone: "+91 98765 43210", avatarSrc: "" });
+  const { data: sessionData, isPending } = authClient.useSession();
+  const sessionUser =
+    (sessionData as any)?.user ?? (sessionData as any)?.data?.user ?? null;
+  const user = !isPending && sessionUser
+    ? {
+        name: sessionUser.name || sessionUser.email || "User",
+        email: sessionUser.email || "username@gmail.com",
+        phone: sessionUser.phone || "+91 98765 43210",
+        avatarSrc: sessionUser.image || sessionUser.avatar || "",
+      }
+    : { name: "User Name", email: "username@gmail.com", phone: "+91 98765 43210", avatarSrc: "" };
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("auth_user");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setUser((u) => ({ ...u, name: parsed.name || u.name, email: parsed.email || u.email, avatarSrc: parsed.avatarSrc || "" }));
-    }
-  }, []);
 
   const memberSince = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
 
