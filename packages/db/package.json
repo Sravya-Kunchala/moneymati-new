@@ -1,0 +1,13 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "main": "./index.ts",
+  "scripts": {
+    "postinstall": "prisma generate",
+    "generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.5.0",
+    "prisma": "^7.5.0"
+  }
+}

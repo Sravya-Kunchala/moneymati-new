@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@repo/db";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
@@ -19,10 +19,9 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
-     linkedin: {
-    clientId: process.env.LINKEDIN_CLIENT_ID!,
-    clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+    linkedin: {
+      clientId: process.env.LINKEDIN_CLIENT_ID!,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+    },
   },
-  },
- 
 });

@@ -26,7 +26,10 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ] // ✅ fixed
+      ],
+      "@repo/db": [
+        "../../packages/db/index.ts"
+      ]
     }
   },
   "include": [
