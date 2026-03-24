@@ -87,7 +87,7 @@ export default function ContactSection() {
       </div>
 
       <section
-        className={`${playfair.variable} ${dancing.variable} ${inter.variable}`}
+  className={`${playfair.variable as string} ${dancing.variable as string} ${inter.variable as string}`}
         style={{
           backgroundColor: "#f5f0e8",
           padding: "80px 48px",
