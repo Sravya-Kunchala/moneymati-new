@@ -47,6 +47,7 @@
       "dependencies": {
         "@prisma/adapter-pg": "^7.5.0",
         "@prisma/client": "^7.5.0",
+        "@repo/db": "workspace:*",
         "better-auth": "^1.5.6",
         "better-sqlite3": "^12.8.0",
         "lucide-react": "^0.577.0",
@@ -68,6 +69,14 @@
         "prisma": "^7.5.0",
         "tailwindcss": "^4",
         "typescript": "^5",
+      },
+    },
+    "packages/db": {
+      "name": "@repo/db",
+      "version": "1.0.0",
+      "dependencies": {
+        "@prisma/client": "^7.5.0",
+        "prisma": "^7.5.0",
       },
     },
     "packages/eslint-config": {
@@ -315,6 +324,8 @@
     "@prisma/query-plan-executor": ["@prisma/query-plan-executor@7.2.0", "", {}, "sha512-EOZmNzcV8uJ0mae3DhTsiHgoNCuu1J9mULQpGCh62zN3PxPTd+qI9tJvk5jOst8WHKQNwJWR3b39t0XvfBB0WQ=="],
 
     "@prisma/studio-core": ["@prisma/studio-core@0.21.1", "", { "peerDependencies": { "@types/react": "^18.0.0 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-bOGqG/eMQtKC0XVvcVLRmhWWzm/I+0QUWqAEhEBtetpuS3k3V4IWqKGUONkAIT223DNXJMxMtZp36b1FmcdPeg=="],
+
+    "@repo/db": ["@repo/db@workspace:packages/db"],
 
     "@repo/eslint-config": ["@repo/eslint-config@workspace:packages/eslint-config"],
 
