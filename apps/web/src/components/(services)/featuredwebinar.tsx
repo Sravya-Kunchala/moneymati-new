@@ -27,7 +27,7 @@ export default function FeaturedWebinar() {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2
-              className={`${playfair.className}`}
+              className={`${playfair.variable}`}
               style={{ fontWeight: 700, fontSize: "30px", lineHeight: "36px", letterSpacing: "0px", color: "#004D40" }}
             >
               Featured Webinar

@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], 
 export default function MeetTheTeamHero() {
   return (
     <section
-      className={`${playfair.variable} ${dancing.variable} ${inter.variable}`}
+      className={`${playfair.variable} ${dancing.variable} ${inter.className}`}
       style={{
         minHeight: "400px",
         backgroundColor: "#f5f0e8",

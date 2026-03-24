@@ -260,7 +260,7 @@ export default function RecentDiscussions() {
 
   return (
     <section
-      className={`${playfair.variable} ${dmSans.variable} ${inter.variable}`}
+      className={`${playfair.variable} ${dmSans.variable} ${inter.className}`}
       style={{
         backgroundColor: "#F8F6F1",
         padding: "60px 48px 48px",

@@ -35,7 +35,7 @@ export default function HeroSection() {
 
         {/* Heading */}
         <h1
-          className={`${playfair.className} text-white`}
+          className={`${playfair.variable} text-white`}
           style={{ fontSize: "42px", lineHeight: "52px", letterSpacing: "-1px", fontWeight: 900 }}
         >
           Learn Finance <br />
@@ -44,7 +44,7 @@ export default function HeroSection() {
             Expert-<br />Led{" "}
           </span>
           <span
-            className={`${dancing.className} text-[#FFB600]`}
+            className={`${dancing.variable} text-[#FFB600]`}
             style={{ fontSize: "48px", lineHeight: "52px", fontWeight: 700 }}
           >
             Webinars

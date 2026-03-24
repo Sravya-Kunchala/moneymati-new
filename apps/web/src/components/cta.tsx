@@ -5,7 +5,7 @@ const playfair = Playfair_Display({ subsets: ["latin"] });
 export default function CTASection() {
   return (
     <section
-      className={`${playfair.className} w-full py-24 px-8 flex flex-col items-center justify-center text-center relative`}
+      className={`${playfair.variable} w-full py-24 px-8 flex flex-col items-center justify-center text-center relative`}
       style={{
         backgroundImage: "url('/ctabg.svg')",
         backgroundSize: "cover",

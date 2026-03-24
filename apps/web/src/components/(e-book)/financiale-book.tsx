@@ -261,7 +261,7 @@ function Sidebar() {
 
 export default function FinancialResources() {
   return (
-    <div className={`${inter.variable} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh" }}>
+    <div className={`${inter.className} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 24px 64px", display: "grid", gridTemplateColumns: "1fr 280px", gap: "32px", alignItems: "start" }}>
         <div>
           <FeaturedEbook />

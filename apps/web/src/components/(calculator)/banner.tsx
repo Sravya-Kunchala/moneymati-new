@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "
 export default function FinancialCTABanner() {
   return (
     <section
-      className={inter.variable}
+      className={inter.className}
       style={{
         backgroundColor: "#f5f0e8",
         padding: "0 48px 48px",

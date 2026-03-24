@@ -11,7 +11,7 @@ export default function SIPCalculatorBanner() {
   const router = useRouter();
   return (
     <section
-      className={inter.variable}
+      className={inter.className}
       style={{
         backgroundColor: "#f5f0e8",
         padding: "0 48px 48px",

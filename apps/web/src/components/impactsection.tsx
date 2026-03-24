@@ -38,7 +38,7 @@ export default function ImpactSection() {
         >
           The Impact We Are{" "}
           <span
-            className={`${dancing.className} text-[#C6A553]`}
+            className={`${dancing.variable} text-[#C6A553]`}
             style={{ fontWeight: 700 }}
           >
             Creating

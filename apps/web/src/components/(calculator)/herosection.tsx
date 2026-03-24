@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "
 
 export default function FinancialCalculators() {
   return (
-    <div className={`${inter.variable} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8" }}>
+    <div className={`${inter.className} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8" }}>
 
       {/* ── Hero + overlapping card wrapper ── */}
       <div style={{ position: "relative" }}>

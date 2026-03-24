@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export default function FinancialConfidence() {
   return (
     <section
-      className={`${dancingScript.variable} ${playfairDisplay.variable} ${inter.variable}`}
+      className={`${dancingScript.variable} ${playfairDisplay.variable} ${inter.className}`}
       style={{
         position: "relative",
         overflow: "hidden",

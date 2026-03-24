@@ -21,7 +21,7 @@ export default function NewsletterBanner() {
 
   return (
     <div
-      className={inter.variable}
+      className={inter.className}
       style={{
         backgroundColor: "#F8F6F1",
         padding: "40px 48px",

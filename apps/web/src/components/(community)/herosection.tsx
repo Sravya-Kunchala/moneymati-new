@@ -19,7 +19,7 @@ export default function CommunityHero() {
   const router = useRouter();
   return (
     <section
-      className={`${inter.variable} ${dancing.variable}`}
+      className={`${inter.className} ${dancing.variable}`}
       style={{
         position: "relative",
         width: "100%",

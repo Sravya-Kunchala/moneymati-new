@@ -29,7 +29,7 @@ const webinars = [
 
 export default function WebinarsSection() {
   return (
-    <section className={`${playfair.className} w-full bg-[#f5f0e8] py-16 px-8`}>
+    <section className={`${playfair.variable} w-full bg-[#f5f0e8] py-16 px-8`}>
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}

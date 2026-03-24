@@ -14,7 +14,7 @@ export default function CTASection() {
     >
       {/* Heading */}
       <h2
-        className={`${playfair.className} font-bold text-white leading-tight mb-6 relative z-10`}
+        className={`${playfair.variable} font-bold text-white leading-tight mb-6 relative z-10`}
         style={{ fontSize: "48px", lineHeight: "48px" }}
       >
         Your Financial Future <br />
@@ -26,7 +26,7 @@ export default function CTASection() {
 
       {/* Description */}
       <p
-        className={`${dmSans.className} relative z-10 max-w-md mb-10`}
+        className={`${dmSans.variable} relative z-10 max-w-md mb-10`}
         style={{
           fontSize: "16px",
           lineHeight: "26px",
@@ -43,7 +43,7 @@ export default function CTASection() {
 
         {/* Start Learning Now */}
         <button
-          className={`${dmSans.className} flex items-center justify-center`}
+          className={`${dmSans.variable} flex items-center justify-center`}
           style={{
             width: "207px",
             height: "54px",
@@ -60,7 +60,7 @@ export default function CTASection() {
 
         {/* Book a Consultation */}
         <button
-          className={`${dmSans.className} flex items-center justify-center`}
+          className={`${dmSans.variable} flex items-center justify-center`}
           style={{
             width: "217px",
             height: "54px",

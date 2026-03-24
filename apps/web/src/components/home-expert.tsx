@@ -16,7 +16,7 @@ const teamMembers = [
 export default function TeamExperts() {
   return (
     <section
-      className={`${playfair.variable} ${inter.variable}`}
+      className={`${playfair.variable} ${inter.className}`}
       style={{ padding: "0 48px 80px", backgroundColor: "#f5f0e8" }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
