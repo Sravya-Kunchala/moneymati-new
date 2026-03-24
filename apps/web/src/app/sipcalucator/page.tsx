@@ -21,7 +21,7 @@ export default function SIPCalculatorPage() {
   const totalReturns = targetAmount - totalInvested;
 
   return (
-    <div className={inter.variable} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh", fontFamily: "var(--font-inter), sans-serif" }}>
+    <div className={inter.className} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh", fontFamily: "var(--font-inter), sans-serif" }}>
       <style>{`
         input[type='range'] {
           -webkit-appearance: none;
