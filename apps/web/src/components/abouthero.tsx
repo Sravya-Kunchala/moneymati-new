@@ -31,9 +31,77 @@ export default function AboutHero() {
       style={{
         backgroundColor: "#122B1F",
         fontFamily: "var(--font-dm-sans), sans-serif",
-        minHeight: "650px",
+        minHeight: "480px",
       }}
     >
+      <style>{`
+        /* Mobile: text on top, image below */
+        .about-hero-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 48px 24px;
+          min-height: 480px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 32px;
+          position: relative;
+          z-index: 10;
+        }
+
+        .about-hero-text {
+          order: 1;
+          width: 100%;
+          max-width: 480px;
+        }
+
+        .about-hero-text button {
+          width: 100% !important;
+        }
+
+        .about-hero-image {
+          order: 2;
+          width: 100%;
+          flex-shrink: 0;
+        }
+
+        .about-hero-image-inner {
+          width: 100%;
+          height: clamp(260px, 70vw, 380px);
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* Desktop: side by side — image left, text right */
+        @media (min-width: 1024px) {
+          .about-hero-inner {
+            flex-direction: row !important;
+            align-items: center !important;
+            padding: 64px 64px;
+            gap: 48px;
+          }
+
+          .about-hero-text {
+            order: 2;
+          }
+
+          .about-hero-text button {
+            width: auto !important;
+          }
+
+          .about-hero-image {
+            order: 1;
+            width: auto;
+          }
+
+          .about-hero-image-inner {
+            width: clamp(260px, 32vw, 380px);
+            height: clamp(300px, 36vw, 420px);
+          }
+        }
+      `}</style>
+
       {/* Perspective Grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -47,28 +115,21 @@ export default function AboutHero() {
       />
 
       {/* Vector2 */}
-      <svg
-        width="1374"
-        height="558"
-        viewBox="0 0 1374 558"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <img
+        src="/vector2.svg"
+        alt=""
+        aria-hidden="true"
         className="absolute pointer-events-none"
         style={{
-          top: "150px",
+          top: "243.44px",
           left: "11px",
-          opacity: 0.3,
-          zIndex: 15,
+          width: "1371.5px",
+          height: "648.56px",
+          opacity: 0.08,
+          transform: "rotate(-180deg)",
+          zIndex: 1,
         }}
-      >
-        <path
-          d="M1372.45 649.556C1332.12 551.556 1200.05 357.156 994.45 363.556C737.45 371.556 695.532 224.639 650.95 180.056C615.45 144.556 118.45 -131.944 36.9497 80.5564C-28.2503 250.556 9.78304 459.056 36.9497 542.056"
-          stroke="white"
-          strokeOpacity="0.2"
-          strokeWidth="2"
-          strokeDasharray="49 49"
-        />
-      </svg>
+      />
 
       {/* Vector3 */}
       <img
@@ -77,46 +138,20 @@ export default function AboutHero() {
         aria-hidden="true"
         className="absolute pointer-events-none"
         style={{
-          top: "-40px",
+          top: "126.5px",
           left: "140px",
           width: "1169px",
           height: "723px",
-          opacity: 0.6,
-          zIndex: 15,
+          opacity: 0.08,
+          zIndex: 1,
         }}
       />
 
-      <div
-        className="relative z-10 mx-auto px-6 lg:px-16 py-20 flex flex-col lg:flex-row items-center gap-12"
-        style={{ maxWidth: "1100px", minHeight: "650px" }}
-      >
-        {/* LEFT: Image — stays below vectors */}
-        <div data-animate className="flex-shrink-0" style={{ zIndex: 10 }}>
-          <div
-            style={{
-              width: "clamp(260px, 32vw, 380px)",
-              height: "clamp(300px, 36vw, 420px)",
-              borderRadius: "20px",
-              overflow: "hidden",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-            }}
-          >
-            <img
-              src="/about-hero.svg"
-              alt="Empowering women through financial knowledge"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        </div>
+      <div className="about-hero-inner">
 
-        {/* RIGHT: Text — above vectors */}
-        <div className="flex flex-col justify-center" style={{ maxWidth: "480px", zIndex: 20 }}>
-          {/* Heading */}
-          <h1
-            data-animate
-            className="mb-4"
-            style={{ lineHeight: 1.2 }}
-          >
+        {/* TEXT — order 1 on mobile, order 2 on desktop */}
+        <div className="about-hero-text" data-animate>
+          <h1 className="mb-4" style={{ lineHeight: 1.2 }}>
             <span
               className="block font-bold"
               style={{
@@ -149,7 +184,6 @@ export default function AboutHero() {
             </span>
           </h1>
 
-          {/* Description */}
           <p
             data-animate
             style={{
@@ -165,7 +199,6 @@ export default function AboutHero() {
             and expert guidance.
           </p>
 
-          {/* CTA */}
           <div data-animate>
             <button
               className="px-7 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
@@ -182,6 +215,18 @@ export default function AboutHero() {
             </button>
           </div>
         </div>
+
+        {/* IMAGE — order 2 on mobile, order 1 on desktop */}
+        <div className="about-hero-image" data-animate>
+          <div className="about-hero-image-inner">
+            <img
+              src="/about-hero.svg"
+              alt="Empowering women through financial knowledge"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </div>
+
       </div>
     </section>
   );

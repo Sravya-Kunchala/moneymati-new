@@ -16,6 +16,25 @@ export default function ImpactSection() {
       className="relative w-full bg-[#1a3a2a] py-16 px-8 flex flex-col items-center overflow-hidden"
       style={{ minHeight: "280px" }}
     >
+      <style>{`
+        .impact-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          max-width: 1152px;
+          width: 100%;
+          position: relative;
+          z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+          .impact-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+          }
+        }
+      `}</style>
+
       {/* Wave 2 — behind, largest */}
       <div className="absolute bottom-0 left-0 w-full pointer-events-none" style={{ zIndex: 1 }}>
         <svg width="100%" height="auto" viewBox="0 0 1439 250" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
@@ -23,7 +42,7 @@ export default function ImpactSection() {
         </svg>
       </div>
 
-      {/* Wave 1 — on top of Wave 2, increased height */}
+      {/* Wave 1 — on top of Wave 2 */}
       <div className="absolute bottom-0 left-0 w-full pointer-events-none" style={{ zIndex: 2 }}>
         <svg width="100%" height="auto" viewBox="0 0 1439 180" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "block" }}>
           <path d="M510.34 158.488C275.166 144.784 72.1241 191.069 0 215.925L1439 214.413C1436.5 134.926 1439 1.92551 1439 0.925955C1439 -14.074 1180.35 158.488 1113.2 133.801C1046.05 109.113 804.308 175.618 510.34 158.488Z" fill="#064E3B"/>
@@ -46,23 +65,22 @@ export default function ImpactSection() {
         </h2>
       </div>
 
-      {/* Stats */}
-      {/* Stats */}
-<div className="grid grid-cols-4 gap-6 max-w-6xl w-full relative z-10">
-  {stats.map(({ value, label }) => (
-    <div
-      key={label}
-      className="bg-[#ECFDF5] rounded-xl px-10 py-5 flex flex-col gap-2 justify-center items-center text-center"
-    >
-      <span className="text-2xl font-extrabold text-[#1a3a2a]">
-        {value}
-      </span>
-      <span className="text-[9px] text-[#1a3a2a] tracking-widest font-semibold uppercase">
-        {label}
-      </span>
-    </div>
-  ))}
-</div>
+      {/* Stats — 2×2 on mobile, 4-col on desktop */}
+      <div className="impact-grid">
+        {stats.map(({ value, label }) => (
+          <div
+            key={label}
+            className="bg-[#ECFDF5] rounded-xl px-6 py-5 flex flex-col gap-2 justify-center items-center text-center"
+          >
+            <span className="text-2xl font-extrabold text-[#1a3a2a]">
+              {value}
+            </span>
+            <span className="text-[9px] text-[#1a3a2a] tracking-widest font-semibold uppercase">
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
 
     </section>
   );

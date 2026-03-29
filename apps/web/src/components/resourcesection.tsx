@@ -27,10 +27,24 @@ const resources = [
 export default function ResourcesSection() {
   return (
     <section className="w-full bg-[#1a3a2a] py-16 px-8">
+      <style>{`
+        @media (max-width: 767px) {
+          .resources-header {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            gap: 16px !important;
+          }
+          .resources-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-10">
+        <div className="resources-header flex items-start justify-between mb-10">
           <h2 className="text-3xl font-bold text-white leading-snug">
             Resources to{" "}
             <em className="text-[#c9a84c] italic font-serif">Grow</em>
@@ -43,7 +57,7 @@ export default function ResourcesSection() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="resources-grid grid grid-cols-3 gap-6">
           {resources.map(({ category, title, description, image }) => (
             <div
               key={title}

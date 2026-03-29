@@ -14,6 +14,7 @@ interface Article {
   excerpt: string;
   author: string;
   readTime: string;
+  href: string; // 👈 added: link for each article
 }
 
 interface Contributor {
@@ -23,10 +24,42 @@ interface Contributor {
 }
 
 const articles: Article[] = [
-  { id: 1, image: "/financial-goals.svg", title: "Family's Financial Goals", excerpt: "As a hashtag #couple we have some mandatory financial goals as a family and some individual goals...", author: "Amit Sharma", readTime: "5 min read" },
-  { id: 2, image: "/black-swan.svg", title: "How to deal with losses during black swan events?", excerpt: "Dealing with substantial portfolio losses during a black swan event requires a combination of emotion...", author: "Priya Kapur", readTime: "8 min read" },
-  { id: 3, image: "/midas.svg", title: "The midas touch for your portfolio", excerpt: "Add the midas touch to your portfolio 🌟 As the founder of Moneymati, I've seen firsthand how a we...", author: "Rajesh V.", readTime: "6 min read" },
-  { id: 4, image: "/ulips.svg", title: "Problems with ULIPs in India", excerpt: "Unit Linked Insurance Plans (ULIPs) have historically faced criticism due to several issues that made them...", author: "Sarah M.", readTime: "10 min read" },
+  {
+    id: 1,
+    image: "/financial-goals.svg",
+    title: "Family's Financial Goals",
+    excerpt: "As a hashtag #couple we have some mandatory financial goals as a family and some individual goals...",
+    author: "Amit Sharma",
+    readTime: "5 min read",
+    href: "/sepblog-family", // 🔗 replace with real URL e.g. "/blog/familys-financial-goals"
+  },
+  {
+    id: 2,
+    image: "/black-swan.svg",
+    title: "How to deal with losses during black swan events?",
+    excerpt: "Dealing with substantial portfolio losses during a black swan event requires a combination of emotion...",
+    author: "Priya Kapur",
+    readTime: "8 min read",
+    href: "/sepblog-tax", // 🔗 replace with real URL e.g. "/blog/black-swan-events"
+  },
+  {
+    id: 3,
+    image: "/midas.svg",
+    title: "The midas touch for your portfolio",
+    excerpt: "Add the midas touch to your portfolio 🌟 As the founder of Moneymati, I've seen firsthand how a we...",
+    author: "Rajesh V.",
+    readTime: "6 min read",
+    href: "/sepblog-mutual", // 🔗 replace with real URL e.g. "/blog/midas-touch-portfolio"
+  },
+  {
+    id: 4,
+    image: "/ulips.svg",
+    title: "Problems with ULIPs in India",
+    excerpt: "Unit Linked Insurance Plans (ULIPs) have historically faced criticism due to several issues that made them...",
+    author: "Sarah M.",
+    readTime: "10 min read",
+    href: "/sepblog-ulips", // 🔗 replace with real URL e.g. "/blog/problems-with-ulips"
+  },
 ];
 
 const tags = ["Mutual Funds", "Family", "Risk Migration", "Retirement", "NPS", "MoneyMati", "SmartWomenInvest", "Budgeting"];
@@ -37,20 +70,55 @@ const contributors: Contributor[] = [
 ];
 
 const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
-  <div
-    style={{ backgroundColor: "#ffffff", borderRadius: "12px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", transition: "box-shadow 0.2s ease, transform 0.2s ease", cursor: "pointer", position: "relative", zIndex: 1, isolation: "isolate" }}
-    onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.10)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
-    onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}
+  // 👇 Entire card is now an anchor tag — clicking anywhere opens the article page
+  <a
+    href={article.href}
+    style={{
+      textDecoration: "none",
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "#ffffff",
+      borderRadius: "12px",
+      overflow: "hidden",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+      transition: "box-shadow 0.2s ease, transform 0.2s ease",
+      cursor: "pointer",
+      position: "relative",
+      zIndex: 1,
+      isolation: "isolate",
+      color: "inherit", // prevent anchor default blue color on children
+    }}
+    onMouseEnter={(e) => {
+      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.10)";
+      (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
+    }}
+    onMouseLeave={(e) => {
+      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+      (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
+    }}
   >
+    {/* Image area */}
     <div style={{ position: "relative", width: "100%", height: "180px", backgroundColor: "#e2e8f0" }}>
-      <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }} onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+      <Image
+        src={article.image}
+        alt={article.title}
+        fill
+        style={{ objectFit: "cover" }}
+        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+      />
       <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "rgba(255,255,255,0.92)", borderRadius: "6px", padding: "4px 10px" }}>
         <span style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px", color: "#1a1a1a", textTransform: "uppercase" }}>Read More</span>
       </div>
     </div>
+
+    {/* Content area */}
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-      <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>{article.title}</h3>
-      <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.excerpt}</p>
+      <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>
+        {article.title}
+      </h3>
+      <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>
+        {article.excerpt}
+      </p>
       <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #f1f5f9" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <div style={{ backgroundColor: "#11D4621A", borderRadius: "4px", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -63,7 +131,7 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
         <span style={{ fontSize: "12px", color: "#94a3b8", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
       </div>
     </div>
-  </div>
+  </a>
 );
 
 const WeeklyDigest: React.FC = () => {
@@ -143,7 +211,7 @@ export default function LatestArticles() {
       className={`${playfair.variable} ${dmSans.variable}`}
       style={{ backgroundColor: "#f5f0e8", padding: "48px 40px", position: "relative", overflow: "hidden" }}
     >
-      {/* Decorative SVGs — zIndex 0, behind everything */}
+      {/* Decorative SVGs */}
       <div style={{ position: "absolute", top: "200px", left: "50%", transform: "translateX(-50%)", zIndex: 0, opacity: 0.6, pointerEvents: "none", display: "flex" }}>
         <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
@@ -155,7 +223,8 @@ export default function LatestArticles() {
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 300px", gap: "24px", alignItems: "start" }}>
-          {/* Article cards column — isolation creates new stacking context, blocks lines */}
+
+          {/* Article cards column */}
           <div style={{ gridColumn: "1 / 3", display: "flex", flexDirection: "column", gap: "20px", position: "relative", zIndex: 1, isolation: "isolate", backgroundColor: "#f5f0e8" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 900, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Latest Articles</h2>
@@ -175,7 +244,7 @@ export default function LatestArticles() {
             </div>
           </div>
 
-          {/* Sidebar — no isolation so lines show through WeeklyDigest */}
+          {/* Sidebar */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <WeeklyDigest />
             <PopularTags />

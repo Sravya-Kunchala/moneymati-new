@@ -3,14 +3,26 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", "@repo/db"],
 
-  // ✅ Ignore TypeScript errors during build
   typescript: {
     ignoreBuildErrors: true,
   },
 
-  // ✅ Ignore ESLint errors during build
   eslint: {
     ignoreDuringBuilds: true,
+  },
+
+  webpack: (config, { isServer }) => {
+    // Fix canvas.node native binary error from pdfjs-dist
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: false,
+    };
+
+    if (isServer) {
+      config.externals = [...(config.externals as any[]), "canvas"];
+    }
+
+    return config;
   },
 };
 

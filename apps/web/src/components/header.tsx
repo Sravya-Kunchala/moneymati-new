@@ -21,9 +21,9 @@ const navLinks = [
 ];
 
 const aboutDropdown = [
-  { label: "Home Teams", href: "/hometeams" },
-  { label: "Home Contact", href: "/home-contact" },
-  { label: "Home FAQ", href: "/FAQ" },
+  { label: "Teams", href: "/hometeams" },
+  { label: "Contact", href: "/home-contact" },
+  { label: "FAQ", href: "/FAQ" },
 ];
 
 // ─── CONFIGURE LINKS HERE ─────────────────────────────────────────────────────
@@ -36,9 +36,11 @@ const signupHref = "/signup";
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [aboutOpenMobile, setAboutOpenMobile] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [userMenuPos, setUserMenuPos] = useState({ top: 0, right: 0 });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const chevronRef = useRef<HTMLButtonElement>(null);
   const userBtnRef = useRef<HTMLButtonElement>(null);
@@ -50,6 +52,11 @@ export default function Header() {
   useEffect(() => {
     setMounted(true);
   }, [pathname]); // re-check on route change
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setAboutOpenMobile(false);
+  }, [pathname]);
 
   const sessionUser =
     (sessionData as any)?.user ?? (sessionData as any)?.data?.user ?? null;
@@ -93,6 +100,10 @@ export default function Header() {
       setUserMenuPos({ top: rect.bottom + 8, right });
     }
     setUserMenuOpen((v) => !v);
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen((v) => !v);
   };
 
   const handleLogout = async () => {
@@ -188,8 +199,8 @@ export default function Header() {
   return (
     <>
       <header
-        className={`w-full bg-[#122B1F] px-8 py-3 ${inriaSerif.variable} ${dmSans.variable}`}
-        style={{ position: "relative", zIndex: 50, display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center" }}
+        className={`w-full bg-[#122B1F] px-4 py-3 md:px-8 flex items-center justify-between md:grid md:[grid-template-columns:1fr_auto_1fr] ${inriaSerif.variable} ${dmSans.variable}`}
+        style={{ position: "relative", zIndex: 50 }}
       >
         {/* Logo — left */}
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -197,7 +208,7 @@ export default function Header() {
         </div>
 
         {/* Nav Links — center */}
-        <nav>
+        <nav className="hidden md:block">
           <ul className="flex items-center gap-7" style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {navLinks.map((link) => (
               <li key={link.label} style={{ position: "relative" }}>
@@ -229,7 +240,7 @@ export default function Header() {
         </nav>
 
         {/* Right side */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
+        <div className="hidden md:flex" style={{ alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
           {authUser ? (
             <button ref={userBtnRef} onClick={handleUserMenuClick}
               style={{ background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", padding: "4px 8px", borderRadius: "9999px", transition: "background 0.2s" }}
@@ -266,7 +277,207 @@ export default function Header() {
             </>
           )}
         </div>
+
+        {/* Mobile actions */}
+        <div className="flex md:hidden" style={{ alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            aria-label="Search"
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: "9999px",
+              border: "1.5px solid #c9a84c",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "transparent",
+              color: "#c9a84c",
+              cursor: "pointer",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="20" y1="20" x2="16.5" y2="16.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Open menu"
+            aria-expanded={mobileMenuOpen}
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: "6px",
+              background: "transparent",
+              border: "none",
+              color: "#ffffff",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={handleMobileMenuToggle}
+          >
+            <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="2" y1="2" x2="20" y2="2" />
+              <line x1="2" y1="8" x2="20" y2="8" />
+              <line x1="2" y1="14" x2="20" y2="14" />
+            </svg>
+          </button>
+        </div>
+
       </header>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div
+          className="md:hidden"
+          style={{
+            background: "#0f261b",
+            borderBottom: "1px solid rgba(201,168,76,0.2)",
+            padding: "10px 16px 16px",
+            position: "relative",
+            zIndex: 60,
+            pointerEvents: "auto",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {navLinks.map((link) => (
+              <div key={link.label}>
+                {link.hasDropdown ? (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Link
+                      href={link.href}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setAboutOpenMobile(false);
+                      }}
+                      style={{
+                        display: "block",
+                        padding: "8px 0",
+                        fontFamily: "var(--font-inria), serif",
+                        fontWeight: 700,
+                        fontSize: "15px",
+                        color: "rgba(255,255,255,0.9)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {link.label}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setAboutOpenMobile((v) => !v)}
+                      aria-label={aboutOpenMobile ? "Collapse About menu" : "Expand About menu"}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "rgba(255,255,255,0.9)",
+                        fontSize: "12px",
+                        padding: "8px 0 8px 12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <span style={{ display: "inline-block", transform: aboutOpenMobile ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{
+                      display: "block",
+                      padding: "8px 0",
+                      fontFamily: "var(--font-inria), serif",
+                      fontWeight: 700,
+                      fontSize: "15px",
+                      color: "rgba(255,255,255,0.9)",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                )}
+
+                {link.hasDropdown && aboutOpenMobile && (
+                  <div style={{ paddingLeft: "12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {aboutDropdown.map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setAboutOpenMobile(false);
+                        }}
+                        style={{
+                          display: "block",
+                          padding: "6px 0",
+                          fontFamily: "var(--font-inria), serif",
+                          fontWeight: 600,
+                          fontSize: "14px",
+                          color: "rgba(201,168,76,0.9)",
+                          textDecoration: "none",
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {!authUser && (
+            <div style={{ marginTop: "14px", display: "flex", gap: "10px" }}>
+              <Link
+                href={loginHref}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  flex: 1,
+                  fontFamily: "var(--font-dm-sans), sans-serif",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  color: "#1B3226",
+                  backgroundColor: "#c9a84c",
+                  borderRadius: "9999px",
+                  padding: "10px 14px",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                }}
+              >
+                Login
+              </Link>
+              <Link
+                href={signupHref}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  flex: 1,
+                  fontFamily: "var(--font-dm-sans), sans-serif",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                  border: "1.5px solid #c9a84c",
+                  borderRadius: "9999px",
+                  padding: "10px 14px",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                }}
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
 
       {aboutDropdownEl}
       {userDropdownEl}

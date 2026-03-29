@@ -40,6 +40,25 @@ export default function ValuesSection() {
 
   return (
     <section className="w-full bg-[#f5f0e8] py-20 px-8 flex flex-col items-center relative overflow-hidden">
+      <style>{`
+        .values-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 16px;
+          width: 100%;
+          max-width: 900px;
+          margin-top: 40px;
+          position: relative;
+          z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+          .values-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+          }
+        }
+      `}</style>
 
       {/* Background SVG lines */}
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
@@ -58,18 +77,15 @@ export default function ValuesSection() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-4 gap-5 max-w-5xl w-full mt-10 relative z-10">
+      <div className="values-grid">
         {values.map(({ icon, title, description }) => (
           <div
             key={title}
             className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-4 shadow-sm"
           >
-            {/* Icon */}
             <div className="bg-[#ECFDF5] p-3 rounded-xl w-fit flex items-center justify-center">
               {icon}
             </div>
-
-            {/* Text */}
             <h3 className="text-sm font-bold text-[#1a3a2a]">{title}</h3>
             <p className="text-xs text-gray-500 leading-relaxed">{description}</p>
           </div>

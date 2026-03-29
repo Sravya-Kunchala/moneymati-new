@@ -2,6 +2,9 @@
   "name": "moneymati",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "pdfjs-dist": "3.11.174"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -18,9 +21,11 @@
     "lucide-react": "^1.0.1",
     "next": "^15.2.4",
     "next-auth": "^5.0.0-beta.30",
+    "pdfjs-dist": "3.11.174",
     "pg": "^8.20.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-pdf": "7.7.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

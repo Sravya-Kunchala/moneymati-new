@@ -1,12 +1,6 @@
-import { GraduationCap, TrendingUp, ClipboardList, Video } from "lucide-react";
+import { TrendingUp, ClipboardList, Video } from "lucide-react";
 
 const services = [
-  {
-    icon: GraduationCap,
-    title: "Financial Education Courses",
-    description:
-      "Self-paced courses covering everything from budgeting basics to advanced investing strategies, designed specifically for women.",
-  },
   {
     icon: TrendingUp,
     title: "Investment Guidance",
@@ -31,26 +25,38 @@ export default function ServicesSection() {
   return (
     <section className="w-full bg-[#f5f0e8] py-20 px-8 flex flex-col items-center relative overflow-hidden">
 
+      <style>{`
+        @media (max-width: 767px) {
+          .services-grid {
+            grid-template-columns: 1fr !important;
+            max-width: 400px !important;
+          }
+          .services-bg-svg {
+            top: 10% !important;
+            height: 90% !important;
+          }
+        }
+      `}</style>
+
       {/* Background SVG */}
-      {/* Background SVG — behind cards only */}
-<div className="absolute left-0 right-0 pointer-events-none" style={{ top: "34%" }}>
-  <svg
-    width="100%"
-    height="400"
-    viewBox="0 0 993 504"
-    preserveAspectRatio="xMidYMid meet"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M1.00006 147.536C6.83339 96.2027 32.7001 -4.86396 89.5001 1.53604C160.5 9.53604 351.5 504.036 429.5 502.536C507.5 501.036 635 -17.964 720 1.53604C788 17.136 929.667 342.036 992 502.536" stroke="url(#paint0_linear_14_1513)" strokeOpacity="0.58" strokeWidth="2" strokeLinecap="round" strokeDasharray="21 21"/>
-    <defs>
-      <linearGradient id="paint0_linear_14_1513" x1="992" y1="503.036" x2="89.5001" y2="1.03614" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#1B3226"/>
-        <stop offset="1" stopColor="#529874"/>
-      </linearGradient>
-    </defs>
-  </svg>
-</div>
+      <div className="services-bg-svg absolute left-0 right-0 pointer-events-none" style={{ top: "34%" }}>
+        <svg
+          width="100%"
+          height="400"
+          viewBox="0 0 993 504"
+          preserveAspectRatio="xMidYMid meet"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M1.00006 147.536C6.83339 96.2027 32.7001 -4.86396 89.5001 1.53604C160.5 9.53604 351.5 504.036 429.5 502.536C507.5 501.036 635 -17.964 720 1.53604C788 17.136 929.667 342.036 992 502.536" stroke="url(#paint0_linear_14_1513)" strokeOpacity="0.58" strokeWidth="2" strokeLinecap="round" strokeDasharray="21 21"/>
+          <defs>
+            <linearGradient id="paint0_linear_14_1513" x1="992" y1="503.036" x2="89.5001" y2="1.03614" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#1B3226"/>
+              <stop offset="1" stopColor="#529874"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
 
       {/* Heading */}
       <div className="text-center max-w-xl mb-12 relative z-10">
@@ -64,11 +70,11 @@ export default function ServicesSection() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-4 gap-5 max-w-5xl w-full relative z-10">
+      <div className="services-grid grid grid-cols-3 gap-5 max-w-5xl w-full relative z-10">
         {services.map(({ icon: Icon, title, description }) => (
           <div
             key={title}
-            className="bg-white rounded-2xl p-5 flex flex-col gap-4 shadow-sm"
+            className="bg-white rounded-2xl p-6 flex flex-col gap-4 shadow-sm min-h-64"
           >
             {/* Icon */}
             <div className="bg-[#1a3a2a] p-3 rounded-xl w-fit">

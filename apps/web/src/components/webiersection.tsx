@@ -30,17 +30,25 @@ const webinars = [
 export default function WebinarsSection() {
   return (
     <section className={`${playfair.variable} w-full bg-[#f5f0e8] py-16 px-8`}>
+      <style>{`
+        @media (max-width: 767px) {
+          .webinars-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-[#1a3a2a] leading-snug text-center">
-  Upcoming Webinars &amp; <br /> Workshops
-</h2>
+            Upcoming Webinars &amp; <br /> Workshops
+          </h2>
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-3 gap-6">
+        <div className="webinars-grid grid grid-cols-3 gap-6">
           {webinars.map(({ date, title, description, image }) => (
             <div
               key={title}

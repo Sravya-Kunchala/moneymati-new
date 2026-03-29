@@ -64,6 +64,58 @@ export default function FourSteps() {
         fontFamily: "var(--font-dm-sans), sans-serif",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .foursteps-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0 !important;
+            position: relative !important;
+          }
+          .foursteps-connecting-line {
+            display: none !important;
+          }
+          .foursteps-mobile-line {
+            display: block !important;
+          }
+          .foursteps-step {
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            text-align: left !important;
+            gap: 16px !important;
+            padding-bottom: 32px !important;
+            position: relative !important;
+          }
+          .foursteps-step-text {
+            max-width: 100% !important;
+          }
+          .foursteps-step-desc {
+            max-width: 100% !important;
+            -webkit-line-clamp: unset !important;
+            overflow: visible !important;
+            display: block !important;
+          }
+          .foursteps-icon {
+            flex-shrink: 0 !important;
+            margin-bottom: 0 !important;
+            position: relative !important;
+            z-index: 1 !important;
+          }
+          .foursteps-step-connector {
+            display: block !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .foursteps-mobile-line { display: none !important; }
+          .foursteps-step-connector { display: none !important; }
+          .foursteps-step {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+          }
+        }
+      `}</style>
+
       {/* Heading */}
       <div className="text-center mb-16">
         <h2
@@ -100,13 +152,11 @@ export default function FourSteps() {
       </div>
 
       {/* Steps */}
-      <div
-        className="relative mx-auto"
-        style={{ maxWidth: "900px" }}
-      >
-        {/* Connecting line */}
+      <div className="relative mx-auto" style={{ maxWidth: "900px" }}>
+
+        {/* Desktop connecting line */}
         <div
-          className="absolute"
+          className="foursteps-connecting-line absolute"
           style={{
             top: "36px",
             left: "calc(12.5% + 36px)",
@@ -117,11 +167,25 @@ export default function FourSteps() {
           }}
         />
 
-        <div className="grid grid-cols-4 gap-4 relative z-10">
+        {/* Mobile vertical line */}
+        <div
+          className="foursteps-mobile-line absolute"
+          style={{
+            top: "36px",
+            bottom: "36px",
+            left: "35px",
+            width: "1.5px",
+            background: "linear-gradient(to bottom, #2d5a3d, #d4a82a, #2d5a3d)",
+            zIndex: 0,
+          }}
+        />
+
+        <div className="foursteps-grid grid grid-cols-4 gap-4 relative z-10">
           {steps.map((step, i) => (
-            <div key={i} className="flex flex-col items-center text-center">
+            <div key={i} className="foursteps-step flex flex-col items-center text-center">
               {/* Icon circle */}
               <div
+                className="foursteps-icon"
                 style={{
                   width: "72px",
                   height: "72px",
@@ -142,35 +206,37 @@ export default function FourSteps() {
                 {step.icon}
               </div>
 
-              {/* Title */}
-              <p
-                style={{
-                  fontFamily: "var(--font-playfair), serif",
-                  fontWeight: 700,
-                  fontSize: "0.95rem",
-                  color: "#1a2e1a",
-                  marginBottom: "10px",
-                }}
-              >
-                {step.title}
-              </p>
+              {/* Text block */}
+              <div className="foursteps-step-text">
+                <p
+                  style={{
+                    fontFamily: "var(--font-playfair), serif",
+                    fontWeight: 700,
+                    fontSize: "0.95rem",
+                    color: "#1a2e1a",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {step.title}
+                </p>
 
-              {/* Description */}
-              <p
-                style={{
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontSize: "0.82rem",
-                  color: "#6b7c6b",
-                  lineHeight: 1.6,
-                  maxWidth: "160px",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {step.description}
-              </p>
+                <p
+                  className="foursteps-step-desc"
+                  style={{
+                    fontFamily: "var(--font-dm-sans), sans-serif",
+                    fontSize: "0.82rem",
+                    color: "#6b7c6b",
+                    lineHeight: 1.6,
+                    maxWidth: "160px",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {step.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>

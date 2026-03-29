@@ -1,8 +1,9 @@
 import { PrismaClient } from "@repo/db";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { NextResponse } from "next/server";
+import { getDatabaseUrl } from "@/app/lib/db-url";
 
-const connectionString = process.env.DATABASE_URL!;
+const connectionString = getDatabaseUrl();
 const ssl = {
   rejectUnauthorized: process.env.NODE_ENV === "production",
 };

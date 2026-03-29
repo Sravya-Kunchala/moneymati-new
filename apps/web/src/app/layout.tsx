@@ -10,6 +10,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Moneymati",
   description: "Moneymati App",
+  icons: {
+    icon: [
+      { url: "/best%20new%20moneymati%20logo.svg", type: "image/svg+xml" },
+    ],
+    apple: "/best%20new%20moneymati%20logo.svg",
+  },
 };
 
 export default function RootLayout({
@@ -19,6 +25,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/best%20new%20moneymati%20logo.svg" />
+      </head>
       <body className={`${inter.className} antialiased`}>
         {children}
       </body>

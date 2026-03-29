@@ -1,7 +1,8 @@
 import { PrismaClient } from "@repo/db";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { getDatabaseUrl } from "@/app/lib/db-url";
 
-const connectionString = process.env.DATABASE_URL!;
+const connectionString = getDatabaseUrl();
 
 if (process.env.NODE_ENV !== "production") {
   // Local dev only: allow self-signed certs for Supabase pooler.
