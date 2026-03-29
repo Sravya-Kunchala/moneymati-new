@@ -1,25 +1,31 @@
 export const dynamic = "force-dynamic";
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { PrismaClient } from "@repo/db";
-import { getDatabaseUrl } from "@/app/lib/db-url";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
+import { getDatabaseUrl } from "./db-url";
 
-const connectionString = getDatabaseUrl();
-if (process.env.NODE_ENV !== "production") {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
-const ssl = {
-  rejectUnauthorized: process.env.NODE_ENV === "production",
+// Reuse a single PG pool across hot reloads to avoid exhausting connections
+const globalForPrisma = globalThis as unknown as {
+  prismaPool?: Pool;
+  prismaClient?: PrismaClient;
 };
 
-const prisma = new PrismaClient({
-  adapter: new PrismaPg({
-    connectionString,
-    ssl,
-  }),
-});
+const pool =
+  globalForPrisma.prismaPool ??
+  new Pool({
+    connectionString: getDatabaseUrl(),
+  });
+
+const prisma =
+  globalForPrisma.prismaClient ??
+  new PrismaClient({
+    adapter: new PrismaPg(pool),
+  });
+
+globalForPrisma.prismaPool = pool;
+globalForPrisma.prismaClient = prisma;
 
 const baseURL =
   process.env.BETTER_AUTH_URL ||
