@@ -1,5 +1,5 @@
 // app/lib/books.ts
-"use client";
+//"use client";
 // app/lib/books.ts
 
 export interface BookMeta {
