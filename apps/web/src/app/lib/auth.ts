@@ -1,25 +1,10 @@
 export const dynamic = "force-dynamic";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@repo/db";
-import { getDatabaseUrl } from "@/app/lib/db-url";
 
-const connectionString = getDatabaseUrl();
-if (process.env.NODE_ENV !== "production") {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
-const ssl = {
-  rejectUnauthorized: process.env.NODE_ENV === "production",
-};
-
-const prisma = new PrismaClient({
-  adapter: new PrismaPg({
-    connectionString,
-    ssl,
-  }),
-});
+// Let Prisma read DATABASE_URL automatically — no manual connection string
+const prisma = new PrismaClient();
 
 const baseURL =
   process.env.BETTER_AUTH_URL ||
