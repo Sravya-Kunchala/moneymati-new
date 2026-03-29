@@ -108,7 +108,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/logout", {
+      await fetch("/api/auth/sign-out", {
         method: "POST",
         credentials: "include",
       });

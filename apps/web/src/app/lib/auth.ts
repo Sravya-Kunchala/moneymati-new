@@ -27,10 +27,15 @@ const prisma =
 globalForPrisma.prismaPool = pool;
 globalForPrisma.prismaClient = prisma;
 
-const baseURL =
+const appUrl =
   process.env.BETTER_AUTH_URL ||
+  process.env.NEXT_PUBLIC_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
   "http://localhost:3000";
+
+const baseURL = appUrl.endsWith("/api/auth")
+  ? appUrl
+  : `${appUrl.replace(/\/+$/, "")}/api/auth`;
 
 export const auth = betterAuth({
   baseURL,
