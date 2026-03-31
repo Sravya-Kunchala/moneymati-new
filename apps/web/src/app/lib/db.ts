@@ -1,16 +1,13 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // 👈 must be first line
+
 import { PrismaClient } from "@repo/db";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { getDatabaseUrl } from "@/app/lib/db-url";
 
 const connectionString = getDatabaseUrl();
 
-if (process.env.NODE_ENV !== "production") {
-  // Local dev only: allow self-signed certs for Supabase pooler.
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
 const ssl = {
-  rejectUnauthorized: process.env.NODE_ENV === "production",
+  rejectUnauthorized: false, // 👈 always false, let the line above handle it
 };
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };

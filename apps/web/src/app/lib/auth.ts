@@ -16,6 +16,10 @@ const pool =
   globalForPrisma.prismaPool ??
   new Pool({
     connectionString: getDatabaseUrl(),
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? { rejectUnauthorized: true }
+        : { rejectUnauthorized: false },
   });
 
 const prisma =
