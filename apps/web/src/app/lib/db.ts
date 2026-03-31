@@ -1,4 +1,12 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // 👈 must be first line
+// Central Prisma client shared across app routes.
+// Allows opting into self-signed certs for local/dev via ALLOW_SELF_SIGNED=1.
+const allowSelfSigned =
+  process.env.ALLOW_SELF_SIGNED === "1" || process.env.NODE_ENV !== "production";
+
+// Must run before importing pg/prisma so Node TLS honors it.
+if (allowSelfSigned) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 import { PrismaClient } from "@repo/db";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -7,7 +15,7 @@ import { getDatabaseUrl } from "@/app/lib/db-url";
 const connectionString = getDatabaseUrl();
 
 const ssl = {
-  rejectUnauthorized: false, // 👈 always false, let the line above handle it
+  rejectUnauthorized: !allowSelfSigned,
 };
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };

@@ -6,6 +6,9 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { getDatabaseUrl } from "./db-url";
 
+const allowSelfSigned =
+  process.env.ALLOW_SELF_SIGNED === "1" || process.env.NODE_ENV !== "production";
+
 // Reuse a single PG pool across hot reloads to avoid exhausting connections
 const globalForPrisma = globalThis as unknown as {
   prismaPool?: Pool;
@@ -16,10 +19,7 @@ const pool =
   globalForPrisma.prismaPool ??
   new Pool({
     connectionString: getDatabaseUrl(),
-    ssl:
-      process.env.NODE_ENV === "production"
-        ? { rejectUnauthorized: true }
-        : { rejectUnauthorized: false },
+    ssl: { rejectUnauthorized: !allowSelfSigned },
   });
 
 const prisma =

@@ -3,9 +3,12 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { NextResponse } from "next/server";
 import { getDatabaseUrl } from "@/app/lib/db-url";
 
+const allowSelfSigned =
+  process.env.ALLOW_SELF_SIGNED === "1" || process.env.NODE_ENV !== "production";
+
 const connectionString = getDatabaseUrl();
 const ssl = {
-  rejectUnauthorized: process.env.NODE_ENV === "production",
+  rejectUnauthorized: !allowSelfSigned,
 };
 
 const prisma = new PrismaClient({
