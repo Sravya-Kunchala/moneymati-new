@@ -29,7 +29,6 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
 
   const toggle = (key: NotifPrefKey) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
 
-  // Prevent body scroll while modal open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -61,6 +60,13 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
           font-family: 'Inter', sans-serif;
           max-height: 90vh;
           overflow-y: auto;
+        }
+
+        @media (max-width: 480px) {
+          .notif-modal {
+            padding: 24px 16px 18px;
+            border-radius: 18px;
+          }
         }
 
         /* Toggle switch */
@@ -137,6 +143,29 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
           transition: color 0.15s;
         }
         .cancel-modal-btn:hover { color: #111; }
+
+        @media (max-width: 480px) {
+          .notif-modal-footer {
+            flex-direction: column-reverse !important;
+            align-items: stretch !important;
+            gap: 8px !important;
+          }
+          .notif-modal-footer p {
+            text-align: center;
+          }
+          .notif-modal-footer > div {
+            flex-direction: column !important;
+            width: 100%;
+          }
+          .save-btn {
+            width: 100%;
+            text-align: center;
+          }
+          .cancel-modal-btn {
+            width: 100%;
+            text-align: center;
+          }
+        }
       `}</style>
 
       <div className="notif-modal">
@@ -213,7 +242,7 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div className="notif-modal-footer" style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <p style={{ fontSize: 11, color: "#aaa", margin: 0, flex: 1, lineHeight: 1.4 }}>
             Changes may take up to 24 hours to reflect across all systems.
           </p>
@@ -227,7 +256,7 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-  // Update Credentials Modal (overlay + body-scroll lock like NotificationModal)
+  // Update Credentials Modal
   function UpdateCredentialsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -258,9 +287,47 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
         <style>{`
           @keyframes fadeInBg { from { opacity: 0 } to { opacity: 1 } }
           @keyframes slideUp { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
+          .cred-modal-inner {
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 720px;
+            padding: 28px 28px 20px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+            animation: slideUp 0.28s cubic-bezier(0.34,1.3,0.64,1) both;
+            font-family: 'Inter', sans-serif;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+          @media (max-width: 480px) {
+            .cred-modal-inner {
+              padding: 20px 16px 16px;
+              border-radius: 18px;
+            }
+          }
+          .cred-input {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #f3f4f6;
+            background: rgba(243,244,246,0.3);
+            padding: 12px 48px 12px 16px;
+            color: #111;
+            box-sizing: border-box;
+            font-size: 14px;
+          }
+          .cred-input-plain {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #f3f4f6;
+            background: rgba(243,244,246,0.3);
+            padding: 12px 16px;
+            color: #111;
+            box-sizing: border-box;
+            font-size: 14px;
+          }
         `}</style>
 
-        <div style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 720, padding: "28px 28px 20px", boxShadow: "0 24px 80px rgba(0,0,0,0.18)", animation: "slideUp 0.28s cubic-bezier(0.34,1.3,0.64,1) both", fontFamily: "'Inter', sans-serif", maxHeight: "90vh", overflowY: "auto" }}>
+        <div className="cred-modal-inner">
           <div style={{ textAlign: "center", marginBottom: 8 }}>
             <h2 style={{ fontWeight: 800, fontSize: 22, color: "#111", margin: "0 0 8px", letterSpacing: "-0.5px" }}>Update Credentials</h2>
             <p style={{ fontSize: 13, color: "#888", margin: 0, lineHeight: 1.5 }}>Ensure your account stays secure with a strong, unique password.</p>
@@ -270,7 +337,7 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: "block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#718096", marginBottom: 6 }}>Current Password</label>
               <div style={{ position: "relative" }}>
-                <input value={currentPwd} onChange={(e) => setCurrentPwd(e.target.value)} type={showCurrent ? "text" : "password"} placeholder="••••••••" style={{ width: "100%", borderRadius: 12, border: "1px solid #f3f4f6", background: "rgba(243,244,246,0.3)", padding: "12px 48px 12px 16px", color: "#111" }} />
+                <input value={currentPwd} onChange={(e) => setCurrentPwd(e.target.value)} type={showCurrent ? "text" : "password"} placeholder="••••••••" className="cred-input" />
                 <button type="button" onClick={() => setShowCurrent(!showCurrent)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#9ca3af" }}>{showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}</button>
               </div>
             </div>
@@ -278,14 +345,14 @@ function NotificationModal({ onClose }: { onClose: () => void }) {
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: "block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#718096", marginBottom: 6 }}>New Password</label>
               <div style={{ position: "relative" }}>
-                <input value={newPwd} onChange={(e) => setNewPwd(e.target.value)} type={showNew ? "text" : "password"} placeholder="••••••••" style={{ width: "100%", borderRadius: 12, border: "1px solid #f3f4f6", background: "rgba(243,244,246,0.3)", padding: "12px 48px 12px 16px", color: "#111" }} />
+                <input value={newPwd} onChange={(e) => setNewPwd(e.target.value)} type={showNew ? "text" : "password"} placeholder="••••••••" className="cred-input" />
                 <button type="button" onClick={() => setShowNew(!showNew)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#9ca3af" }}>{showNew ? <EyeOff size={18} /> : <Eye size={18} />}</button>
               </div>
             </div>
 
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: "block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#718096", marginBottom: 6 }}>Confirm New Password</label>
-              <input value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} type="password" placeholder="••••••••" style={{ width: "100%", borderRadius: 12, border: "1px solid #f3f4f6", background: "rgba(243,244,246,0.3)", padding: "12px 16px", color: "#111" }} />
+              <input value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} type="password" placeholder="••••••••" className="cred-input-plain" />
             </div>
 
             <div style={{ borderRadius: 18, background: "#f0fdf4", padding: 18, marginBottom: 18 }}>
@@ -361,7 +428,6 @@ export default function ProfilePage() {
     <>
       <Header />
 
-      {/* Notification Preferences Modal */}
       {showNotifModal && <NotificationModal onClose={() => setShowNotifModal(false)} />}
       {showUpdateModal && <UpdateCredentialsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} />}
 
@@ -463,13 +529,94 @@ export default function ProfilePage() {
           .anim-3 { animation: fadeUp 0.5s ease 0.25s both; }
           .anim-4 { animation: fadeUp 0.5s ease 0.35s both; }
           .anim-5 { animation: fadeUp 0.5s ease 0.45s both; }
+
+          /* ── MOBILE ONLY (≤ 600px) ── */
+          @media (max-width: 600px) {
+            .profile-container {
+              padding: 0 16px;
+            }
+
+            /* Page top padding */
+            .profile-page-wrap {
+              padding: 24px 0 48px !important;
+            }
+
+            /* Profile card: stack avatar + info vertically, center */
+            .profile-card-inner {
+              flex-direction: column !important;
+              align-items: center !important;
+              text-align: center;
+              gap: 16px !important;
+            }
+            .profile-name {
+              font-size: 22px !important;
+              line-height: 28px !important;
+            }
+            .profile-meta-row {
+              justify-content: center !important;
+            }
+            .edit-profile-btn {
+              align-self: center !important;
+              width: 100% !important;
+            }
+
+            /* Webinar grid: single column */
+            .webinar-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            /* Resource grid: single column */
+            .resource-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            /* Booking card: stack vertically */
+            .booking-card {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 12px !important;
+            }
+            .booking-actions {
+              width: 100% !important;
+              display: flex !important;
+              justify-content: flex-end !important;
+              gap: 8px !important;
+            }
+
+            /* Webinar join row */
+            .webinar-join-row {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 10px !important;
+            }
+            .join-btn {
+              width: 100% !important;
+              text-align: center !important;
+            }
+
+            /* Card padding reduce */
+            .card {
+              padding: 18px 16px !important;
+              border-radius: 16px !important;
+            }
+
+            /* Resource card buttons */
+            .resource-btn-row {
+              flex-wrap: wrap !important;
+            }
+            .download-btn, .view-btn {
+              flex: 1 !important;
+              text-align: center !important;
+            }
+          }
         `}</style>
 
+        <div className="profile-page-wrap" style={{ minHeight: "100vh", background: "#f0f5f0", fontFamily: "'Inter', sans-serif", padding: "40px 0 60px" }}>
         <div className="profile-container">
 
           {/* Profile Card */}
           <div className="card anim-1">
-            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <div className="profile-card-inner" style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <div style={{ width: 80, height: 80, borderRadius: "50%", border: "3px solid #c9a84c", overflow: "hidden", background: "#c9a84c", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {user.avatarSrc
@@ -482,18 +629,19 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-                <h1 style={{ fontWeight: 800, fontSize: 28, color: "#102218", letterSpacing: "-0.75px", lineHeight: "34px", margin: 0 }}>{user.name}</h1>
+                <h1 className="profile-name" style={{ fontWeight: 800, fontSize: 28, color: "#102218", letterSpacing: "-0.75px", lineHeight: "34px", margin: 0 }}>{user.name}</h1>
                 <p style={{ margin: "0 0 6px", fontSize: 13, color: "#888" }}>Member since {memberSince}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div className="profile-meta-row" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                   <span style={{ fontSize: 13, color: "#555" }}>{user.email}</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div className="profile-meta-row" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                   <span style={{ fontSize: 13, color: "#555" }}>{user.phone}</span>
                 </div>
               </div>
               <button
+                className="edit-profile-btn"
                 style={{ background: "#FFDBCF", border: "1px solid rgba(255,160,127,0.30)", borderRadius: 9999, padding: "10px 24px", fontSize: 13, fontWeight: 600, color: "#c0522a", cursor: "pointer", fontFamily: "'Inter', sans-serif", transition: "background 0.2s", height: 42, flexShrink: 0, alignSelf: "flex-start" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#ffc9b0")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "#FFDBCF")}
@@ -522,7 +670,7 @@ export default function ProfilePage() {
                 </div>
                 <h3 style={{ fontWeight: 700, fontSize: 15, color: "#111", margin: "0 0 4px" }}>Investing for Beginners</h3>
                 <p style={{ fontSize: 12, color: "#888", margin: "0 0 16px" }}>March 24, 6:00 PM</p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div className="webinar-join-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#0EAF50" }} />
                     <span style={{ fontSize: 12, color: "#444" }}>Status: Confirmed</span>
@@ -571,7 +719,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <div className="booking-actions" style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 <button className="cancel-btn">Cancel</button>
                 <button className="reschedule-btn">Reschedule</button>
               </div>
@@ -594,7 +742,7 @@ export default function ProfilePage() {
                     <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", margin: 0 }}>Start Early, Be Wealthy!</h4>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div className="resource-btn-row" style={{ display: "flex", gap: 8 }}>
                   <button className="download-btn">Download</button>
                   <button className="view-btn">View</button>
                 </div>
@@ -610,7 +758,7 @@ export default function ProfilePage() {
                     <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", margin: 0 }}>NPS Game Changer</h4>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div className="resource-btn-row" style={{ display: "flex", gap: 8 }}>
                   <button className="download-btn">Download</button>
                   <button className="view-btn">View</button>
                 </div>
@@ -659,6 +807,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
+        </div>
         </div>
       </div>
       <Footer />

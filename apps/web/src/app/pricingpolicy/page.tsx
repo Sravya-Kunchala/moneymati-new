@@ -83,7 +83,7 @@ const sections = [
 
 const tocItems = [
   { label: "Tariff", href: "#tariff" },
-  { label: "Adjustments", href: "#adjustments" },
+  { label: "Tariff Adjustments", href: "#adjustments" },
   { label: "Discounts", href: "#discounts" },
   { label: "Payment Methods", href: "#payment-methods" },
   { label: "Refund Policy", href: "#refund-policy" },
@@ -95,7 +95,7 @@ export default function PricingPolicy() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Entrance animations
+    // ── Entrance animations ──
     const elements = ref.current?.querySelectorAll("[data-animate]");
     elements?.forEach((el, i) => {
       const htmlEl = el as HTMLElement;
@@ -108,22 +108,63 @@ export default function PricingPolicy() {
       });
     });
 
-    // Scroll spy
     const sectionIds = tocItems.map((item) => item.href.replace("#", ""));
-    const onScroll = () => {
-      let current = sectionIds[0];
-      sectionIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 120) current = id;
-      });
+    const dropdown = document.getElementById("toc-dropdown") as HTMLSelectElement | null;
+
+    // ── Track which section is visible using IntersectionObserver ──
+    // We keep a Map of id → whether it's currently intersecting
+    const visibilityMap = new Map<string, boolean>();
+    sectionIds.forEach((id) => visibilityMap.set(id, false));
+
+    const updateActive = () => {
+      // Pick the first section in DOM order that is currently intersecting
+      const active = sectionIds.find((id) => visibilityMap.get(id)) ?? sectionIds[0];
+
+      // Update desktop TOC
       document.querySelectorAll(".pp-toc-list a").forEach((a) => {
         const href = a.getAttribute("href")?.replace("#", "");
-        a.classList.toggle("active", href === current);
+        a.classList.toggle("active", href === active);
       });
+
+      // Update mobile dropdown
+      if (dropdown && window.innerWidth <= 767) {
+        dropdown.value = active;
+      }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visibilityMap.set(entry.target.id, entry.isIntersecting);
+        });
+        updateActive();
+      },
+      {
+        // rootMargin: fire when section top is within top 30% of viewport
+        rootMargin: "-10% 0px -60% 0px",
+        threshold: 0,
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    // ── Mobile dropdown → smooth scroll ──
+    const handleDropdownChange = () => {
+      if (!dropdown) return;
+      const target = document.getElementById(dropdown.value);
+      if (target) {
+        window.scrollTo({ top: target.offsetTop - 64, behavior: "smooth" });
+      }
+    };
+    dropdown?.addEventListener("change", handleDropdownChange);
+
+    return () => {
+      observer.disconnect();
+      dropdown?.removeEventListener("change", handleDropdownChange);
+    };
   }, []);
 
   return (
@@ -151,10 +192,8 @@ export default function PricingPolicy() {
         }
         .pp-hero-bg {
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
           object-fit: cover;
           object-position: center center;
           opacity: 0.8;
@@ -197,27 +236,17 @@ export default function PricingPolicy() {
           position: relative;
           z-index: 10;
         }
-        @media (max-width: 767px) {
-          .pp-layout { flex-direction: column; padding: 0 16px 60px; margin-top: -32px; }
-          .pp-toc-wrap { width: 100% !important; position: static !important; }
-        }
 
-        /* ── TOC ── */
+        /* ── TOC (desktop sticky) ── */
         .pp-toc-wrap {
           width: 220px;
           flex-shrink: 0;
           position: sticky;
-          top: 24px;
+          top: 80px;
           padding-top: 48px;
           align-self: flex-start;
         }
-        .pp-toc {
-          background: transparent;
-          border-radius: 0;
-          padding: 0;
-          box-shadow: none;
-          display: block;
-        }
+        .pp-toc { background: transparent; padding: 0; box-shadow: none; display: block; }
         .pp-toc-label {
           font-size: 0.7rem;
           font-weight: 700;
@@ -227,18 +256,15 @@ export default function PricingPolicy() {
           padding-bottom: 10px;
           margin-bottom: 16px;
           display: block;
-          box-sizing: border-box;
           width: 220px;
         }
         .pp-toc-list {
           list-style: none;
-          padding: 0;
-          margin: 0;
+          padding: 0; margin: 0;
           display: flex;
           flex-direction: column;
           gap: 6px;
         }
-        .pp-toc-list li { counter-increment: toc; }
         .pp-toc-list a {
           display: flex;
           gap: 8px;
@@ -261,9 +287,8 @@ export default function PricingPolicy() {
           transition: color 0.2s;
         }
 
-        /* ── Main Content ── */
+        /* ── Main ── */
         .pp-main { flex: 1; min-width: 0; }
-
         .pp-date-badge-wrap { padding: 20px 28px 0; }
         .pp-date-badge {
           display: inline-flex;
@@ -276,9 +301,8 @@ export default function PricingPolicy() {
           border: 1.5px solid #1a7a4a;
           border-radius: 9999px;
           padding: 4px 16px;
-          background: rgba(14, 175, 80, 0.10);
+          background: rgba(14,175,80,0.10);
         }
-
         .pp-notice {
           padding: 20px 28px;
           font-size: 0.82rem;
@@ -286,7 +310,6 @@ export default function PricingPolicy() {
           line-height: 1.6;
           border-bottom: 1px solid #f0f4f0;
         }
-
         .pp-card {
           background: #ffffff;
           border-radius: 16px;
@@ -294,9 +317,8 @@ export default function PricingPolicy() {
           margin-bottom: 20px;
           box-shadow: 0 2px 12px rgba(0,0,0,0.05);
         }
-
         .pp-section {
-          padding: 28px 28px;
+          padding: 28px;
           border-bottom: 1px solid #f0f4f0;
         }
         .pp-section:last-child { border-bottom: none; }
@@ -307,8 +329,7 @@ export default function PricingPolicy() {
           margin-bottom: 16px;
         }
         .pp-icon {
-          width: 34px;
-          height: 34px;
+          width: 34px; height: 34px;
           border-radius: 50%;
           background: #1a7a4a;
           display: flex;
@@ -333,33 +354,6 @@ export default function PricingPolicy() {
           line-height: 1.75;
           margin-bottom: 12px;
         }
-        .pp-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        .pp-list li {
-          font-size: 0.875rem;
-          color: #4a5568;
-          line-height: 1.7;
-          padding-left: 20px;
-          position: relative;
-        }
-        .pp-list li::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 8px;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          border: 1.8px solid #1a7a4a;
-          background: transparent;
-        }
-        .pp-list strong { color: #2d3748; font-weight: 600; }
 
         /* ── Contact ── */
         .pp-contact {
@@ -399,13 +393,98 @@ export default function PricingPolicy() {
         .pp-contact-item-val { font-size: 0.9rem; color: rgba(255,255,255,0.9); font-weight: 500; }
         .pp-contact-item-val a { color: rgba(255,255,255,0.9); text-decoration: none; }
         .pp-contact-item-val a:hover { text-decoration: underline; }
-
         .pp-footer-note {
           text-align: center;
           font-size: 0.75rem;
           color: #9aabb8;
           padding: 24px 28px;
           line-height: 1.6;
+        }
+
+        /* ── Mobile dropdown (hidden on desktop) ── */
+        .pp-toc-mobile { display: none; }
+
+        /* ══════════════════════════════════════
+           MOBILE-ONLY  (max-width: 767px)
+        ══════════════════════════════════════ */
+        @media (max-width: 767px) {
+
+          .pp-hero {
+            min-height: 280px !important;
+            padding: 80px 20px 60px !important;
+          }
+          .pp-hero-title { font-size: 1.75rem !important; margin-bottom: 10px !important; }
+          .pp-hero-sub { font-size: 0.85rem !important; }
+
+          .pp-layout {
+            flex-direction: column !important;
+            gap: 0 !important;
+            padding: 20px 14px 48px !important;
+            margin-top: -24px !important;
+          }
+
+          /* Hide desktop TOC */
+          .pp-toc-wrap { display: none !important; }
+
+          /* ── Sticky dropdown bar ── */
+          .pp-toc-mobile {
+            display: block;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #f5f5f0;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.10);
+            padding: 10px 14px;
+          }
+          .pp-toc-mobile-inner {
+            position: relative;
+            width: 100%;
+          }
+          .pp-toc-mobile-inner::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #1a7a4a;
+            pointer-events: none;
+          }
+          #toc-dropdown {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #ffffff;
+            border: 1.5px solid #1a7a4a;
+            border-radius: 9999px;
+            padding: 9px 40px 9px 18px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1a7a4a;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+          }
+
+          .pp-card { border-radius: 12px !important; margin-bottom: 14px !important; }
+          .pp-date-badge-wrap { padding: 16px 16px 0 !important; }
+          .pp-notice { padding: 14px 16px !important; font-size: 0.8rem !important; }
+          .pp-section { padding: 20px 16px !important; }
+          .pp-section-title { font-size: 1rem !important; }
+          .pp-body { font-size: 0.83rem !important; line-height: 1.7 !important; }
+
+          .pp-contact {
+            margin: 14px 14px 0 !important;
+            padding: 24px 18px !important;
+            border-radius: 12px !important;
+          }
+          .pp-contact-title { font-size: 1.2rem !important; }
+          .pp-contact-sub { font-size: 0.8rem !important; margin-bottom: 18px !important; }
+          .pp-contact-grid { flex-direction: column !important; gap: 18px !important; }
+          .pp-contact-item-val { font-size: 0.85rem !important; }
+          .pp-footer-note { padding: 16px !important; font-size: 0.72rem !important; }
         }
       `}</style>
 
@@ -424,11 +503,24 @@ export default function PricingPolicy() {
         </div>
       </section>
 
+      {/* ── MOBILE STICKY DROPDOWN ── */}
+      <div className="pp-toc-mobile">
+        <div className="pp-toc-mobile-inner">
+          <select id="toc-dropdown" defaultValue="tariff">
+            {tocItems.map((item, i) => (
+              <option key={item.href} value={item.href.replace("#", "")}>
+                {String(i + 1).padStart(2, "0")}. {item.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* ── BODY ── */}
       <div className="pp-layout">
 
-        {/* TOC */}
-        <aside className="pp-toc-wrap" data-animate>
+        {/* Desktop TOC */}
+        <aside className="pp-toc-wrap">
           <div className="pp-toc">
             <div className="pp-toc-label">On This Page</div>
             <ol className="pp-toc-list">
@@ -448,12 +540,10 @@ export default function PricingPolicy() {
         <main className="pp-main">
           <div className="pp-card" data-animate>
 
-            {/* Date Badge */}
             <div className="pp-date-badge-wrap">
               <span className="pp-date-badge">Effective Date: 18-12-2024</span>
             </div>
 
-            {/* Notice */}
             <div className="pp-notice">
               MoneyMati operates under the registered proprietorship MoneyMati. At
               MoneyMati, we are committed to maintaining transparency and clarity in our
@@ -461,20 +551,16 @@ export default function PricingPolicy() {
               review the details below:
             </div>
 
-            {/* Sections */}
             {sections.map((sec, i) => (
               <div key={sec.id} id={sec.id} className="pp-section">
                 <div className="pp-section-header">
-                  <div className="pp-icon">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
+                  <div className="pp-icon">{String(i + 1).padStart(2, "0")}</div>
                   <h2 className="pp-section-title">{sec.title}</h2>
                 </div>
                 {sec.content}
               </div>
             ))}
 
-            {/* Contact */}
             <div id="contact" className="pp-contact">
               <div className="pp-contact-title">Contact Us</div>
               <p className="pp-contact-sub">
@@ -484,7 +570,9 @@ export default function PricingPolicy() {
               <div className="pp-contact-grid">
                 <div className="pp-contact-item">
                   <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+                    </svg>
                     Email
                   </span>
                   <span className="pp-contact-item-val">
@@ -493,14 +581,18 @@ export default function PricingPolicy() {
                 </div>
                 <div className="pp-contact-item">
                   <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
                     Phone
                   </span>
                   <span className="pp-contact-item-val">+91 7075529006</span>
                 </div>
                 <div className="pp-contact-item">
                   <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
                     Address
                   </span>
                   <span className="pp-contact-item-val">Hyderabad, Telangana- 500009</span>
@@ -508,7 +600,6 @@ export default function PricingPolicy() {
               </div>
             </div>
 
-            {/* Footer note */}
             <p className="pp-footer-note">
               This Pricing Policy ensures MoneyMati&apos;s commitment to transparency and quality financial education.
             </p>

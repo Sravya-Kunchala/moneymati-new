@@ -15,7 +15,6 @@ const navLinks = [
   { label: "About", href: "/About", hasDropdown: true },
   { label: "Services", href: "/services" },
   { label: "Blog", href: "/Blog" },
-  { label: "Community", href: "/community" },
   { label: "Calculator", href: "/calucator" },
   { label: "E-Books", href: "/e-book" },
 ];
@@ -26,13 +25,8 @@ const aboutDropdown = [
   { label: "FAQ", href: "/FAQ" },
 ];
 
-// ─── CONFIGURE LINKS HERE ─────────────────────────────────────────────────────
 const loginHref = "/signin";
 const signupHref = "/signup";
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─── MOCK AUTH — replace with your real auth state ───────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -44,6 +38,7 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const chevronRef = useRef<HTMLButtonElement>(null);
   const userBtnRef = useRef<HTMLButtonElement>(null);
+  const mobileUserBtnRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { data: sessionData, isPending } = authClient.useSession();
 
@@ -51,7 +46,7 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-  }, [pathname]); // re-check on route change
+  }, [pathname]);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -74,7 +69,11 @@ export default function Header() {
       if (!chevronRef.current?.contains(target) && !document.getElementById("about-dropdown")?.contains(target)) {
         setAboutOpen(false);
       }
-      if (!userBtnRef.current?.contains(target) && !document.getElementById("user-dropdown")?.contains(target)) {
+      if (
+        !userBtnRef.current?.contains(target) &&
+        !mobileUserBtnRef.current?.contains(target) &&
+        !document.getElementById("user-dropdown")?.contains(target)
+      ) {
         setUserMenuOpen(false);
       }
     }
@@ -91,11 +90,10 @@ export default function Header() {
     setAboutOpen((v) => !v);
   };
 
-  const handleUserMenuClick = (e: React.MouseEvent) => {
+  const handleUserMenuClick = (e: React.MouseEvent, btnRef: { current: HTMLButtonElement | null }) => {
     e.stopPropagation();
-    if (userBtnRef.current) {
-      const rect = userBtnRef.current.getBoundingClientRect();
-      // Position using a right offset so the dropdown can size itself
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
       const right = window.innerWidth - rect.right;
       setUserMenuPos({ top: rect.bottom + 8, right });
     }
@@ -142,7 +140,6 @@ export default function Header() {
         >
           {/* User header */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "14px 16px", borderBottom: "1.5px solid #e5e5e5", position: "relative", background: "#fff" }}>
-            {/* Avatar with gold ring */}
             <div style={{ width: 44, height: 44, borderRadius: "50%", border: "2.5px dashed #c9a84c", padding: "2px", flexShrink: 0 }}>
               <div style={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", background: "#c9a84c", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {authUser?.avatarSrc
@@ -152,7 +149,6 @@ export default function Header() {
               </div>
             </div>
             <span style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>{authUser?.name}</span>
-            {/* Close button */}
             <button onClick={() => setUserMenuOpen(false)} style={{ background: "#222", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                 <path d="M1 1l8 8M9 1L1 9" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/>
@@ -204,7 +200,7 @@ export default function Header() {
           <img src="/best new moneymati logo.svg" alt="Money Mati" className="h-10 w-10" />
         </div>
 
-        {/* Nav Links — center */}
+        {/* Nav Links — center (desktop only) */}
         <nav className="hidden md:block">
           <ul className="flex items-center gap-7" style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {navLinks.map((link) => (
@@ -236,10 +232,10 @@ export default function Header() {
           </ul>
         </nav>
 
-        {/* Right side */}
+        {/* Right side — desktop */}
         <div className="hidden md:flex" style={{ alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
           {authUser ? (
-            <button ref={userBtnRef} onClick={handleUserMenuClick}
+            <button ref={userBtnRef} onClick={(e) => handleUserMenuClick(e, userBtnRef)}
               style={{ background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", padding: "4px 8px", borderRadius: "9999px", transition: "background 0.2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -276,7 +272,8 @@ export default function Header() {
         </div>
 
         {/* Mobile actions */}
-        <div className="flex md:hidden" style={{ alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
+        <div className="flex md:hidden" style={{ alignItems: "center", gap: "10px", justifyContent: "flex-end" }}>
+          {/* Search button */}
           <button
             type="button"
             aria-label="Search"
@@ -298,6 +295,49 @@ export default function Header() {
               <line x1="20" y1="20" x2="16.5" y2="16.5" />
             </svg>
           </button>
+
+          {/* User avatar — only shown when logged in on mobile */}
+          {authUser && (
+            <button
+              ref={mobileUserBtnRef}
+              type="button"
+              aria-label="User menu"
+              onClick={(e) => handleUserMenuClick(e, mobileUserBtnRef)}
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: "9999px",
+                border: "2px solid #c9a84c",
+                overflow: "hidden",
+                background: "#c9a84c",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+                padding: 0,
+              }}
+            >
+              {authUser.avatarSrc ? (
+                <img
+                  src={authUser.avatarSrc}
+                  alt={authUser.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span style={{
+                  fontFamily: "var(--font-dm-sans), sans-serif",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1B3226",
+                }}>
+                  {authUser.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Hamburger */}
           <button
             type="button"
             aria-label="Open menu"
@@ -323,7 +363,6 @@ export default function Header() {
             </svg>
           </button>
         </div>
-
       </header>
 
       {/* Mobile menu */}
@@ -346,19 +385,8 @@ export default function Header() {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <Link
                       href={link.href}
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setAboutOpenMobile(false);
-                      }}
-                      style={{
-                        display: "block",
-                        padding: "8px 0",
-                        fontFamily: "var(--font-inria), serif",
-                        fontWeight: 700,
-                        fontSize: "15px",
-                        color: "rgba(255,255,255,0.9)",
-                        textDecoration: "none",
-                      }}
+                      onClick={() => { setMobileMenuOpen(false); setAboutOpenMobile(false); }}
+                      style={{ display: "block", padding: "8px 0", fontFamily: "var(--font-inria), serif", fontWeight: 700, fontSize: "15px", color: "rgba(255,255,255,0.9)", textDecoration: "none" }}
                     >
                       {link.label}
                     </Link>
@@ -366,14 +394,7 @@ export default function Header() {
                       type="button"
                       onClick={() => setAboutOpenMobile((v) => !v)}
                       aria-label={aboutOpenMobile ? "Collapse About menu" : "Expand About menu"}
-                      style={{
-                        background: "transparent",
-                        border: "none",
-                        color: "rgba(255,255,255,0.9)",
-                        fontSize: "12px",
-                        padding: "8px 0 8px 12px",
-                        cursor: "pointer",
-                      }}
+                      style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.9)", fontSize: "12px", padding: "8px 0 8px 12px", cursor: "pointer" }}
                     >
                       <span style={{ display: "inline-block", transform: aboutOpenMobile ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
                     </button>
@@ -382,15 +403,7 @@ export default function Header() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    style={{
-                      display: "block",
-                      padding: "8px 0",
-                      fontFamily: "var(--font-inria), serif",
-                      fontWeight: 700,
-                      fontSize: "15px",
-                      color: "rgba(255,255,255,0.9)",
-                      textDecoration: "none",
-                    }}
+                    style={{ display: "block", padding: "8px 0", fontFamily: "var(--font-inria), serif", fontWeight: 700, fontSize: "15px", color: "rgba(255,255,255,0.9)", textDecoration: "none" }}
                   >
                     {link.label}
                   </Link>
@@ -402,19 +415,8 @@ export default function Header() {
                       <Link
                         key={item.label}
                         href={item.href}
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setAboutOpenMobile(false);
-                        }}
-                        style={{
-                          display: "block",
-                          padding: "6px 0",
-                          fontFamily: "var(--font-inria), serif",
-                          fontWeight: 600,
-                          fontSize: "14px",
-                          color: "rgba(201,168,76,0.9)",
-                          textDecoration: "none",
-                        }}
+                        onClick={() => { setMobileMenuOpen(false); setAboutOpenMobile(false); }}
+                        style={{ display: "block", padding: "6px 0", fontFamily: "var(--font-inria), serif", fontWeight: 600, fontSize: "14px", color: "rgba(201,168,76,0.9)", textDecoration: "none" }}
                       >
                         {item.label}
                       </Link>
@@ -424,50 +426,21 @@ export default function Header() {
               </div>
             ))}
           </div>
+
+          {/* Login/Signup buttons — only when NOT logged in */}
           {!authUser && (
             <div style={{ marginTop: "14px", display: "flex", gap: "10px" }}>
               <Link
                 href={loginHref}
                 onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  flex: 1,
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  lineHeight: "20px",
-                  color: "#1B3226",
-                  backgroundColor: "#c9a84c",
-                  borderRadius: "9999px",
-                  padding: "10px 14px",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                }}
+                style={{ flex: 1, fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "14px", lineHeight: "20px", color: "#1B3226", backgroundColor: "#c9a84c", borderRadius: "9999px", padding: "10px 14px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
               >
                 Login
               </Link>
               <Link
                 href={signupHref}
                 onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  flex: 1,
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  lineHeight: "20px",
-                  color: "#FFFFFF",
-                  backgroundColor: "transparent",
-                  border: "1.5px solid #c9a84c",
-                  borderRadius: "9999px",
-                  padding: "10px 14px",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                }}
+                style={{ flex: 1, fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "14px", lineHeight: "20px", color: "#FFFFFF", backgroundColor: "transparent", border: "1.5px solid #c9a84c", borderRadius: "9999px", padding: "10px 14px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
               >
                 Sign Up
               </Link>

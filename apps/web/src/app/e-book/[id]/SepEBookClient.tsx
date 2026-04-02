@@ -46,16 +46,16 @@ function MoreGuides({ currentId }: { currentId: number }) {
   const others = BOOKS.filter((b) => b.id !== currentId).slice(0, 3);
 
   return (
-    <section style={{ backgroundColor: "#eeeae0", padding: "64px 80px" }}>
+    <section className="more-guides-section">
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "32px" }}>
+        <div className="more-guides-header">
           <div>
-            <h2 style={{ margin: "0 0 6px", fontFamily: "'Inter', sans-serif", fontSize: "30px", fontWeight: 900, lineHeight: "36px", color: "#064E3B" }}>More Guides for You</h2>
+            <h2 className="more-guides-title">More Guides for You</h2>
             <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#64748B" }}>Continue your financial education journey.</p>
           </div>
           <a href="/e-book" style={{ color: "#064E3B", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 600, textDecoration: "none" }}>View All →</a>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
+        <div className="more-guides-grid">
           {others.map((book) => (
             <div
               key={book.id}
@@ -105,25 +105,171 @@ export default function SepEBookClient({ book }: { book: Book }) {
         .anim-hero-sub      { animation: fadeInUp     0.6s ease 0.35s both; }
         .anim-book-cover    { animation: slideInLeft  0.7s ease 0.3s  both; }
         .anim-about-content { animation: slideInRight 0.7s ease 0.3s  both; }
+
+        /* ── Shared section classes ── */
+        .hero-section {
+          background: linear-gradient(160deg, #064E3B 0%, #0A2E24 50%, #064E3B 100%);
+          padding: 64px 80px;
+          position: relative;
+          overflow: hidden;
+        }
+        .hero-title {
+          margin: 0 0 16px;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 48px;
+          line-height: 52px;
+          letter-spacing: -1.2px;
+          color: #ffffff;
+          font-weight: 800;
+        }
+        .hero-title-script {
+          color: #D4A843;
+          font-family: 'Dancing Script', cursive;
+          font-weight: 700;
+          font-size: 48px;
+        }
+        .hero-sub {
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          font-size: 18px;
+          font-weight: 500;
+          line-height: 29px;
+          color: rgba(255,255,255,0.70);
+          max-width: 631px;
+        }
+        .about-section {
+          background-color: #f5f0e8;
+          padding: 72px 80px;
+          position: relative;
+          overflow: hidden;
+        }
+        .about-grid {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 280px 1fr;
+          gap: 64px;
+          align-items: start;
+          position: relative;
+          z-index: 1;
+        }
+        .about-title {
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          font-size: 30px;
+          font-weight: 100;
+          line-height: 36px;
+          color: #064E3B;
+        }
+        .features-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+        .more-guides-section {
+          background-color: #eeeae0;
+          padding: 64px 80px;
+        }
+        .more-guides-header {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 32px;
+        }
+        .more-guides-title {
+          margin: 0 0 6px;
+          font-family: 'Inter', sans-serif;
+          font-size: 30px;
+          font-weight: 900;
+          line-height: 36px;
+          color: #064E3B;
+        }
+        .more-guides-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+          /* Hero */
+          .hero-section {
+            padding: 36px 20px 40px;
+          }
+          .hero-title {
+            font-size: 28px;
+            line-height: 34px;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+          }
+          .hero-title-script {
+            font-size: 30px;
+          }
+          .hero-sub {
+            font-size: 14px;
+            line-height: 22px;
+            max-width: 100%;
+          }
+
+          /* About */
+          .about-section {
+            padding: 40px 20px;
+          }
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 28px;
+          }
+          /* Center the book cover on mobile */
+          .anim-book-cover {
+            display: flex;
+            justify-content: center;
+          }
+          .about-title {
+            font-size: 22px;
+            line-height: 30px;
+          }
+
+          /* Features: single column on mobile */
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          /* More Guides */
+          .more-guides-section {
+            padding: 40px 20px;
+          }
+          .more-guides-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 24px;
+          }
+          .more-guides-title {
+            font-size: 22px;
+            line-height: 28px;
+          }
+          /* Single column cards on mobile */
+          .more-guides-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+        }
       `}</style>
 
       <main>
         <Header />
 
         {/* HERO */}
-        <section style={{ background: "linear-gradient(160deg, #064E3B 0%, #0A2E24 50%, #064E3B 100%)", padding: "64px 80px", position: "relative", overflow: "hidden" }}>
+        <section className="hero-section">
           <div style={{ position: "absolute", top: "-60px", right: "10%", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle, rgba(17,212,98,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
             <Breadcrumb title={`${book.title} ${book.subtitle}`} />
-            <h1 className="anim-hero-title" style={{ margin: "0 0 16px", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "48px", lineHeight: "52px", letterSpacing: "-1.2px", color: "#ffffff", fontWeight: 800 }}>
+            <h1 className="anim-hero-title hero-title">
               {book.title}{" "}
-              <span style={{ color: "#D4A843", fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "48px" }}>
-                {book.subtitle}
-              </span>
+              <span className="hero-title-script">{book.subtitle}</span>
             </h1>
-            <p className="anim-hero-sub" style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: "18px", fontWeight: 500, lineHeight: "29px", color: "rgba(255,255,255,0.70)", maxWidth: "631px" }}>
-              {book.description}
-            </p>
+            <p className="anim-hero-sub hero-sub">{book.description}</p>
           </div>
         </section>
 
@@ -131,30 +277,32 @@ export default function SepEBookClient({ book }: { book: Book }) {
         <BookViewer pdfFile={book.pdf} />
 
         {/* ABOUT */}
-        <section style={{ backgroundColor: "#f5f0e8", padding: "72px 80px", position: "relative", overflow: "hidden" }}>
+        <section className="about-section">
           <svg viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }}>
             <line x1="500" y1="-100" x2="-400" y2="300" stroke="#064E3B" strokeOpacity="0.15" strokeWidth="1.5"/>
             <line x1="600" y1="-100" x2="-300" y2="300" stroke="#064E3B" strokeOpacity="0.15" strokeWidth="1.5"/>
           </svg>
-          <div style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "280px 1fr", gap: "64px", alignItems: "start", position: "relative", zIndex: 1 }}>
+          <div className="about-grid">
+            {/* Book cover */}
             <div className="anim-book-cover">
               <div style={{ width: "220px", height: "300px", background: "#0A2E24", borderRadius: "8px", boxShadow: "8px 12px 40px rgba(0,0,0,0.25)", position: "relative", overflow: "hidden" }}>
                 <Image src={book.cover} alt={`${book.title} cover`} fill style={{ objectFit: "cover", borderRadius: "8px" }} />
               </div>
             </div>
 
+            {/* Content */}
             <div className="anim-about-content" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               <div>
                 <span style={{ display: "inline-flex", alignItems: "center", padding: "4px 12px", borderRadius: "9999px", background: "rgba(212,175,55,0.20)", color: "#064E3B", fontSize: "11px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", fontFamily: "'Inter', sans-serif", marginBottom: "12px" }}>
                   Premium Guide
                 </span>
-                <h2 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: "30px", fontWeight: 100, lineHeight: "36px", color: "#064E3B" }}>About this E-Book</h2>
+                <h2 className="about-title">About this E-Book</h2>
               </div>
               <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: "18px", fontWeight: 100, lineHeight: "29px", color: "#475569" }}>
                 {book.description} This guide is crafted by the MoneyMati research team to simplify the complex world of personal finance — actionable from day one.
               </p>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+              <div className="features-grid">
                 {book.features.map((f, i) => (
                   <div key={i} style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
                     <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(6,78,59,0.08)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

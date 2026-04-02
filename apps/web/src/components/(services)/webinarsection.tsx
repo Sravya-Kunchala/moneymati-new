@@ -41,13 +41,7 @@ const StockMarketIcon = () => (
   </svg>
 );
 
-interface CategoryCard {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-const categories: CategoryCard[] = [
+const categories = [
   {
     icon: <FinancialPlanningIcon />,
     title: "Financial Planning",
@@ -72,108 +66,214 @@ const categories: CategoryCard[] = [
 
 export default function WebinarCategories() {
   return (
-    <section
-      className={`${playfairDisplay.variable} ${dmSans.variable}`}
-      style={{
-        backgroundColor: "#FFFFFF",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "60px 80px",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* Heading */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "48px" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-playfair), serif",
-            fontWeight: 700,
-            fontSize: "30px",
-            lineHeight: "36px",
-            color: "#004D40",
-            textAlign: "center",
-            marginBottom: "12px",
-          }}
-        >
-          Webinar Categories
-        </h2>
-        <div
-          style={{
-            width: "80px",
-            height: "4px",
-            borderRadius: "9999px",
-            background: "#11D462",
-          }}
-        />
-      </div>
+    <>
+      <style>{`
+        .wc-section {
+          background-color: #FFFFFF;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 80px;
+          box-sizing: border-box;
+        }
 
-      {/* Cards Grid */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full"
-        style={{ maxWidth: "1280px" }}
+        .wc-heading-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 48px;
+        }
+
+        .wc-heading {
+          font-weight: 700;
+          font-size: 30px;
+          line-height: 36px;
+          color: #004D40;
+          text-align: center;
+          margin-bottom: 12px;
+        }
+
+        .wc-underline {
+          width: 80px;
+          height: 4px;
+          border-radius: 9999px;
+          background: #11D462;
+        }
+
+        .wc-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+          width: 100%;
+          max-width: 1280px;
+        }
+
+        .wc-card {
+          background-color: #FFFFFF;
+          border: 1px solid #E5E7EB;
+          border-radius: 12px;
+          padding: 33px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          cursor: default;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .wc-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .wc-icon-wrap {
+          width: 56px;
+          height: 56px;
+          border-radius: 12px;
+          background-color: #FDFBF7;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .wc-card-title {
+          font-weight: 700;
+          font-size: 20px;
+          line-height: 28px;
+          color: #004D40;
+          margin-bottom: 8px;
+        }
+
+        .wc-card-desc {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 22.75px;
+          color: #475569;
+          margin: 0;
+        }
+
+        .wc-mobile-wrapper {
+          display: none;
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 768px) {
+          .wc-mobile-wrapper {
+            display: block;
+            background-color: #FFFFFF;
+            padding: 16px;
+          }
+
+          .wc-section {
+            padding: 32px 16px;
+            border: 1.5px dashed #CBD5E1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin: 0;
+          }
+
+          .wc-heading-wrap {
+            margin-bottom: 24px;
+          }
+
+          .wc-heading {
+            font-size: 22px;
+            line-height: 30px;
+          }
+
+          .wc-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+          }
+
+          .wc-card {
+            border: none;
+            border-bottom: 1.5px dashed #CBD5E1;
+            border-radius: 0;
+            padding: 24px 8px;
+            gap: 12px;
+          }
+
+          .wc-card:last-child {
+            border-bottom: none;
+          }
+
+          .wc-card:hover {
+            transform: none;
+            box-shadow: none;
+          }
+
+          .wc-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+          }
+
+          .wc-card-title {
+            font-size: 16px;
+            line-height: 24px;
+            margin-bottom: 4px;
+          }
+
+          .wc-card-desc {
+            font-size: 13px;
+            line-height: 20px;
+          }
+        }
+
+        @media (min-width: 769px) and (max-width: 1023px) {
+          .wc-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .wc-section {
+            padding: 48px 32px;
+          }
+        }
+      `}</style>
+
+      <div className="wc-mobile-wrapper">
+      <section
+        className={`wc-section ${playfairDisplay.variable} ${dmSans.variable}`}
       >
-        {categories.map((cat) => (
-          <div
-            key={cat.title}
-            className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-            style={{
-              backgroundColor: "#FFFFFF",
-              border: "1px solid #E5E7EB",
-              borderRadius: "12px",
-              padding: "33px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-              cursor: "default",
-            }}
+        {/* Heading */}
+        <div className="wc-heading-wrap">
+          <h2
+            className="wc-heading"
+            style={{ fontFamily: "var(--font-playfair), serif" }}
           >
-            {/* Icon */}
-            <div
-              style={{
-                width: "56px",
-                height: "56px",
-                borderRadius: "12px",
-                backgroundColor: "#FDFBF7",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              {cat.icon}
-            </div>
+            Webinar Categories
+          </h2>
+          <div className="wc-underline" />
+        </div>
 
-            <div>
-              <p
-                style={{
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  lineHeight: "28px",
-                  color: "#004D40",
-                  marginBottom: "8px",
-                }}
-              >
-                {cat.title}
-              </p>
-              <p
-                style={{
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontWeight: 400,
-                  fontSize: "14px",
-                  lineHeight: "22.75px",
-                  color: "#475569",
-                  margin: 0,
-                }}
-              >
-                {cat.description}
-              </p>
+        {/* Cards Grid */}
+        <div className="wc-grid">
+          {categories.map((cat) => (
+            <div key={cat.title} className="wc-card">
+              {/* Icon */}
+              <div className="wc-icon-wrap">{cat.icon}</div>
+
+              <div>
+                <p
+                  className="wc-card-title"
+                  style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  {cat.title}
+                </p>
+                <p
+                  className="wc-card-desc"
+                  style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  {cat.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      </section>
       </div>
-    </section>
+    </>
   );
 }

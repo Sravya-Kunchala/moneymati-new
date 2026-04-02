@@ -51,10 +51,64 @@ export default function WhyMoneyMati() {
         padding: "48px 48px 64px",
       }}
     >
+      <style>{`
+        /* ── MOBILE ONLY ── */
+        @media (max-width: 767px) {
+
+          .wmm-section {
+            padding: 32px 20px 48px !important;
+          }
+
+          /* Heading: left-aligned on mobile */
+          .wmm-heading {
+            text-align: left !important;
+            font-size: 26px !important;
+            line-height: 34px !important;
+            margin-bottom: 32px !important;
+          }
+
+          /* Switch grid to single column */
+          .wmm-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+
+          /* Each card: icon left, text right */
+          .wmm-card {
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            text-align: left !important;
+            gap: 16px !important;
+          }
+
+          /* Icon container: fixed width so text aligns */
+          .wmm-icon {
+            flex-shrink: 0;
+            width: 48px;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 2px;
+          }
+
+          .wmm-text { flex: 1; }
+
+          .wmm-title {
+            font-size: 15px !important;
+            margin-bottom: 6px !important;
+          }
+
+          .wmm-desc {
+            font-size: 13px !important;
+            line-height: 20px !important;
+          }
+        }
+      `}</style>
+
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
         {/* Heading */}
         <h2
+          className="wmm-heading"
           style={{
             margin: "0 0 48px",
             fontFamily: "var(--font-inter), sans-serif",
@@ -70,6 +124,7 @@ export default function WhyMoneyMati() {
 
         {/* Columns */}
         <div
+          className="wmm-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -79,6 +134,7 @@ export default function WhyMoneyMati() {
           {features.map((feature) => (
             <div
               key={feature.title}
+              className="wmm-card"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -88,35 +144,38 @@ export default function WhyMoneyMati() {
               }}
             >
               {/* Icon */}
-              <div>{feature.icon}</div>
+              <div className="wmm-icon">{feature.icon}</div>
 
-              {/* Title */}
-              <h3
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-inter), sans-serif",
-                  fontWeight: 700,
-                  fontSize: "15px",
-                  lineHeight: "22px",
-                  color: "#0e3d27",
-                }}
-              >
-                {feature.title}
-              </h3>
+              {/* Text */}
+              <div className="wmm-text">
+                <h3
+                  className="wmm-title"
+                  style={{
+                    margin: "0 0 0",
+                    fontFamily: "var(--font-inter), sans-serif",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    lineHeight: "22px",
+                    color: "#0e3d27",
+                  }}
+                >
+                  {feature.title}
+                </h3>
 
-              {/* Description */}
-              <p
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-inter), sans-serif",
-                  fontWeight: 400,
-                  fontSize: "13.5px",
-                  lineHeight: "21px",
-                  color: "rgba(14,61,39,0.55)",
-                }}
-              >
-                {feature.description}
-              </p>
+                <p
+                  className="wmm-desc"
+                  style={{
+                    margin: 0,
+                    fontFamily: "var(--font-inter), sans-serif",
+                    fontWeight: 400,
+                    fontSize: "13.5px",
+                    lineHeight: "21px",
+                    color: "rgba(14,61,39,0.55)",
+                  }}
+                >
+                  {feature.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>

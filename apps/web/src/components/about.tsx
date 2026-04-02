@@ -18,10 +18,15 @@ export default function AboutSection() {
           font-weight: 400;
           font-size: 21px;
           line-height: 26px;
+          letter-spacing: 0%;
           color: #000000;
+          margin: 0;
         }
 
-        /* ── Video Card ── */
+        .about-paragraph .highlight {
+          font-weight: 500;
+        }
+
         .video-card-wrapper {
           position: relative;
           flex-shrink: 0;
@@ -63,10 +68,8 @@ export default function AboutSection() {
           }
           .about-content {
             width: 100% !important;
-            text-align: center !important;
           }
           .about-paragraph {
-            text-align: center !important;
             font-size: 17px !important;
             line-height: 22px !important;
           }
@@ -76,7 +79,7 @@ export default function AboutSection() {
         }
       `}</style>
 
-      <div className="about-inner max-w-6xl w-full flex items-center gap-16">
+      <div className="about-inner max-w-6xl w-full flex items-start gap-16">
 
         {/* Left — Video Card */}
         <div className="video-card-wrapper">
@@ -92,19 +95,35 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Right — Content */}
-        <div className="about-content flex-1">
-          <div className="about-paragraphs mb-8 w-full flex flex-col gap-5">
+        {/* Right — text and cards */}
+        <div className="about-content flex-1 flex flex-col gap-8">
+
+          {/* Paragraphs */}
+          <div className="flex flex-col gap-5">
             <p className="about-paragraph">
-              Women often face unique career and financial challenges from pay gaps and career breaks due to responsibilities of home and child and care, to the lack of independent financial decision-making. At times, they also fall prey to mis-selling and cyber frauds in the absence of credible guidance and safe financial platforms.
+              Women often face{" "}
+              <span className="highlight">unique career and financial challenges</span>
+              {" "}from <span className="highlight">pay gaps</span> and{" "}
+              <span className="highlight">career breaks</span> due to responsibilities
+              of home and child and care, to the lack of{" "}
+              <span className="highlight">independent financial decision-making</span>.
+              At times, they also fall prey to{" "}
+              <span className="highlight">mis-selling</span> and{" "}
+              <span className="highlight">cyber frauds</span> in the absence of
+              credible guidance and safe financial platforms.
             </p>
+
             <p className="about-paragraph">
-              Moneymati was born to change that narrative. We're building a safe, reliable, and inclusive wealth platform designed exclusively for women helping them learn, stay informed, and invest with confidence.
+              <span className="highlight">Moneymati</span> was born to change
+              that narrative. We&apos;re building a{" "}
+              <span className="highlight">safe, reliable, and inclusive wealth platform</span>{" "}
+              designed exclusively for women — helping them{" "}
+              <span className="highlight">learn, stay informed, and invest with confidence</span>.
             </p>
           </div>
 
-          {/* Feature Grid */}
-          <div className="about-feature-grid grid grid-cols-2 gap-3 max-w-lg ml-20">
+          {/* Feature cards */}
+          <div className="about-feature-grid grid grid-cols-2 gap-3">
             {features.map(({ icon: Icon, label }) => (
               <div
                 key={label}
@@ -117,8 +136,8 @@ export default function AboutSection() {
               </div>
             ))}
           </div>
-        </div>
 
+        </div>
       </div>
     </section>
   );

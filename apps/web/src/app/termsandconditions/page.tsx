@@ -176,20 +176,54 @@ export default function TermsAndConditions() {
     });
 
     const sectionIds = tocItems.map((item) => item.href.replace("#", ""));
-    const onScroll = () => {
-      let current = sectionIds[0];
-      sectionIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 120) current = id;
-      });
+    const dropdown = document.getElementById("pp-toc-dropdown");
+
+    // IntersectionObserver for accurate scroll spy (desktop TOC + mobile dropdown)
+    const visibilityMap = new Map();
+    sectionIds.forEach((id) => visibilityMap.set(id, false));
+
+    const updateActive = () => {
+      const active = sectionIds.find((id) => visibilityMap.get(id)) ?? sectionIds[0];
+
+      // Desktop TOC
       document.querySelectorAll(".pp-toc-list a").forEach((a) => {
         const href = a.getAttribute("href")?.replace("#", "");
-        a.classList.toggle("active", href === current);
+        a.classList.toggle("active", href === active);
       });
+
+      // Mobile dropdown
+      if (dropdown && window.innerWidth <= 767) {
+        dropdown.value = active;
+      }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visibilityMap.set(entry.target.id, entry.isIntersecting);
+        });
+        updateActive();
+      },
+      { rootMargin: "-10% 0px -60% 0px", threshold: 0 }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    // Mobile dropdown → smooth scroll
+    const handleDropdownChange = () => {
+      if (!dropdown) return;
+      const target = document.getElementById(dropdown.value);
+      if (target) window.scrollTo({ top: target.offsetTop - 64, behavior: "smooth" });
+    };
+    dropdown?.addEventListener("change", handleDropdownChange);
+
+    return () => {
+      observer.disconnect();
+      dropdown?.removeEventListener("change", handleDropdownChange);
+    };
   }, []);
 
   return (
@@ -200,8 +234,6 @@ export default function TermsAndConditions() {
     >
       <style>{`
         /* ── Hero ── */
-        /* Figma specs: Width 1440px fixed, Height 417px hug, Top 100px, Padding top/bottom 128px */
-        /* Colors: Linear gradient #102218 → #F6F8F7 */
         .pp-hero {
           position: relative;
           min-height: 417px;
@@ -261,12 +293,8 @@ export default function TermsAndConditions() {
           position: relative;
           z-index: 10;
         }
-        @media (max-width: 767px) {
-          .pp-layout { flex-direction: column; padding: 0 16px 60px; margin-top: -32px; }
-          .pp-toc-wrap { width: 100% !important; position: static !important; }
-        }
 
-        /* ── TOC ── */
+        /* ── TOC (desktop only) ── */
         .pp-toc-wrap {
           width: 220px;
           flex-shrink: 0;
@@ -476,12 +504,118 @@ export default function TermsAndConditions() {
           padding: 24px 28px;
           line-height: 1.6;
         }
+
+        /* ── Mobile sticky dropdown TOC (hidden on desktop) ── */
+        .pp-toc-mobile { display: none; }
+
+        /* ══════════════════════════════════════
+           MOBILE-ONLY  (max-width: 767px)
+        ══════════════════════════════════════ */
+        @media (max-width: 767px) {
+
+          /* Hero */
+          .pp-hero {
+            min-height: 260px !important;
+            padding: 72px 20px 52px !important;
+          }
+          .pp-hero-title {
+            font-size: 1.7rem !important;
+            margin-bottom: 10px !important;
+          }
+          .pp-hero-sub { font-size: 0.84rem !important; }
+
+          /* Layout — stack vertically */
+          .pp-layout {
+            flex-direction: column !important;
+            gap: 0 !important;
+            padding: 16px 14px 48px !important;
+            margin-top: -24px !important;
+          }
+
+          /* Hide desktop TOC */
+          .pp-toc-wrap { display: none !important; }
+
+          /* ── Sticky dropdown TOC ── */
+          .pp-toc-mobile {
+            display: block;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #f5f5f0;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.09);
+            padding: 10px 14px;
+          }
+          .pp-toc-mobile-inner {
+            position: relative;
+            width: 100%;
+          }
+          .pp-toc-mobile-inner::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #1a7a4a;
+            pointer-events: none;
+          }
+          #pp-toc-dropdown {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #ffffff;
+            border: 1.5px solid #1a7a4a;
+            border-radius: 9999px;
+            padding: 9px 40px 9px 18px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1a7a4a;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+          }
+
+          /* Card */
+          .pp-card {
+            border-radius: 14px !important;
+          }
+
+          /* Date badge */
+          .pp-date-badge-wrap { padding: 16px 16px 0 !important; }
+
+          /* Notice */
+          .pp-notice {
+            padding: 14px 16px 18px !important;
+            font-size: 0.81rem !important;
+          }
+
+          /* Sections */
+          .pp-section { padding: 20px 16px !important; }
+          .pp-section-title { font-size: 1.05rem !important; }
+          .pp-body { font-size: 0.83rem !important; line-height: 1.72 !important; }
+          .pp-list li { font-size: 0.83rem !important; }
+
+          /* Contact */
+          .pp-contact {
+            margin: 14px 14px 0 !important;
+            padding: 22px 18px !important;
+            border-radius: 12px !important;
+          }
+          .pp-contact-title { font-size: 1.1rem !important; }
+          .pp-contact-sub { font-size: 0.79rem !important; margin-bottom: 16px !important; }
+          .pp-contact-grid { flex-direction: column !important; gap: 16px !important; }
+          .pp-contact-item-val { font-size: 0.84rem !important; }
+
+          /* Footer note */
+          .pp-footer-note { padding: 14px 16px 18px !important; font-size: 0.7rem !important; }
+        }
       `}</style>
 
       <Header />
 
       {/* ── HERO ── */}
-      {/* 2.svg: 1440×417px, padding 128px top/bottom, gradient #102218 → #F6F8F7 */}
       <section className="pp-hero">
         <img src="/2.svg" alt="" className="pp-hero-bg" />
         <div className="pp-hero-overlay" />
@@ -494,10 +628,23 @@ export default function TermsAndConditions() {
         </div>
       </section>
 
+      {/* ── MOBILE STICKY DROPDOWN (mobile only) ── */}
+      <div className="pp-toc-mobile">
+        <div className="pp-toc-mobile-inner">
+          <select id="pp-toc-dropdown" defaultValue="acceptance-of-terms">
+            {tocItems.map((item, i) => (
+              <option key={item.href} value={item.href.replace("#", "")}>
+                {String(i + 1).padStart(2, "0")}. {item.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* ── BODY ── */}
       <div className="pp-layout">
 
-        {/* TOC */}
+        {/* TOC (desktop only) */}
         <aside className="pp-toc-wrap" data-animate>
           <div className="pp-toc">
             <div className="pp-toc-label">On This Page</div>
@@ -541,35 +688,37 @@ export default function TermsAndConditions() {
             ))}
 
             {/* Contact */}
-            <div id="contact" className="pp-contact">
-              <div className="pp-contact-title">Contact Us</div>
-              <p className="pp-contact-sub">
-                If you have questions, concerns, or requests regarding this Privacy Policy,
-                please contact us at:
-              </p>
-              <div className="pp-contact-grid">
-                <div className="pp-contact-item">
-                  <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-                    Email
-                  </span>
-                  <span className="pp-contact-item-val">
-                    <a href="mailto:support@moneymati.com">support@moneymati.com</a>
-                  </span>
-                </div>
-                <div className="pp-contact-item">
-                  <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    Phone
-                  </span>
-                  <span className="pp-contact-item-val">+91 7075529006</span>
-                </div>
-                <div className="pp-contact-item">
-                  <span className="pp-contact-item-label">
-                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Address
-                  </span>
-                  <span className="pp-contact-item-val">Hyderabad, Telangana- 500009</span>
+            <div id="contact">
+              <div className="pp-contact">
+                <div className="pp-contact-title">Contact Us</div>
+                <p className="pp-contact-sub">
+                  If you have questions, concerns, or requests regarding this Privacy Policy,
+                  please contact us at:
+                </p>
+                <div className="pp-contact-grid">
+                  <div className="pp-contact-item">
+                    <span className="pp-contact-item-label">
+                      <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                      Email
+                    </span>
+                    <span className="pp-contact-item-val">
+                      <a href="mailto:support@moneymati.com">support@moneymati.com</a>
+                    </span>
+                  </div>
+                  <div className="pp-contact-item">
+                    <span className="pp-contact-item-label">
+                      <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      Phone
+                    </span>
+                    <span className="pp-contact-item-val">+91 7075529006</span>
+                  </div>
+                  <div className="pp-contact-item">
+                    <span className="pp-contact-item-label">
+                      <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                      Address
+                    </span>
+                    <span className="pp-contact-item-val">Hyderabad, Telangana- 500009</span>
+                  </div>
                 </div>
               </div>
             </div>

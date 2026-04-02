@@ -76,6 +76,35 @@ export default function ContactSection() {
         .anim-right-card   { animation: slideInRight 0.7s ease 0.5s both; }
         .anim-footer       { animation: fadeIn      0.6s ease 0.6s both; }
         .anim-popup        { animation: popIn       0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+        @media (max-width: 768px) {
+          .contact-section {
+            padding: 48px 20px !important;
+          }
+          .contact-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .contact-form-card {
+            order: 1;
+          }
+          .contact-info-card {
+            order: 2;
+          }
+          .contact-title-text {
+            font-size: 32px !important;
+          }
+          .contact-title-script {
+            font-size: 38px !important;
+          }
+          .contact-submit-btn {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .contact-name-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
       `}</style>
 
       <div className="anim-header">
@@ -83,7 +112,7 @@ export default function ContactSection() {
       </div>
 
       <section
-        className={`${playfair.variable} ${dancing.variable} ${inter.className}`}
+        className={`contact-section ${playfair.variable} ${dancing.variable} ${inter.className}`}
         style={{
           backgroundColor: "#f5f0e8",
           padding: "80px 48px",
@@ -113,10 +142,10 @@ export default function ContactSection() {
             </div>
 
             <h2 className="anim-title" style={{ margin: "0 0 16px", fontSize: 48, lineHeight: 1.1 }}>
-              <span style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 800, color: "#0d2818" }}>Need Free Consultation{" "}</span>
+              <span className="contact-title-text" style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 800, color: "#0d2818" }}>Need Free Consultation{" "}</span>
               <br />
-              <span style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 800, color: "#0d2818" }}>Or{" "}</span>
-              <span style={{ fontFamily: "var(--font-dancing), cursive", fontWeight: 700, color: "#D4AF37", fontSize: 52 }}>Have Questions?</span>
+              <span className="contact-title-text" style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 800, color: "#0d2818" }}>Or{" "}</span>
+              <span className="contact-title-script" style={{ fontFamily: "var(--font-dancing), cursive", fontWeight: 700, color: "#D4AF37", fontSize: 52 }}>Have Questions?</span>
             </h2>
 
             <p className="anim-subtitle" style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "24px", color: "rgba(6,78,59,0.70)", maxWidth: 480, margin: "0 auto" }}>
@@ -125,10 +154,10 @@ export default function ContactSection() {
           </div>
 
           {/* Two Column Layout */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 24 }}>
+          <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 24 }}>
 
             {/* Left: Contact Info */}
-            <div className="anim-left-card" style={{ background: "#ffffff", borderRadius: 20, padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", position: "relative", overflow: "hidden" }}>
+            <div className="anim-left-card contact-info-card" style={{ background: "#ffffff", borderRadius: 20, padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 16, right: 16, opacity: 0.08 }}>
                 <svg width="80" height="80" viewBox="0 0 107 96" fill="none">
                   <path d="M48 96V85.3333H90.6667V47.4667C90.6667 37.0667 87.0444 28.2444 79.8 21C72.5556 13.7556 63.7333 10.1333 53.3333 10.1333C42.9333 10.1333 34.1111 13.7556 26.8667 21C19.6222 28.2444 16 37.0667 16 47.4667V80H10.6667C7.73333 80 5.22222 78.9556 3.13333 76.8667C1.04444 74.7778 0 72.2667 0 69.3333V58.6667C0 56.8 0.466667 55.0444 1.4 53.4C2.33333 51.7556 3.64444 50.4444 5.33333 49.4667L5.73333 42.4C6.44444 36.3556 8.2 30.7556 11 25.6C13.8 20.4444 17.3111 15.9556 21.5333 12.1333C25.7556 8.31111 30.6 5.33333 36.0667 3.2C41.5333 1.06667 47.2889 0 53.3333 0C59.3778 0 65.1111 1.06667 70.5333 3.2C75.9556 5.33333 80.8 8.28889 85.0667 12.0667C89.3333 15.8444 92.8444 20.3111 95.6 25.4667C98.3556 30.6222 100.133 36.2222 100.933 42.2667L101.333 49.2C103.022 50 104.333 51.2 105.267 52.8C106.2 54.4 106.667 56.0889 106.667 57.8667V70.1333C106.667 71.9111 106.2 73.6 105.267 75.2C104.333 76.8 103.022 78 101.333 78.8V85.3333C101.333 88.2667 100.289 90.7778 98.2 92.8667C96.1111 94.9556 93.6 96 90.6667 96H48ZM37.3333 58.6667C35.8222 58.6667 34.5556 58.1556 33.5333 57.1333C32.5111 56.1111 32 54.8444 32 53.3333C32 51.8222 32.5111 50.5556 33.5333 49.5333C34.5556 48.5111 35.8222 48 37.3333 48C38.8444 48 40.1111 48.5111 41.1333 49.5333C42.1556 50.5556 42.6667 51.8222 42.6667 53.3333C42.6667 54.8444 42.1556 56.1111 41.1333 57.1333C40.1111 58.1556 38.8444 58.6667 37.3333 58.6667ZM69.3333 58.6667C67.8222 58.6667 66.5556 58.1556 65.5333 57.1333C64.5111 56.1111 64 54.8444 64 53.3333C64 51.8222 64.5111 50.5556 65.5333 49.5333C66.5556 48.5111 67.8222 48 69.3333 48C70.8444 48 72.1111 48.5111 73.1333 49.5333C74.1556 50.5556 74.6667 51.8222 74.6667 53.3333C74.6667 54.8444 74.1556 56.1111 73.1333 57.1333C72.1111 58.1556 70.8444 58.6667 69.3333 58.6667ZM21.4667 50.4C20.8444 40.9778 23.6889 32.8889 30 26.1333C36.3111 19.3778 44.1778 16 53.6 16C61.5111 16 68.4667 18.5111 74.4667 23.5333C80.4667 28.5556 84.0889 34.9778 85.3333 42.8C77.2444 42.7111 69.8 40.5333 63 36.2667C56.2 32 50.9778 26.2222 47.3333 18.9333C45.9111 26.0444 42.9111 32.3778 38.3333 37.9333C33.7556 43.4889 28.1333 47.6444 21.4667 50.4Z" fill="#064E3B"/>
@@ -182,8 +211,8 @@ export default function ContactSection() {
             </div>
 
             {/* Right: Contact Form */}
-            <div className="anim-right-card" style={{ background: "#ffffff", borderRadius: 20, padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div className="anim-right-card contact-form-card" style={{ background: "#ffffff", borderRadius: 20, padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+              <div className="contact-name-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
                 <div>
                   <label style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: 13, fontWeight: 500, color: "#0d2818", display: "block", marginBottom: 6 }}>First Name</label>
                   <input name="firstName" value={form.firstName} onChange={handleChange} placeholder="John" style={inputStyle} />
@@ -228,6 +257,7 @@ export default function ContactSection() {
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <button
                   onClick={handleSubmit}
+                  className="contact-submit-btn"
                   style={{
                     padding: "14px 40px", borderRadius: 12, backgroundColor: "#064E3B",
                     border: "none", cursor: "pointer", fontFamily: "var(--font-inter), sans-serif",

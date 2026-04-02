@@ -39,6 +39,15 @@ export default function NPSArticlePage() {
 
         .page-container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
 
+        /* ── Cost cards row ── */
+        .cost-cards-row { display: flex; gap: 20px; margin-bottom: 40px; }
+
+        /* ── Related grid ── */
+        .related-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+        /* ── Newsletter row ── */
+        .newsletter-row { display: flex; gap: 10px; max-width: 460px; margin: 0 auto 12px; }
+
         /* ── Animations ── */
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-24px); }
@@ -92,6 +101,52 @@ export default function NPSArticlePage() {
           pointer-events: none;
           overflow: hidden;
         }
+
+        /* ── Mobile styles ── */
+        @media (max-width: 768px) {
+
+          /* Container: reduce horizontal padding on mobile */
+          .page-container { padding: 0 20px; }
+
+          /* Breadcrumb: allow wrapping and trim long last segment */
+          .breadcrumb { display: flex; flex-wrap: wrap; align-items: center; }
+          .breadcrumb span:last-child { 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            max-width: 180px; 
+            display: inline-block; 
+            vertical-align: middle; 
+          }
+
+          /* Hero image: shorter on mobile */
+          .anim-hero-img { height: 220px !important; border-radius: 12px !important; }
+
+          /* Cost cards: stack vertically */
+          .cost-cards-row { flex-direction: column; gap: 12px; }
+
+          /* Related articles: single column */
+          .related-grid { grid-template-columns: 1fr; }
+
+          /* Newsletter email+button: stack vertically */
+          .newsletter-row { flex-direction: column; gap: 10px; max-width: 100%; }
+          .newsletter-input { width: 100%; border-radius: 9999px; }
+          .join-btn { width: 100%; text-align: center; }
+
+          /* Reduce section top padding */
+          .nps-page-content > div:first-child { padding-top: 24px !important; }
+        }
+
+        @media (max-width: 480px) {
+          /* Further reduce padding on very small screens */
+          .page-container { padding: 0 16px; }
+
+          /* Hero even shorter */
+          .anim-hero-img { height: 180px !important; }
+
+          /* Tighten two-col-card padding */
+          .two-col-card { padding: 16px; }
+        }
       `}</style>
 
       {/* ── Breadcrumb + Title ── */}
@@ -111,10 +166,10 @@ export default function NPSArticlePage() {
 
           {/* Title */}
           <h1 className="anim-title" style={{ marginBottom: 16, lineHeight: 1.1 }}>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(36px,5vw,54px)", color: "#0d1f0d" }}>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(28px,5vw,54px)", color: "#0d1f0d" }}>
               NPS: The Game<br />Changer for{" "}
             </span>
-            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(36px,5vw,54px)", color: "#2d7a5e" }}>
+            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(28px,5vw,54px)", color: "#2d7a5e" }}>
               100% Equity Retirement Planning
             </span>
           </h1>
@@ -201,7 +256,7 @@ export default function NPSArticlePage() {
               retirement corpus for the average Indian worker.
             </p>
 
-            <div className="anim-cost-cards" style={{ position: "relative", zIndex: 1, display: "flex", gap: 20, marginBottom: 40 }}>
+            <div className="anim-cost-cards cost-cards-row">
               <div className="two-col-card">
                 <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, color: "#2d8a5e", marginBottom: 10 }}>PFRDA Regulation</div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
@@ -251,7 +306,7 @@ export default function NPSArticlePage() {
                 ✅ You're subscribed! Check your inbox.
               </div>
             ) : (
-              <div style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto 12px" }}>
+              <div className="newsletter-row">
                 <input className="newsletter-input" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && email && setSubscribed(true)} />
                 <button className="join-btn" onClick={() => email && setSubscribed(true)}>Join Newsletter</button>
               </div>
@@ -272,7 +327,7 @@ export default function NPSArticlePage() {
               <a href="#" style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", textDecoration: "none", fontWeight: 500 }}>View all →</a>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+            <div className="related-grid">
               <div className="related-card anim-rel-card-1">
                 <div style={{ height: 160, overflow: "hidden" }}>
                   <img src="/Card 1.svg" alt="Family's Financial Goals" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

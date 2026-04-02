@@ -13,16 +13,66 @@ const teamMembers = [
   { name: "Anushka Goyal", role: "Consultant - Technology", image: "/image 3.svg" },
   { name: "Dilip Singh", role: "Consultant - Technology", image: "/image 2.svg" },
 ];
+
 export default function TeamExperts() {
   return (
     <section
       className={`${playfair.variable} ${inter.className}`}
       style={{ padding: "0 48px 80px", backgroundColor: "#f5f0e8" }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .team-section-wrap {
+            padding: 0 20px 56px !important;
+          }
+          .team-header {
+            margin-bottom: 24px !important;
+          }
+          .team-header h2 {
+            font-size: 24px !important;
+          }
+          .team-header p {
+            max-width: 100% !important;
+          }
+          .team-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 14px !important;
+            align-items: stretch !important;
+            justify-content: unset !important;
+          }
+          .team-card {
+            flex: unset !important;
+            width: 100% !important;
+            height: 320px !important;
+            border-radius: 16px !important;
+          }
+          .team-card img {
+            object-fit: cover !important;
+            object-position: top center !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+          .team-card-name {
+            font-size: 15px !important;
+          }
+          .team-card-role {
+            font-size: 12px !important;
+          }
+          .team-card-text {
+            bottom: 14px !important;
+            left: 14px !important;
+            right: 14px !important;
+          }
+        }
+      `}</style>
 
+      <div
+        className="team-section-wrap"
+        style={{ maxWidth: 1200, margin: "0 auto" }}
+      >
         {/* Header */}
-        <div style={{ marginBottom: 40 }}>
+        <div className="team-header" style={{ marginBottom: 40 }}>
           <h2 style={{
             fontFamily: "var(--font-playfair), serif",
             fontWeight: 800,
@@ -46,15 +96,19 @@ export default function TeamExperts() {
         </div>
 
         {/* Team Cards */}
-        <div style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "flex-end",
-          justifyContent: "center",
-        }}>
+        <div
+          className="team-grid"
+          style={{
+            display: "flex",
+            gap: 16,
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
+        >
           {teamMembers.map((member) => (
             <div
               key={member.name}
+              className="team-card"
               style={{
                 flex: "0 0 180px",
                 borderRadius: 20,
@@ -65,7 +119,6 @@ export default function TeamExperts() {
                 boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
               }}
             >
-              {/* Image */}
               <img
                 src={member.image}
                 alt={member.name}
@@ -73,42 +126,49 @@ export default function TeamExperts() {
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  objectPosition: "top center",
                   display: "block",
                 }}
               />
 
-              {/* Gradient overlay */}
               <div style={{
                 position: "absolute",
                 inset: 0,
                 background: "linear-gradient(to top, rgba(6,30,20,0.85) 0%, rgba(6,30,20,0.2) 50%, transparent 100%)",
               }} />
 
-              {/* Name & Role */}
-              <div style={{ position: "absolute", bottom: 16, left: 14, right: 14 }}>
-                <p style={{
-                  fontFamily: "var(--font-inter), sans-serif",
-                  fontWeight: 700,
-                  fontSize: 14,
-                  color: "#ffffff",
-                  margin: "0 0 2px",
-                }}>
+              <div
+                className="team-card-text"
+                style={{ position: "absolute", bottom: 16, left: 14, right: 14 }}
+              >
+                <p
+                  className="team-card-name"
+                  style={{
+                    fontFamily: "var(--font-inter), sans-serif",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    color: "#ffffff",
+                    margin: "0 0 2px",
+                  }}
+                >
                   {member.name}
                 </p>
-                <p style={{
-                  fontFamily: "var(--font-inter), sans-serif",
-                  fontWeight: 400,
-                  fontSize: 11,
-                  color: "#D4AF37",
-                  margin: 0,
-                }}>
+                <p
+                  className="team-card-role"
+                  style={{
+                    fontFamily: "var(--font-inter), sans-serif",
+                    fontWeight: 400,
+                    fontSize: 11,
+                    color: "#D4AF37",
+                    margin: 0,
+                  }}
+                >
                   {member.role}
                 </p>
               </div>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -7,24 +7,24 @@ import Footer from "@/components/footer";
 import { useRouter } from "next/navigation";
 
 const relatedArticles = [
-  { tag: "READ MORE", image: "/blog-family.svg", title: "ELSS vs PPF: Which Tax Saver Wins in 2024?" },
-  { tag: "READ MORE", image: "/blog-blackswan.svg", title: "NPS: The Ultimate Retirement & Tax Saving Tool" },
-  { tag: "READ MORE", image: "/blog-ulips.svg", title: "Old vs New Tax Regime: Which Should You Choose?" },
+  { tag: "READ MORE", image: "/blog-family.svg", title: "Family's Financial Goals" },
+  { tag: "READ MORE", image: "/blog-blackswan.svg", title: "How to deal with losses during black swan events?" },
+  { tag: "READ MORE", image: "/blog-ulips.svg", title: "Problem with ULIPs" },
 ];
 
 function Breadcrumb() {
   const router = useRouter();
   return (
-    <nav className="breadcrumb anim-breadcrumb" style={{ marginBottom: "20px", display: "flex", alignItems: "center" }}>
+    <nav className="breadcrumb anim-breadcrumb" style={{ marginBottom: "20px", display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <a href="/" onClick={e => { e.preventDefault(); router.push("/"); }}>Home</a><span>&gt;</span>
-      <a href="/blog" onClick={e => { e.preventDefault(); router.push("/blog"); }}>Blog</a><span>&gt;</span>
+      <a href="/Blog" onClick={e => { e.preventDefault(); router.push("/Blog"); }}>Blog</a><span>&gt;</span>
       <a href="/blog/business" onClick={e => { e.preventDefault(); router.push("/blog/business"); }}>Business</a><span>&gt;</span>
-      <span style={{ color: "#555", fontWeight: 400 }}>Tax Saving Strategies</span>
+      <span style={{ color: "#555", fontWeight: 400 }}>Deal with losses During Black Swan Events</span>
     </nav>
   );
 }
 
-export default function TaxSavingStrategies() {
+export default function BlackSwanEvents() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -58,7 +58,14 @@ export default function TaxSavingStrategies() {
           .read-more-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #2d8a5e; text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase; }
           .read-more-link:hover { text-decoration: underline; }
 
-          .page-container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+          .page-container { max-width: 1100px; margin: 0 auto; padding: 0; }
+
+          /* ── Reusable layout classes ── */
+          .hero-wrapper { padding-bottom: 48px; max-width: 1100px; margin: 0 auto; }
+          .body-container { max-width: 1100px; margin: 0 auto; padding: 0; }
+          .cost-cards-row { display: flex; gap: 20px; margin-bottom: 36px; }
+          .related-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+          .newsletter-row { display: flex; gap: 10px; max-width: 460px; margin: 0 auto 12px; }
 
           @keyframes fadeInDown { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: translateY(0); } }
           @keyframes fadeInUp   { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
@@ -74,22 +81,47 @@ export default function TaxSavingStrategies() {
           .anim-hero-img   { animation: scaleIn      0.8s ease 0.3s  both; }
           .anim-body-p1    { animation: fadeInUp     0.6s ease 0.4s  both; }
           .anim-highlights { animation: slideInLeft  0.7s ease 0.45s both; }
-          .anim-body-p2    { animation: fadeInUp     0.6s ease 0.5s  both; }
-          .anim-cost-title { animation: fadeInUp     0.6s ease 0.5s  both; }
-          .anim-cost-p     { animation: fadeInUp     0.6s ease 0.55s both; }
           .anim-cost-cards { animation: fadeInUp     0.6s ease 0.6s  both; }
-          .anim-flex-title { animation: fadeInUp     0.6s ease 0.6s  both; }
-          .anim-flex-p1    { animation: fadeInUp     0.6s ease 0.65s both; }
-          .anim-flex-p2    { animation: fadeInUp     0.6s ease 0.7s  both; }
           .anim-tags       { animation: fadeIn       0.6s ease 0.75s both; }
           .anim-newsletter { animation: scaleIn      0.7s ease 0.5s  both; }
           .anim-related-hd { animation: fadeInUp    0.6s ease 0.55s both; }
           .anim-rel-card-1 { animation: cardIn      0.6s ease 0.6s  both; }
           .anim-rel-card-2 { animation: cardIn      0.6s ease 0.7s  both; }
           .anim-rel-card-3 { animation: cardIn      0.6s ease 0.8s  both; }
+
+          /* ── Mobile styles ── */
+          @media (max-width: 768px) {
+            .page-container { padding: 0 20px; }
+            .body-container { padding: 0 20px; }
+            .hero-wrapper { padding: 0 20px 32px; }
+
+            .anim-hero-img { border-radius: 12px !important; }
+
+            /* Stat cards: stack vertically */
+            .cost-cards-row { flex-direction: column; gap: 12px; }
+
+            /* Related articles: single column */
+            .related-grid { grid-template-columns: 1fr; }
+
+            /* Newsletter: stack input + button */
+            .newsletter-row { flex-direction: column; gap: 10px; max-width: 100%; }
+            .newsletter-input { width: 100%; }
+            .join-btn { width: 100%; text-align: center; }
+
+            /* Section top padding */
+            .ffg-page > div:first-child { padding-top: 24px !important; }
+          }
+
+          @media (max-width: 480px) {
+            .page-container { padding: 0 16px; }
+            .body-container { padding: 0 16px; }
+            .hero-wrapper { padding: 0 16px 24px; }
+
+            .two-col-card { padding: 16px; }
+          }
         `}</style>
 
-        {/* ── Breadcrumb + Title ── */}
+        {/* ── Breadcrumb + Title + Meta ── */}
         <div style={{ background: "#f5f3ee", padding: "40px 0 0" }}>
           <div className="page-container">
             <Breadcrumb />
@@ -101,70 +133,75 @@ export default function TaxSavingStrategies() {
 
             {/* Title */}
             <h1 className="anim-title" style={{ marginBottom: 16, lineHeight: 1.1 }}>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(36px,5vw,54px)", color: "#0d1f0d" }}>
-                Smart Tax Saving Strategies:
+              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(28px,5vw,54px)", color: "#0d1f0d" }}>
+                How to deal with losses
               </span>
               <br />
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(36px,5vw,54px)", color: "#064E3B" }}>
-                How We Legally Kept More of What We Earned
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(28px,5vw,54px)", color: "#064E3B" }}>
+                during black swan events?
               </span>
             </h1>
 
             {/* Meta */}
-            <div className="anim-meta" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: 32, fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#888" }}>
-              <span>Mar 10, 2024</span>
+            <div className="anim-meta" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: 20, fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#888" }}>
+              <span>Oct 24, 2023</span>
               <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#888", display: "inline-block" }} />
-              <span>7 min read</span>
+              <span>6 min read</span>
             </div>
           </div>
-        </div>
 
-        {/* ── Hero Image ── */}
-        <div style={{ padding: "0 0 48px" }}>
-          <div className="page-container">
-            <div className="anim-hero-img" style={{ borderRadius: 16, overflow: "hidden", width: "100%", background: "transparent", position: "relative", aspectRatio: "16/7" }}>
-              <Image src="/Hero Section1.svg" alt="Couple planning their tax savings" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          {/* Hero Image */}
+          <div className="hero-wrapper">
+            <div
+              className="anim-hero-img"
+              style={{ borderRadius: "16px", overflow: "hidden", width: "100%", position: "relative", aspectRatio: "16/7", backgroundColor: "#111" }}
+            >
+              <img
+                src="/blog-blackswan.svg"
+                alt="How to deal with losses during black swan events"
+                style={{ position: "absolute", top: "50%", left: "50%", width: "120%", height: "120%", transform: "translate(-50%, -50%)", objectFit: "cover", objectPosition: "center", display: "block" }}
+              />
             </div>
           </div>
         </div>
 
         {/* ── Article Body ── */}
         <div style={{ paddingBottom: 8 }}>
-          <div className="page-container">
+          <div className="body-container">
 
             {/* Intro */}
             <p className="anim-body-p1" style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#222", marginBottom: 28 }}>
-              Reducing your tax liability legally requires a combination of timely planning, smart instrument selection, and knowing which deductions apply to you. Here's a tailored approach for Indian salaried and self-employed individuals:
+              Dealing with substantial portfolio losses during a black swan event requires a combination of emotional discipline, risk management, and strategic adjustments. Here's a tailored approach for the Indian market context:
             </p>
 
             {/* Section 1 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>1. Maximise Section 80C (Up to ₹1.5 Lakh)</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>1. Stay Calm and Assess the Situation</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 6 }}>
-              <strong>ELSS Mutual Funds:</strong> Equity Linked Saving Schemes offer the shortest lock-in period (3 years) among all 80C instruments, with the potential for equity-linked returns. Ideal for investors comfortable with market-linked growth.
+              <strong>Avoid Panic Selling:</strong> Emotional decisions can lead to locking in losses. Black swan events often lead to a temporary overreaction in markets.
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              <strong>PPF & EPF:</strong> Public Provident Fund offers government-backed, tax-free returns over 15 years. EPF contributions by both employer and employee are eligible under 80C — a reliable anchor for your deduction basket.
+              <strong>Analyze Fundamentals:</strong> Evaluate the companies or sectors in your portfolio. Strong businesses with sound fundamentals are more likely to recover once the panic subsides.
             </p>
 
             {/* Section 2 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>2. Go Beyond 80C — Use Other Deductions</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>2. Diversify Your Portfolio</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 6 }}>
-              <strong>Section 80D — Health Insurance:</strong> Claim up to ₹25,000 for self/family premiums and an additional ₹25,000–₹50,000 for parents (depending on their age). A family floater policy covering parents can unlock ₹75,000+ in deductions.
+              <strong>Sectoral Diversification:</strong> Indian markets are often influenced by specific sectors (e.g., IT, banking, pharma). A well-diversified portfolio across sectors can cushion losses.
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              <strong>Section 24(b) — Home Loan Interest:</strong> Deduct up to ₹2 lakh per year on interest paid for a self-occupied property. For let-out properties, there's no upper limit on interest deduction — a significant benefit for real estate investors.
+              <strong>Asset Class Diversification:</strong> Allocate investments to other asset classes like gold, bonds, or REITs. For instance, gold tends to perform well during crises and can act as a hedge.
             </p>
 
             {/* Section 3 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>3. Choose the Right Tax Regime</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>3. Review and Rebalance</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 6 }}>
-              <strong>Old Regime:</strong> Better if you have significant deductions — HRA, home loan interest, 80C, 80D, LTA. The more exemptions and deductions you claim, the more you save under this regime.
+              <strong>Reassess Risk Appetite:</strong> Determine whether your current portfolio aligns with your revised risk tolerance after the event.
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              <strong>New Regime:</strong> Simpler with lower slab rates, but most exemptions are removed. Suits those with fewer deductions or those who prefer simplicity over optimisation. Always compare both before filing.
+              <strong>Rebalance Strategically:</strong> If certain sectors or stocks have become disproportionately large or small due to market fluctuations, rebalance to align with your long-term goals.
             </p>
 
-            {/* Core Strategies highlight box */}
+            {/* Core Recovery Strategies highlight box */}
             <div className="anim-highlights" style={{ position: "relative", background: "rgba(17,29,70,0.05)", borderRadius: 16, borderLeft: "4px solid #11D462", padding: "28px 32px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 14, overflow: "hidden" }}>
               <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
                 <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} viewBox="0 0 965 306" preserveAspectRatio="none" fill="none">
@@ -175,12 +212,12 @@ export default function TaxSavingStrategies() {
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                   <path d="M6 16L10 12.95L14 16L12.5 11.05L16.5 8.2H11.6L10 3L8.4 8.2H3.5L7.5 11.05L6 16ZM10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 11.3833 19.7375 12.6833 19.2125 13.9C18.6875 15.1167 17.975 16.175 17.075 17.075C16.175 17.975 15.1167 18.6875 13.9 19.2125C12.6833 19.7375 11.3833 20 10 20ZM10 18C12.2333 18 14.125 17.225 15.675 15.675C17.225 14.125 18 12.2333 18 10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18Z" fill="#11D462"/>
                 </svg>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 15, color: "#111" }}>Quick Win Strategies</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 15, color: "#111" }}>Core Recovery Strategies</span>
               </div>
               {[
-                { label: "Start SIPs in April", desc: "Spread 80C investments over 12 months via SIPs for better returns and no year-end rush." },
-                { label: "NPS Booster", desc: "Contribute ₹50,000 to NPS for an additional deduction under Section 80CCD(1B) over and above the ₹1.5L 80C limit." },
-                { label: "Salary Restructuring", desc: "Include LTA, food allowance, and phone reimbursements in your CTC to reduce taxable income legally." },
+                { label: "Look for Value", desc: "Events present buying opportunities in strong stocks at discounts." },
+                { label: "SIP Approach", desc: "Continue or initiate SIPs to average out the cost during volatility." },
+                { label: "Tax Benefits", desc: "Offset gains with realized losses under the Income Tax Act, 1961." },
               ].map((item, i) => (
                 <div key={i} className="highlight-row" style={{ position: "relative", zIndex: 1 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginTop: 2, flexShrink: 0 }}>
@@ -195,62 +232,62 @@ export default function TaxSavingStrategies() {
             </div>
 
             {/* Section 5 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>5. Learn from Past Mistakes</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>5. Learn from the Event</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 6 }}>
-              <strong>Review Last Year's ITR:</strong> Did you miss any deductions — HRA, 80D, home loan interest, or education loan interest under 80E? Use last year's filing as a checklist to close gaps this year.
+              <strong>Risk Management:</strong> Use the event to evaluate the effectiveness of your current risk management strategies. For example, did you have stop-loss orders or sufficient diversification in place?
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              <strong>Track Capital Gains:</strong> If you redeemed mutual funds or sold stocks, plan your tax-loss harvesting. Offset short-term gains with realised losses under the Income Tax Act, 1961 to reduce your net tax liability.
+              <strong>Contingency Plan:</strong> Develop a contingency plan to deal with future uncertainties, such as maintaining an emergency fund or investing in liquid assets for quick access to cash.
             </p>
 
             {/* Section 6 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>6. Hedge with Tax-Efficient Instruments</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>6. Hedge Against Future Events</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              Consider Sovereign Gold Bonds (SGBs) — they offer interest income (taxable) but capital gains on maturity are fully exempt from tax. Similarly, debt mutual funds held for the right duration can offer better post-tax returns than traditional fixed deposits, especially for those in the 30% tax bracket.
+              Consider using derivatives like options or futures to hedge your portfolio. In the Indian context, GOLD, ETFs and sovereign gold bonds provide a safe haven during crises.
             </p>
 
             {/* Section 7 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>7. Consult a Tax Advisor</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>7. Leverage Professional Advice</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              A qualified CA or tax consultant can help identify deductions specific to your income profile — especially for business owners, freelancers, or those with rental income or capital gains from multiple sources. One session can often save far more than the consultation fee.
+              Consult with a financial advisor to reassess your financial goals and make informed decisions tailored to the Indian market's dynamics.
             </p>
 
             {/* Section 8 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>8. Stay Updated on Tax Rule Changes</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>8. Stay Updated</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 24 }}>
-              India's tax landscape changes with every Union Budget. Monitor announcements on slab revisions, new deduction limits, surcharge changes, and LTCG rules. For example, the introduction of the New Tax Regime as default in FY 2023-24 changed the math for millions of taxpayers overnight.
+              Monitor both global effects (e.g., U.S. Federal Reserve decisions) and local factors (e.g., RBI policies). Recognize that Indian markets have historically rebounded strongly from crises like the 2008 crash and the 2020 pandemic.
             </p>
 
-            {/* Two example highlight cards */}
-            <div className="anim-cost-cards" style={{ display: "flex", gap: 20, marginBottom: 36 }}>
+            {/* Two-col stat cards */}
+            <div className="anim-cost-cards cost-cards-row">
               <div className="two-col-card">
-                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, color: "#064E3B", marginBottom: 10, letterSpacing: "1.2px", textTransform: "uppercase" }}>ELSS vs PPF (FY 2023-24)</div>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, color: "#064E3B", marginBottom: 10, letterSpacing: "1.2px", textTransform: "uppercase" }}>THE COVID-19 CRASH (MARCH 2020)</div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                  Investors who chose <strong>ELSS</strong> over PPF saw average returns of 18–22% during the equity bull run of 2023, while enjoying the same ₹1.5L deduction under 80C — with a shorter 3-year lock-in.
+                  The Nifty 50 fell by over 30% in weeks. Those who held strong stocks like <strong>Reliance</strong> or <strong>HDFC Bank</strong> witnessed a full recovery.
                 </p>
               </div>
               <div className="two-col-card">
-                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, color: "#D4A843", marginBottom: 10, letterSpacing: "1.2px", textTransform: "uppercase" }}>NPS EXTRA BENEFIT</div>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, color: "#D4A843", marginBottom: 10, letterSpacing: "1.2px", textTransform: "uppercase" }}>DIVERSIFICATION GAINS</div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                  Investors who contributed ₹50,000 to NPS under 80CCD(1B) saved an additional ₹15,000 in taxes (at the 30% slab) — over and above the ₹1.5L 80C limit — turning retirement planning into an immediate tax win.
+                  Investors who diversified into gold saw gains as gold prices surged over 25% that year, offsetting equity market drawdowns.
                 </p>
               </div>
             </div>
 
             {/* Section 10 */}
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>10. Build an Emergency Fund First</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: "#0d1f0d", marginBottom: 10 }}>10. Build an Emergency Fund</h2>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", lineHeight: 1.8, marginBottom: 28 }}>
-              Ensure you have 6–12 months' worth of expenses in a liquid fund before locking money into tax-saving instruments with long lock-in periods. Redeeming ELSS or PPF prematurely to meet emergencies defeats the purpose of disciplined tax planning.
+              Ensure you have 6–12 months' worth of expenses in a liquid fund to prevent the need to sell investments during a market downturn.
             </p>
 
-            {/* Closing bold line */}
+            {/* Closing line */}
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, fontWeight: 700, color: "#064E3B", marginBottom: 36 }}>
-              Follow Moneymati for more updates on tax planning, wealth preservation, and staying financially resilient in every market condition.
+              Follow Moneymati for more updates on risk management, wealth preservation, and staying resilient in volatile markets.
             </p>
 
             {/* Tags */}
             <div className="anim-tags" style={{ marginBottom: 56 }}>
-              {["#taxplanning", "#section80C", "#investing", "#elss", "#financialplanning", "#moneymati", "#wealthpreservation"].map(tag => (
+              {["#blackswan", "#riskmanagement", "#investing", "#nifty50", "#financialplanning", "#moneymati", "#wealthpreservation"].map(tag => (
                 <span key={tag} className="tag-pill">{tag}</span>
               ))}
             </div>
@@ -276,7 +313,7 @@ export default function TaxSavingStrategies() {
                   ✅ You're subscribed! Check your inbox.
                 </div>
               ) : (
-                <div style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto 12px" }}>
+                <div className="newsletter-row">
                   <input className="newsletter-input" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && email && setSubscribed(true)} />
                   <button className="join-btn" onClick={() => email && setSubscribed(true)}>Join Newsletter</button>
                 </div>
@@ -297,7 +334,7 @@ export default function TaxSavingStrategies() {
                 <a href="#" style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", textDecoration: "none", fontWeight: 500 }}>View all →</a>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+              <div className="related-grid">
                 {relatedArticles.map((article, i) => (
                   <div key={i} className={`related-card anim-rel-card-${i + 1}`} style={{ cursor: "pointer" }}>
                     <div style={{ height: 160, overflow: "hidden", position: "relative" }}>

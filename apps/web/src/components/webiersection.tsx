@@ -6,21 +6,21 @@ const playfair = Playfair_Display({ subsets: ["latin"] });
 const webinars = [
   {
     date: "March 15, 2026",
-    title: "Women of Wealth: Building Your First Investment Portfolio",
+    title: "Shubharambh – Make Your Financial Plan",
     description:
       "Learn how to build a diversified investment portfolio from scratch with expert guidance.",
     image: "/webinar1.svg",
   },
   {
     date: "March 22, 2026",
-    title: "Conquering Your Finances: Does Your Money Work for You Enough?",
+    title: "Nipuna – Equity Investing",
     description:
       "Discover strategies to make your money work harder and grow your wealth faster.",
     image: "/webinar2.svg",
   },
   {
     date: "April 5, 2026",
-    title: "Stock Market Secrets: From Basics to Your First Trade",
+    title: "Nivritti – Make your Retirement Plan",
     description:
       "A hands-on workshop to help you understand the stock market and make your first investment.",
     image: "/webinar3.svg",

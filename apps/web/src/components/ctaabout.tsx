@@ -62,6 +62,18 @@ export default function CTASection() {
           font-weight: 600;
           border: none;
           cursor: pointer;
+          transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-btn-primary:hover {
+          background-color: #b8963e;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(198, 165, 83, 0.35);
+        }
+
+        .cta-btn-primary:active {
+          transform: translateY(0px);
+          box-shadow: none;
         }
 
         .cta-btn-secondary {
@@ -74,6 +86,12 @@ export default function CTASection() {
           font-size: 16px;
           font-weight: 500;
           cursor: pointer;
+          transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .cta-btn-secondary:hover {
+          border-color: rgba(248, 246, 241, 0.7);
+          background-color: rgba(248, 246, 241, 0.06);
         }
 
         /* ── DESKTOP ── */

@@ -15,7 +15,37 @@ export default function FinancialCTABanner() {
         padding: "0 48px 48px",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .cta-section {
+            padding: 0 20px 32px !important;
+          }
+          .cta-content {
+            padding: 36px 24px !important;
+            gap: 14px !important;
+          }
+          .cta-title {
+            font-size: 26px !important;
+            line-height: 34px !important;
+            max-width: 100% !important;
+          }
+          .cta-desc {
+            font-size: 14px !important;
+            line-height: 22px !important;
+            max-width: 100% !important;
+          }
+          .cta-btn {
+            width: auto !important;
+            padding: 14px 36px !important;
+            font-size: 15px !important;
+            white-space: nowrap !important;
+            align-self: center !important;
+          }
+        }
+      `}</style>
+
       <div
+        className="cta-section"
         style={{
           maxWidth: "1200px",
           margin: "0 auto",
@@ -46,6 +76,7 @@ export default function FinancialCTABanner() {
 
         {/* Content */}
         <div
+          className="cta-content"
           style={{
             position: "relative",
             zIndex: 2,
@@ -59,6 +90,7 @@ export default function FinancialCTABanner() {
         >
           {/* Title */}
           <h2
+            className="cta-title"
             style={{
               margin: 0,
               fontFamily: "var(--font-inter), sans-serif",
@@ -74,6 +106,7 @@ export default function FinancialCTABanner() {
 
           {/* Description */}
           <p
+            className="cta-desc"
             style={{
               margin: 0,
               fontFamily: "var(--font-inter), sans-serif",
@@ -89,6 +122,7 @@ export default function FinancialCTABanner() {
 
           {/* CTA Button */}
           <button
+            className="cta-btn"
             style={{
               marginTop: "8px",
               padding: "16px 40px",

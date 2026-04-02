@@ -58,22 +58,55 @@ export default function RefundPolicy() {
       });
     });
 
-    // Scroll spy
     const sectionIds = tocItems.map((item) => item.href.replace("#", ""));
-    const onScroll = () => {
-      let current = sectionIds[0];
-      sectionIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 120) current = id;
-      });
+    const dropdown = document.getElementById("rp-toc-dropdown") as HTMLSelectElement | null;
+
+    // IntersectionObserver for accurate scroll spy (desktop TOC + mobile dropdown)
+    const visibilityMap = new Map<string, boolean>();
+    sectionIds.forEach((id) => visibilityMap.set(id, false));
+
+    const updateActive = () => {
+      const active = sectionIds.find((id) => visibilityMap.get(id)) ?? sectionIds[0];
+
+      // Desktop TOC
       document.querySelectorAll<HTMLAnchorElement>(".rp-toc-list a").forEach((a) => {
         const href = a.getAttribute("href")?.replace("#", "");
-        a.classList.toggle("active", href === current);
+        a.classList.toggle("active", href === active);
       });
+
+      // Mobile dropdown
+      if (dropdown && window.innerWidth <= 767) {
+        dropdown.value = active;
+      }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visibilityMap.set(entry.target.id, entry.isIntersecting);
+        });
+        updateActive();
+      },
+      { rootMargin: "-10% 0px -60% 0px", threshold: 0 }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    // Mobile dropdown → smooth scroll
+    const handleDropdownChange = () => {
+      if (!dropdown) return;
+      const target = document.getElementById(dropdown.value);
+      if (target) window.scrollTo({ top: target.offsetTop - 64, behavior: "smooth" });
+    };
+    dropdown?.addEventListener("change", handleDropdownChange);
+
+    return () => {
+      observer.disconnect();
+      dropdown?.removeEventListener("change", handleDropdownChange);
+    };
   }, []);
 
   return (
@@ -101,10 +134,8 @@ export default function RefundPolicy() {
         }
         .rp-hero-bg {
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
           object-fit: cover;
           object-position: center center;
           opacity: 0.8;
@@ -148,6 +179,7 @@ export default function RefundPolicy() {
           z-index: 10;
         }
 
+        /* ── Desktop TOC ── */
         .rp-toc-wrap {
           width: 180px;
           flex-shrink: 0;
@@ -167,8 +199,7 @@ export default function RefundPolicy() {
         }
         .rp-toc-list {
           list-style: none;
-          padding: 0;
-          margin: 0;
+          padding: 0; margin: 0;
           display: flex;
           flex-direction: column;
           gap: 6px;
@@ -185,6 +216,7 @@ export default function RefundPolicy() {
         .rp-toc-list a:hover { color: #1a7a4a; }
         .rp-toc-list a.active { color: #1a7a4a; font-weight: 600; }
 
+        /* ── Main ── */
         .rp-main { flex: 1; min-width: 0; }
 
         .rp-card {
@@ -209,7 +241,6 @@ export default function RefundPolicy() {
           padding: 4px 14px;
           background: rgba(26,122,74,0.06);
         }
-
         .rp-notice {
           padding: 20px 28px 24px;
           font-size: 0.875rem;
@@ -217,13 +248,11 @@ export default function RefundPolicy() {
           line-height: 1.78;
           border-bottom: 1px solid #ebebeb;
         }
-
         .rp-section {
           padding: 30px 28px;
           border-bottom: 1px solid #ebebeb;
         }
         .rp-section:last-of-type { border-bottom: none; }
-
         .rp-section-header {
           display: flex;
           align-items: center;
@@ -231,8 +260,7 @@ export default function RefundPolicy() {
           margin-bottom: 14px;
         }
         .rp-icon {
-          width: 32px;
-          height: 32px;
+          width: 32px; height: 32px;
           border-radius: 50%;
           background: #1a7a4a;
           display: flex;
@@ -258,6 +286,7 @@ export default function RefundPolicy() {
           margin: 0;
         }
 
+        /* ── Contact ── */
         .rp-contact-wrap { padding: 0 20px 20px; }
         .rp-contact {
           background: #122B1F;
@@ -292,10 +321,8 @@ export default function RefundPolicy() {
           margin-bottom: 2px;
         }
         .rp-contact-item-label svg {
-          width: 11px;
-          height: 11px;
-          stroke: #4ade80;
-          fill: none;
+          width: 11px; height: 11px;
+          stroke: #4ade80; fill: none;
           stroke-width: 2;
           stroke-linecap: round;
           stroke-linejoin: round;
@@ -314,10 +341,110 @@ export default function RefundPolicy() {
           margin: 0;
         }
 
-        @media (max-width: 700px) {
-          .rp-layout { flex-direction: column; padding: 0 14px 60px; margin-top: -28px; gap: 0; }
-          .rp-toc-wrap { width: 100%; position: static; padding-top: 16px; padding-bottom: 8px; }
-          .rp-contact-wrap { padding: 0 14px 16px; }
+        /* ── Mobile dropdown (hidden on desktop) ── */
+        .rp-toc-mobile { display: none; }
+
+        /* ══════════════════════════════════════
+           MOBILE-ONLY  (max-width: 767px)
+        ══════════════════════════════════════ */
+        @media (max-width: 767px) {
+
+          /* Hero */
+          .rp-hero {
+            min-height: 260px !important;
+            padding: 72px 20px 52px !important;
+          }
+          .rp-hero-title {
+            font-size: 1.7rem !important;
+            margin-bottom: 10px !important;
+          }
+          .rp-hero-sub { font-size: 0.84rem !important; }
+
+          /* Layout — stack vertically */
+          .rp-layout {
+            flex-direction: column !important;
+            gap: 0 !important;
+            padding: 16px 14px 48px !important;
+            margin-top: -24px !important;
+          }
+
+          /* Hide desktop TOC */
+          .rp-toc-wrap { display: none !important; }
+
+          /* ── Sticky dropdown TOC ── */
+          .rp-toc-mobile {
+            display: block;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #f0f0eb;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.09);
+            padding: 10px 14px;
+          }
+          .rp-toc-mobile-inner {
+            position: relative;
+            width: 100%;
+          }
+          .rp-toc-mobile-inner::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #1a7a4a;
+            pointer-events: none;
+          }
+          #rp-toc-dropdown {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #ffffff;
+            border: 1.5px solid #1a7a4a;
+            border-radius: 9999px;
+            padding: 9px 40px 9px 18px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1a7a4a;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+          }
+
+          /* Card */
+          .rp-card {
+            border-radius: 14px !important;
+          }
+
+          /* Date badge */
+          .rp-date-badge-wrap { padding: 16px 16px 0 !important; }
+
+          /* Notice */
+          .rp-notice {
+            padding: 14px 16px 18px !important;
+            font-size: 0.81rem !important;
+          }
+
+          /* Sections */
+          .rp-section { padding: 20px 16px !important; }
+          .rp-section-title { font-size: 1.05rem !important; }
+          .rp-body { font-size: 0.83rem !important; line-height: 1.72 !important; }
+
+          /* Contact */
+          .rp-contact-wrap { padding: 0 14px 16px !important; }
+          .rp-contact {
+            padding: 22px 18px !important;
+            border-radius: 12px !important;
+          }
+          .rp-contact-title { font-size: 1.1rem !important; }
+          .rp-contact-sub { font-size: 0.79rem !important; margin-bottom: 16px !important; }
+          .rp-contact-grid { flex-direction: column !important; gap: 16px !important; }
+          .rp-contact-item-val { font-size: 0.84rem !important; }
+
+          /* Footer note */
+          .rp-footer-note { padding: 14px 16px 18px !important; font-size: 0.7rem !important; }
         }
       `}</style>
 
@@ -335,10 +462,23 @@ export default function RefundPolicy() {
         </div>
       </section>
 
+      {/* ── MOBILE STICKY DROPDOWN (mobile only) ── */}
+      <div className="rp-toc-mobile">
+        <div className="rp-toc-mobile-inner">
+          <select id="rp-toc-dropdown" defaultValue="no-refunds">
+            {tocItems.map((item, i) => (
+              <option key={item.href} value={item.href.replace("#", "")}>
+                {String(i + 1).padStart(2, "0")}. {item.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* ── BODY ── */}
       <div className="rp-layout">
 
-        {/* TOC */}
+        {/* Desktop TOC */}
         <aside className="rp-toc-wrap">
           <span className="rp-toc-label">On This Page</span>
           <ol className="rp-toc-list">
@@ -354,20 +494,17 @@ export default function RefundPolicy() {
         <main className="rp-main">
           <div className="rp-card" data-animate>
 
-            {/* Date Badge */}
             <div className="rp-date-badge-wrap">
               <span className="rp-date-badge">Effective Date: 08-11-2024</span>
             </div>
 
-            {/* Notice */}
             <div className="rp-notice">
               MoneyMati operates under the registered proprietorship MoneyMati. By purchasing our
               services, including webinars, courses, and other financial education offerings, you
               acknowledge and agree to the terms outlined in this Refund Policy.
             </div>
 
-            {/* Sections */}
-            {sections.map((sec, i) => (
+            {sections.map((sec) => (
               <div key={sec.id} id={sec.id} className="rp-section" data-animate>
                 <div className="rp-section-header">
                   <div className="rp-icon">{sec.number}</div>
@@ -377,7 +514,6 @@ export default function RefundPolicy() {
               </div>
             ))}
 
-            {/* Contact */}
             <div id="contact" data-animate>
               <div className="rp-contact-wrap">
                 <div className="rp-contact">
@@ -423,7 +559,6 @@ export default function RefundPolicy() {
               </div>
             </div>
 
-            {/* Footer note */}
             <p className="rp-footer-note">
               This Refund Policy ensures MoneyMati&apos;s commitment to transparency and quality financial education.
             </p>

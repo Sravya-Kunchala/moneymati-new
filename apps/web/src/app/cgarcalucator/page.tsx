@@ -8,35 +8,35 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
 export default function CAGRCalculatorPage() {
-  // Lumpsum CAGR state
-  const [lsInvestment, setLsInvestment] = useState(50000);
-  const [lsMaturityAmount, setLsMaturityAmount] = useState(10);
-  const [lsYears, setLsYears] = useState(5000);
+  // Store as strings so backspace/clear works naturally without snapping to 0
+  const [lsInvestment, setLsInvestment] = useState("50000");
+  const [lsMaturityAmount, setLsMaturityAmount] = useState("10");
+  const [lsYears, setLsYears] = useState("5000");
 
-  // ULIP CAGR state
-  const [ulipInvestment, setUlipInvestment] = useState(0);
+  const [ulipInvestment, setUlipInvestment] = useState("");
   const [ulipFrequency, setUlipFrequency] = useState("Monthly");
-  const [ulipYears, setUlipYears] = useState(15);
-  const [ulipInterimPV, setUlipInterimPV] = useState(12);
-  const [ulipMaturityAmount, setUlipMaturityAmount] = useState(0);
-  const [ulipYearsAtMaturity, setUlipYearsAtMaturity] = useState(12);
+  const [ulipYears, setUlipYears] = useState("15");
+  const [ulipInterimPV, setUlipInterimPV] = useState("12");
+  const [ulipMaturityAmount, setUlipMaturityAmount] = useState("");
+  const [ulipYearsAtMaturity, setUlipYearsAtMaturity] = useState("12");
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Lumpsum CAGR calculation: CAGR = (MaturityAmount / InvestmentAmount)^(1/n) - 1
+  // Parse helper — returns 0 for empty/invalid strings
+  const n = (v: string) => parseFloat(v) || 0;
+
   const lsCAGR =
-    lsInvestment > 0 && lsYears > 0
-      ? (Math.pow(lsYears / lsInvestment, 1 / lsMaturityAmount) - 1) * 100
+    n(lsInvestment) > 0 && n(lsYears) > 0
+      ? (Math.pow(n(lsYears) / n(lsInvestment), 1 / n(lsMaturityAmount)) - 1) * 100
       : 0;
 
-  // ULIP CAGR calculation (simplified - using maturity vs investment over years)
   const ulipCAGR =
-    ulipInvestment > 0 && ulipYearsAtMaturity > 0 && ulipMaturityAmount > 0
-      ? (Math.pow(ulipMaturityAmount / ulipInvestment, 1 / ulipYearsAtMaturity) - 1) * 100
+    n(ulipInvestment) > 0 && n(ulipYearsAtMaturity) > 0 && n(ulipMaturityAmount) > 0
+      ? (Math.pow(n(ulipMaturityAmount) / n(ulipInvestment), 1 / n(ulipYearsAtMaturity)) - 1) * 100
       : 0;
 
-  const fmt = (n) =>
-    isFinite(n) ? n.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "0.00";
+  const fmt = (v: number) =>
+    isFinite(v) ? v.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "0.00";
 
   return (
     <div
@@ -87,9 +87,7 @@ export default function CAGRCalculatorPage() {
           font-size:15px; font-weight:500; color:#222; width:100%;
           font-family:var(--font-inter),sans-serif; appearance:none; cursor:pointer;
         }
-        .cagr-select-wrap .chevron {
-          pointer-events:none; color:#888; flex-shrink:0;
-        }
+        .cagr-select-wrap .chevron { pointer-events:none; color:#888; flex-shrink:0; }
         .submit-btn {
           width:100%; padding:16px; background:#0d3d20; color:#fff;
           border:none; border-radius:12px; font-size:16px; font-weight:700;
@@ -97,13 +95,81 @@ export default function CAGRCalculatorPage() {
           transition:background 0.2s;
         }
         .submit-btn:hover { background:#0a2e18; }
-
-        .section-divider {
-          border:none; border-top:1.5px solid rgba(6,40,23,0.07); margin:28px 0;
-        }
+        .section-divider { border:none; border-top:1.5px solid rgba(6,40,23,0.07); margin:28px 0; }
         .section-label {
           font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
           color:#0d3d20; margin-bottom:20px;
+        }
+
+        /* two-col grid for form fields */
+        .field-grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+
+        /* why cards grid */
+        .why-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+
+        /* other calculators grid */
+        .calc-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+
+        /* ── Mobile (≤ 640px) ── */
+        @media (max-width: 640px) {
+          .hero-section {
+            padding: 60px 20px 100px !important;
+          }
+          .hero-title {
+            font-size: 30px !important;
+          }
+          .overlap-card-wrap {
+            padding: 0 16px !important;
+          }
+          .overlap-card {
+            padding: 28px 20px !important;
+            margin-top: -70px !important;
+          }
+          .overlap-card h2 {
+            font-size: 20px !important;
+          }
+          .main-content {
+            padding: 0 16px 40px !important;
+          }
+          .calc-form-card {
+            padding: 24px 16px !important;
+          }
+          .field-grid-2 {
+            grid-template-columns: 1fr !important;
+          }
+          .why-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .calc-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .why-section {
+            padding: 24px 16px !important;
+          }
+          .why-section h2 {
+            font-size: 20px !important;
+          }
+          .result-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .other-calc-header h3 {
+            font-size: 16px !important;
+          }
+          .spacer { height: 32px !important; }
         }
       `}</style>
 
@@ -111,7 +177,7 @@ export default function CAGRCalculatorPage() {
 
       {/* Hero */}
       <div
-        className="anim-hero"
+        className="anim-hero hero-section"
         style={{ position: "relative", minHeight: "320px", padding: "80px 48px 120px", backgroundColor: "#0d2818" }}
       >
         <img
@@ -129,7 +195,7 @@ export default function CAGRCalculatorPage() {
             <span style={{ margin: "0 8px", color: "#ffffff50" }}>›</span>
             <span style={{ color: "#11D462", fontWeight: 600 }}>CAGR Calculator</span>
           </div>
-          <h1 style={{ margin: 0, fontSize: "clamp(30px,4.5vw,54px)", color: "#ffffff", fontWeight: 800, lineHeight: 1.1 }}>
+          <h1 className="hero-title" style={{ margin: 0, fontSize: "clamp(30px,4.5vw,54px)", color: "#ffffff", fontWeight: 800, lineHeight: 1.1 }}>
             CAGR <span style={{ color: "#11D462", fontStyle: "italic" }}>Calculator</span>
           </h1>
           <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.7, maxWidth: 500, marginTop: 16 }}>
@@ -139,10 +205,10 @@ export default function CAGRCalculatorPage() {
       </div>
 
       {/* Overlapping card */}
-      <div style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
+      <div className="overlap-card-wrap" style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
         <div style={{ maxWidth: "680px", margin: "-80px auto 0", position: "relative", zIndex: 10 }}>
           <div
-            className="anim-overlap-card"
+            className="anim-overlap-card overlap-card"
             style={{ background: "#ffffff", borderRadius: 20, padding: "40px", textAlign: "center", boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }}
           >
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#11D462" }}>INVESTMENT ANALYSIS</span>
@@ -154,43 +220,31 @@ export default function CAGRCalculatorPage() {
         </div>
       </div>
 
-      <div style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
+      <div className="spacer" style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
 
       {/* Main Content */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
+      <div className="main-content" style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
 
         {/* Calculator Form */}
         <div className="anim-calculator" style={{ marginBottom: 32 }}>
-          <div style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
+          <div className="calc-form-card" style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
 
-            {/* LUMPSUM CAGR CALCULATOR */}
+            {/* LUMPSUM CAGR */}
             <div className="section-label">LUMPSUM CAGR CALCULATOR</div>
 
-            {/* Investment Amount */}
             <div className="cagr-field" style={{ marginBottom: 20 }}>
               <label>Investment Amount *</label>
               <div className="cagr-input-wrap">
                 <span className="pfx">₹</span>
-                <input
-                  type="number"
-                  value={lsInvestment}
-                  onChange={(e) => { setLsInvestment(Number(e.target.value)); setSubmitted(false); }}
-                  placeholder="50,000"
-                />
+                <input type="number" value={lsInvestment} onChange={(e) => { setLsInvestment(e.target.value); setSubmitted(false); }} placeholder="50,000" />
               </div>
             </div>
 
-            {/* Maturity Amount + Number of Years */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="field-grid-2">
               <div className="cagr-field">
                 <label>Maturity Amount *</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="number"
-                    value={lsMaturityAmount}
-                    onChange={(e) => { setLsMaturityAmount(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="10"
-                  />
+                  <input type="number" value={lsMaturityAmount} onChange={(e) => { setLsMaturityAmount(e.target.value); setSubmitted(false); }} placeholder="10" />
                   <span className="sfx">Years</span>
                 </div>
               </div>
@@ -198,54 +252,35 @@ export default function CAGRCalculatorPage() {
                 <label>Number of years</label>
                 <div className="cagr-input-wrap">
                   <span className="pfx">₹</span>
-                  <input
-                    type="number"
-                    value={lsYears}
-                    onChange={(e) => { setLsYears(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="5,000"
-                  />
+                  <input type="number" value={lsYears} onChange={(e) => { setLsYears(e.target.value); setSubmitted(false); }} placeholder="5,000" />
                 </div>
               </div>
             </div>
 
-            {/* CAGR Output */}
             <div className="cagr-field" style={{ marginBottom: 28 }}>
               <label>CAGR</label>
               <div className="cagr-input-wrap">
-                <input
-                  type="text"
-                  value={submitted ? fmt(lsCAGR) : "12"}
-                  disabled
-                />
+                <input type="text" value={submitted ? fmt(lsCAGR) : "12"} disabled />
                 <span className="sfx">%</span>
               </div>
             </div>
 
             <hr className="section-divider" />
 
-            {/* ULIP CAGR CALCULATOR */}
+            {/* ULIP CAGR */}
             <div className="section-label" style={{ marginTop: 4 }}>ULIP CAGR CALCULATOR</div>
 
-            {/* Investment Amount + Investing Frequency */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="field-grid-2">
               <div className="cagr-field">
                 <label>Investment Amount *</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="number"
-                    value={ulipInvestment}
-                    onChange={(e) => { setUlipInvestment(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="0"
-                  />
+                  <input type="number" value={ulipInvestment} onChange={(e) => { setUlipInvestment(e.target.value); setSubmitted(false); }} placeholder="0" />
                 </div>
               </div>
               <div className="cagr-field">
                 <label>Investing Frequency</label>
                 <div className="cagr-select-wrap">
-                  <select
-                    value={ulipFrequency}
-                    onChange={(e) => { setUlipFrequency(e.target.value); setSubmitted(false); }}
-                  >
+                  <select value={ulipFrequency} onChange={(e) => { setUlipFrequency(e.target.value); setSubmitted(false); }}>
                     <option value="Monthly">Monthly</option>
                     <option value="Quarterly">Quarterly</option>
                     <option value="Yearly">Yearly</option>
@@ -259,67 +294,39 @@ export default function CAGRCalculatorPage() {
               </div>
             </div>
 
-            {/* Number of years */}
             <div className="cagr-field" style={{ marginBottom: 20 }}>
               <label>Number of years</label>
               <div className="cagr-input-wrap">
-                <input
-                  type="number"
-                  value={ulipYears}
-                  onChange={(e) => { setUlipYears(Number(e.target.value)); setSubmitted(false); }}
-                  placeholder="15"
-                />
+                <input type="number" value={ulipYears} onChange={(e) => { setUlipYears(e.target.value); setSubmitted(false); }} placeholder="15" />
               </div>
             </div>
 
-            {/* Interim PV + Maturity Amount */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="field-grid-2">
               <div className="cagr-field">
                 <label>Interim PV {ulipFrequency}</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="number"
-                    value={ulipInterimPV}
-                    onChange={(e) => { setUlipInterimPV(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="12"
-                  />
+                  <input type="number" value={ulipInterimPV} onChange={(e) => { setUlipInterimPV(e.target.value); setSubmitted(false); }} placeholder="12" />
                 </div>
               </div>
               <div className="cagr-field">
                 <label>Maturity Amount *</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="number"
-                    value={ulipMaturityAmount}
-                    onChange={(e) => { setUlipMaturityAmount(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="0"
-                  />
+                  <input type="number" value={ulipMaturityAmount} onChange={(e) => { setUlipMaturityAmount(e.target.value); setSubmitted(false); }} placeholder="0" />
                 </div>
               </div>
             </div>
 
-            {/* Number of Years at Maturity + CAGR */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div className="field-grid-2">
               <div className="cagr-field">
                 <label>Number of Years at Maturity</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="number"
-                    value={ulipYearsAtMaturity}
-                    onChange={(e) => { setUlipYearsAtMaturity(Number(e.target.value)); setSubmitted(false); }}
-                    placeholder="12"
-                  />
+                  <input type="number" value={ulipYearsAtMaturity} onChange={(e) => { setUlipYearsAtMaturity(e.target.value); setSubmitted(false); }} placeholder="12" />
                 </div>
               </div>
               <div className="cagr-field">
                 <label>CAGR</label>
                 <div className="cagr-input-wrap">
-                  <input
-                    type="text"
-                    value={submitted ? fmt(ulipCAGR) : "12"}
-                    disabled
-                    style={{ color: "#0d3d20", fontWeight: 700 }}
-                  />
+                  <input type="text" value={submitted ? fmt(ulipCAGR) : "12"} disabled style={{ color: "#0d3d20", fontWeight: 700 }} />
                 </div>
               </div>
             </div>
@@ -328,7 +335,7 @@ export default function CAGRCalculatorPage() {
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, textAlign: "center" }}>
+                <div className="result-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, textAlign: "center" }}>
                   <div>
                     <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Lumpsum CAGR</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#11D462" }}>{fmt(lsCAGR)}%</div>
@@ -344,10 +351,10 @@ export default function CAGRCalculatorPage() {
         </div>
 
         {/* Why Use CAGR Calculator? */}
-        <div className="anim-why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+        <div className="anim-why-section why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
           <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1f0d", textAlign: "center", marginBottom: 8 }}>Why Use CAGR Calculator?</h2>
           <div style={{ width: 40, height: 3, background: "#11D462", borderRadius: 2, margin: "0 auto 32px" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div className="why-grid">
             {[
               {
                 cls: "anim-why-card-0",
@@ -391,14 +398,14 @@ export default function CAGRCalculatorPage() {
 
         {/* Other Calculators */}
         <div>
-          <div className="anim-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <div className="anim-calc-header other-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2"/>
               <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0d1f0d", margin: 0 }}>Other Powerful Calculators</h3>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          <div className="calc-grid">
             {[
               {
                 title: "Goal Calculator",

@@ -98,6 +98,7 @@ const CalculatorCard: React.FC<{ calc: Calculator }> = ({ calc }) => {
   if (calc.comingSoon) {
     return (
       <div
+        className="calc-card calc-card--soon"
         style={{
           backgroundColor: "#f0f0eb",
           borderRadius: "16px",
@@ -146,6 +147,7 @@ const CalculatorCard: React.FC<{ calc: Calculator }> = ({ calc }) => {
 
   return (
     <div
+      className="calc-card"
       style={{
         backgroundColor: "#ffffff",
         borderRadius: "16px",
@@ -168,6 +170,7 @@ const CalculatorCard: React.FC<{ calc: Calculator }> = ({ calc }) => {
     >
       {/* Icon */}
       <div
+        className="calc-card__icon"
         style={{
           width: "48px",
           height: "48px",
@@ -255,7 +258,36 @@ export default function CalculatorGrid() {
         padding: "48px",
       }}
     >
+      <style>{`
+        /* ── Mobile (≤ 640px) ── */
+        @media (max-width: 640px) {
+          .calc-section {
+            padding: 24px 16px !important;
+          }
+          .calc-grid {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          .calc-card {
+            padding: 20px 18px !important;
+            gap: 6px !important;
+            border-radius: 12px !important;
+          }
+          .calc-card__icon {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 10px !important;
+            margin-bottom: 2px !important;
+          }
+          .calc-card--soon {
+            padding: 24px 18px !important;
+            min-height: 140px !important;
+          }
+        }
+      `}</style>
+
       <div
+        className="calc-grid"
         style={{
           maxWidth: "1200px",
           margin: "0 auto",

@@ -81,6 +81,79 @@ export default function FAQSection() {
         .faq-item-4 { animation: faqItemIn 0.5s ease 0.64s both; }
         .faq-item-5 { animation: faqItemIn 0.5s ease 0.70s both; }
         .faq-item-6 { animation: faqItemIn 0.5s ease 0.76s both; }
+
+        /* ── MOBILE ONLY ── */
+        @media (max-width: 767px) {
+
+          /* Hero */
+          .faq-hero {
+            min-height: 260px !important;
+            padding: 80px 20px 56px !important;
+          }
+          .faq-hero-title {
+            font-size: 44px !important;
+            line-height: 52px !important;
+            letter-spacing: -1px !important;
+          }
+          .faq-hero-sub {
+            font-size: 14px !important;
+            line-height: 23px !important;
+          }
+
+          /* FAQ section */
+          .faq-section {
+            padding: 40px 0 40px !important;
+          }
+          .faq-section-inner {
+            padding: 0 14px !important;
+          }
+
+          /* Section heading */
+          .faq-section-heading {
+            font-size: 20px !important;
+            line-height: 28px !important;
+            margin-bottom: 20px !important;
+          }
+
+          /* Accordion items */
+          .faq-accordion-item button {
+            padding: 14px 14px !important;
+            min-height: 58px !important;
+          }
+          .faq-question-text {
+            font-size: 13px !important;
+            line-height: 20px !important;
+          }
+          .faq-icon-btn {
+            width: 28px !important;
+            height: 28px !important;
+          }
+          .faq-answer-wrap {
+            padding: 8px 14px 14px !important;
+          }
+          .faq-answer-text {
+            font-size: 13px !important;
+          }
+
+          /* Banner */
+          .faq-banner {
+            padding: 40px 20px !important;
+          }
+          .faq-banner-title {
+            font-size: 24px !important;
+            line-height: 30px !important;
+          }
+          .faq-banner-sub {
+            font-size: 13px !important;
+            margin-bottom: 24px !important;
+          }
+          .faq-banner-btn {
+            width: 100% !important;
+            max-width: 320px !important;
+            height: 50px !important;
+            font-size: 14px !important;
+          }
+        }
       `}</style>
 
       <div className="anim-header">
@@ -89,7 +162,7 @@ export default function FAQSection() {
 
       {/* Hero Banner */}
       <div
-        className="anim-hero w-full flex flex-col items-center justify-center text-center px-6 py-16 md:py-20 relative overflow-hidden"
+        className="faq-hero anim-hero w-full flex flex-col items-center justify-center text-center px-6 py-16 md:py-20 relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #004D40 5%, #064E3B)",
           minHeight: "410px",
@@ -105,7 +178,7 @@ export default function FAQSection() {
         />
         <div className="relative z-10 max-w-3xl mx-auto">
           <h1
-            className="text-white mb-6"
+            className="faq-hero-title text-white mb-6"
             style={{
               fontFamily: "'Inter', sans-serif",
               fontWeight: 900,
@@ -118,7 +191,7 @@ export default function FAQSection() {
             FAQs
           </h1>
           <p
-            className="text-white"
+            className="faq-hero-sub text-white"
             style={{
               fontFamily: "'Inter', sans-serif",
               fontWeight: 400,
@@ -137,15 +210,15 @@ export default function FAQSection() {
 
       {/* FAQ Section */}
       <div
-        className="w-full py-16"
+        className="faq-section w-full py-16"
         style={{ background: "#F0F4F0" }}
       >
-        <div style={{ maxWidth: "684px", margin: "0 auto", padding: "0 16px" }}>
+        <div className="faq-section-inner" style={{ maxWidth: "684px", margin: "0 auto", padding: "0 16px" }}>
 
           {/* Section Header */}
           <div className="anim-faq-header text-center mb-10">
             <h2
-              className="mb-4"
+              className="faq-section-heading mb-4"
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 700,
@@ -167,7 +240,7 @@ export default function FAQSection() {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className={`faq-item-${idx} bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${
+                className={`faq-accordion-item faq-item-${idx} bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${
                   openIdx === idx ? "border-2 border-gray-800" : "border border-gray-100"
                 }`}
               >
@@ -176,7 +249,7 @@ export default function FAQSection() {
                   onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
                 >
                   <span
-                    className="pr-4"
+                    className="faq-question-text pr-4"
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 600,
@@ -189,7 +262,7 @@ export default function FAQSection() {
                     {faq.question}
                   </span>
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200"
+                    className="faq-icon-btn w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200"
                     style={{
                       backgroundColor: openIdx === idx ? "#0F172A" : "#E6F4F1",
                     }}
@@ -212,9 +285,9 @@ export default function FAQSection() {
                   </div>
                 </button>
                 {openIdx === idx && (
-                  <div className="anim-answer px-6 pb-5 pt-2 border-t border-gray-100">
+                  <div className="faq-answer-wrap anim-answer px-6 pb-5 pt-2 border-t border-gray-100">
                     <p
-                      className="text-[14px] text-gray-500 leading-relaxed"
+                      className="faq-answer-text text-[14px] text-gray-500 leading-relaxed"
                       style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                       {faq.answer}
@@ -229,11 +302,11 @@ export default function FAQSection() {
 
       {/* Still Have Questions Banner */}
       <div
-        className="anim-banner w-full py-14 px-6 text-center"
+        className="faq-banner anim-banner w-full py-14 px-6 text-center"
         style={{ background: "#E8F0E8" }}
       >
         <h2
-          className="mb-3"
+          className="faq-banner-title mb-3"
           style={{
             fontFamily: "'Inter', sans-serif",
             fontWeight: 900,
@@ -246,14 +319,14 @@ export default function FAQSection() {
           Still have questions?
         </h2>
         <p
-          className="text-gray-600 text-[15px] mb-8"
+          className="faq-banner-sub text-gray-600 text-[15px] mb-8"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Our financial experts are here to help you navigate your wealth-building journey.
         </p>
         <div className="flex justify-center">
           <button
-            className="text-white font-semibold text-[15px] transition-colors duration-200"
+            className="faq-banner-btn text-white font-semibold text-[15px] transition-colors duration-200"
             style={{
               width: "321px",
               height: "56px",

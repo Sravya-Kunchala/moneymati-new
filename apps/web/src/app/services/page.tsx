@@ -4,7 +4,8 @@ import TrustSection from "@/components/(services)/trustsection";
 import Footer from "@/components/footer";
 import FeaturedWebinar from "@/components/(services)/featuredwebinar";
 import HeroSection from "@/components/(services)/herosection";
-import CommunityTestimonials from "@/components/(services)/testinomials";
+import Testimonials from "@/components/testimonials";
+
 
 export default function Home() {
   return (
@@ -61,7 +62,7 @@ export default function Home() {
       </div>
 
       <div className="anim-testimonials">
-        <CommunityTestimonials />
+        <Testimonials />
       </div>
 
       <div className="anim-footer">

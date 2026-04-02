@@ -8,25 +8,34 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
 export default function RetirementCalculatorPage() {
-  const [monthlyExpenditure, setMonthlyExpenditure] = useState(50000);
-  const [yearsToRetirement, setYearsToRetirement] = useState(10);
-  const [lifeExpectancy, setLifeExpectancy] = useState(5000);
-  const [inflationRate, setInflationRate] = useState(12);
-  const [retirementAge, setRetirementAge] = useState(12);
-  const [rateOfReturn, setRateOfReturn] = useState(15.1);
-  const [pfAccumulated, setPfAccumulated] = useState(12);
-  const [monthlyPfContribution, setMonthlyPfContribution] = useState(12);
+  const [monthlyExpenditure, setMonthlyExpenditure] = useState("50000");
+  const [yearsToRetirement, setYearsToRetirement] = useState("10");
+  const [lifeExpectancy, setLifeExpectancy] = useState("5000");
+  const [inflationRate, setInflationRate] = useState("12");
+  const [retirementAge, setRetirementAge] = useState("12");
+  const [rateOfReturn, setRateOfReturn] = useState("15.1");
+  const [pfAccumulated, setPfAccumulated] = useState("12");
+  const [monthlyPfContribution, setMonthlyPfContribution] = useState("12");
   const [submitted, setSubmitted] = useState(false);
+
+  // Parse to numbers for calculations (empty/invalid → 0)
+  const _monthlyExpenditure = parseFloat(monthlyExpenditure) || 0;
+  const _yearsToRetirement = parseFloat(yearsToRetirement) || 0;
+  const _lifeExpectancy = parseFloat(lifeExpectancy) || 0;
+  const _inflationRate = parseFloat(inflationRate) || 0;
+  const _rateOfReturn = parseFloat(rateOfReturn) || 0;
+  const _pfAccumulated = parseFloat(pfAccumulated) || 0;
+  const _monthlyPfContribution = parseFloat(monthlyPfContribution) || 0;
 
   // Calculations
   const assumptions = "We have assumed SIP to give 12% ROI.";
 
   // Future monthly expenditure adjusted for inflation
-  const futureMonthlyExp = monthlyExpenditure * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+  const futureMonthlyExp = _monthlyExpenditure * Math.pow(1 + _inflationRate / 100, _yearsToRetirement);
 
   // Retirement corpus from expenditure value (present value of annuity)
-  const monthlyReturnRate = rateOfReturn / 100 / 12;
-  const retirementMonths = lifeExpectancy * 12;
+  const monthlyReturnRate = _rateOfReturn / 100 / 12;
+  const retirementMonths = _lifeExpectancy * 12;
   const retirementCorpusFromExp =
     retirementMonths > 0 && monthlyReturnRate > 0
       ? (futureMonthlyExp * (1 - Math.pow(1 + monthlyReturnRate, -retirementMonths))) / monthlyReturnRate
@@ -34,10 +43,10 @@ export default function RetirementCalculatorPage() {
 
   // Total value of PF
   const sipRate = 0.12 / 12;
-  const months = yearsToRetirement * 12;
+  const months = _yearsToRetirement * 12;
   const totalPfValue =
-    pfAccumulated * Math.pow(1 + sipRate, months) +
-    (monthlyPfContribution * (Math.pow(1 + sipRate, months) - 1)) / sipRate;
+    _pfAccumulated * Math.pow(1 + sipRate, months) +
+    (_monthlyPfContribution * (Math.pow(1 + sipRate, months) - 1)) / sipRate;
 
   // Total value of investments (placeholder — same as PF for now)
   const totalInvestmentsValue = totalPfValue;
@@ -105,13 +114,122 @@ export default function RetirementCalculatorPage() {
           transition:background 0.2s;
         }
         .submit-btn:hover { background:#0a2e18; }
+
+        /* ── Desktop grid helpers ── */
+        .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+        .grid-3col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; text-align:center; }
+        .grid-4col { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        .why-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+        /* ── Mobile overrides (≤ 767px) ── */
+        @media (max-width: 767px) {
+
+          /* Hero */
+          .hero-section {
+            padding: 60px 20px 100px !important;
+            min-height: 260px !important;
+          }
+          .hero-section h1 {
+            font-size: 32px !important;
+          }
+          .hero-section p {
+            font-size: 13px !important;
+          }
+
+          /* Overlap card */
+          .overlap-card-wrap {
+            padding: 0 16px !important;
+          }
+          .overlap-card-wrap > div {
+            margin-top: -70px !important;
+            padding: 28px 20px !important;
+          }
+          .overlap-card-wrap h2 {
+            font-size: 20px !important;
+          }
+
+          /* Spacer */
+          .section-spacer { height: 32px !important; }
+
+          /* Main content wrapper */
+          .main-content {
+            padding: 0 16px 32px !important;
+          }
+
+          /* Calculator card */
+          .calc-card {
+            padding: 24px 16px !important;
+          }
+
+          /* All 2-col grids → single column */
+          .grid-2col {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+
+          /* Results summary → single column */
+          .grid-3col {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+            text-align: left !important;
+          }
+          .grid-3col > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px 14px;
+          }
+          .grid-3col > div .result-label { font-size: 12px !important; margin-bottom: 0 !important; }
+          .grid-3col > div .result-value { font-size: 15px !important; }
+
+          /* Why section */
+          .why-section {
+            padding: 28px 16px !important;
+          }
+          .why-section h2 { font-size: 20px !important; }
+          .why-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+
+          /* Other calculators grid → 2 col */
+          .grid-4col {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+          }
+
+          /* Other calc section header */
+          .other-calc-header {
+            margin-bottom: 14px !important;
+          }
+          .other-calc-header h3 { font-size: 15px !important; }
+
+          /* Input font sizes */
+          .ret-input-wrap input { font-size: 14px !important; }
+          .ret-input-wrap { padding: 12px 14px !important; }
+          .ret-field label { font-size: 12px !important; }
+
+          /* Submit button */
+          .submit-btn { font-size: 15px !important; padding: 14px !important; }
+        }
+
+        /* ── Tablet (768–1023px) ── */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .hero-section { padding: 70px 32px 110px !important; }
+          .main-content { padding: 0 32px 40px !important; }
+          .grid-4col { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+          .why-grid  { grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+          .overlap-card-wrap { padding: 0 32px !important; }
+        }
       `}</style>
 
       <Header />
 
       {/* Hero */}
       <div
-        className="anim-hero"
+        className="anim-hero hero-section"
         style={{ position: "relative", minHeight: "320px", padding: "80px 48px 120px", backgroundColor: "#0d2818" }}
       >
         <img
@@ -139,7 +257,7 @@ export default function RetirementCalculatorPage() {
       </div>
 
       {/* Overlapping card */}
-      <div style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
+      <div className="overlap-card-wrap" style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
         <div style={{ maxWidth: "680px", margin: "-80px auto 0", position: "relative", zIndex: 10 }}>
           <div
             className="anim-overlap-card"
@@ -154,30 +272,30 @@ export default function RetirementCalculatorPage() {
         </div>
       </div>
 
-      <div style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
+      <div className="section-spacer" style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
 
       {/* Main Content */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
+      <div className="main-content" style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
 
         {/* Calculator Form */}
         <div className="anim-calculator" style={{ marginBottom: 32 }}>
-          <div style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
+          <div className="calc-card" style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
 
             {/* Monthly expenditure */}
             <div className="ret-field" style={{ marginBottom: 20 }}>
               <label>Monthly expenditure *</label>
               <div className="ret-input-wrap">
                 <span className="pfx">₹</span>
-                <input type="number" value={monthlyExpenditure} onChange={(e) => { setMonthlyExpenditure(Number(e.target.value)); setSubmitted(false); }} placeholder="50,000" />
+                <input type="number" value={monthlyExpenditure} onChange={(e) => { setMonthlyExpenditure(e.target.value); setSubmitted(false); }} placeholder="50,000" />
               </div>
             </div>
 
             {/* Years to retirement + Life Expectancy */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ret-field">
                 <label>Number of years to retirement *</label>
                 <div className="ret-input-wrap">
-                  <input type="number" value={yearsToRetirement} onChange={(e) => { setYearsToRetirement(Number(e.target.value)); setSubmitted(false); }} placeholder="10" />
+                  <input type="number" value={yearsToRetirement} onChange={(e) => { setYearsToRetirement(e.target.value); setSubmitted(false); }} placeholder="10" />
                   <span className="sfx">Years</span>
                 </div>
               </div>
@@ -185,7 +303,7 @@ export default function RetirementCalculatorPage() {
                 <label>Life Expectancy</label>
                 <div className="ret-input-wrap">
                   <span className="pfx">₹</span>
-                  <input type="number" value={lifeExpectancy} onChange={(e) => { setLifeExpectancy(Number(e.target.value)); setSubmitted(false); }} placeholder="5,000" />
+                  <input type="number" value={lifeExpectancy} onChange={(e) => { setLifeExpectancy(e.target.value); setSubmitted(false); }} placeholder="5,000" />
                 </div>
               </div>
             </div>
@@ -194,31 +312,31 @@ export default function RetirementCalculatorPage() {
             <div className="ret-field" style={{ marginBottom: 20 }}>
               <label>Inflation Rate (slide to choose between 4 - 5%)</label>
               <div className="ret-input-wrap">
-                <input type="number" step={0.1} value={inflationRate} onChange={(e) => { setInflationRate(Number(e.target.value)); setSubmitted(false); }} placeholder="12" />
+                <input type="number" step={0.1} value={inflationRate} onChange={(e) => { setInflationRate(e.target.value); setSubmitted(false); }} placeholder="12" />
                 <span className="sfx">%</span>
               </div>
             </div>
 
             {/* Retirement Age + Rate of Return */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ret-field">
                 <label>Retirement Age</label>
                 <div className="ret-input-wrap">
-                  <input type="number" value={retirementAge} onChange={(e) => { setRetirementAge(Number(e.target.value)); setSubmitted(false); }} placeholder="60" />
+                  <input type="number" value={retirementAge} onChange={(e) => { setRetirementAge(e.target.value); setSubmitted(false); }} placeholder="60" />
                   <span className="sfx">%</span>
                 </div>
               </div>
               <div className="ret-field">
                 <label>Rate of Return on Investment post retirement (Between 8 - 9%)</label>
                 <div className="ret-input-wrap">
-                  <input type="number" step={0.1} value={rateOfReturn} onChange={(e) => { setRateOfReturn(Number(e.target.value)); setSubmitted(false); }} placeholder="15.1" />
+                  <input type="number" step={0.1} value={rateOfReturn} onChange={(e) => { setRateOfReturn(e.target.value); setSubmitted(false); }} placeholder="15.1" />
                   <span className="sfx">%</span>
                 </div>
               </div>
             </div>
 
             {/* Assumptions + Retirement Corpus */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ret-field">
                 <label>Assumptions</label>
                 <div className="ret-input-wrap">
@@ -237,7 +355,7 @@ export default function RetirementCalculatorPage() {
             </div>
 
             {/* Net retirement corpus + Monthly investment */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ret-field">
                 <label>Net retirement Corpus required</label>
                 <div className="ret-input-wrap">
@@ -259,25 +377,25 @@ export default function RetirementCalculatorPage() {
             <div className="section-divider">Your PF and Current Investments</div>
 
             {/* PF Accumulated + Monthly PF contribution */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ret-field">
                 <label>Present value of your PF accumulated till date *</label>
                 <div className="ret-input-wrap">
-                  <input type="number" value={pfAccumulated} onChange={(e) => { setPfAccumulated(Number(e.target.value)); setSubmitted(false); }} placeholder="12" />
+                  <input type="number" value={pfAccumulated} onChange={(e) => { setPfAccumulated(e.target.value); setSubmitted(false); }} placeholder="12" />
                   <span className="sfx">%</span>
                 </div>
               </div>
               <div className="ret-field">
                 <label>Monthly PF contribution (by both employer + employee) *</label>
                 <div className="ret-input-wrap">
-                  <input type="number" value={monthlyPfContribution} onChange={(e) => { setMonthlyPfContribution(Number(e.target.value)); setSubmitted(false); }} placeholder="12" />
+                  <input type="number" value={monthlyPfContribution} onChange={(e) => { setMonthlyPfContribution(e.target.value); setSubmitted(false); }} placeholder="12" />
                   <span className="sfx">%</span>
                 </div>
               </div>
             </div>
 
             {/* Total Value of PF + Investments */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div className="grid-2col" style={{ marginBottom: 24 }}>
               <div className="ret-field">
                 <label>Total Value of PF</label>
                 <div className="ret-input-wrap">
@@ -300,18 +418,18 @@ export default function RetirementCalculatorPage() {
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, textAlign: "center" }}>
+                <div className="grid-3col">
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Retirement Corpus Needed</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(retirementCorpusFromExp)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Retirement Corpus Needed</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(retirementCorpusFromExp)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Total PF Value</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalPfValue)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Total PF Value</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalPfValue)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Monthly SIP Required</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#11D462" }}>₹{fmt(monthlySIPRequired)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Monthly SIP Required</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#11D462" }}>₹{fmt(monthlySIPRequired)}</div>
                   </div>
                 </div>
               </div>
@@ -320,10 +438,10 @@ export default function RetirementCalculatorPage() {
         </div>
 
         {/* Why Plan Your Retirement Early? */}
-        <div className="anim-why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+        <div className="anim-why-section why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
           <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1f0d", textAlign: "center", marginBottom: 8 }}>Why Plan Your Retirement Early?</h2>
           <div style={{ width: 40, height: 3, background: "#11D462", borderRadius: 2, margin: "0 auto 32px" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div className="why-grid">
             {[
               {
                 cls: "anim-why-card-0",
@@ -367,14 +485,14 @@ export default function RetirementCalculatorPage() {
 
         {/* Other Calculators */}
         <div>
-          <div className="anim-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <div className="anim-calc-header other-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2"/>
               <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0d1f0d", margin: 0 }}>Other Powerful Calculators</h3>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          <div className="grid-4col">
             {[
               {
                 title: "Goal Calculator",
@@ -402,7 +520,7 @@ export default function RetirementCalculatorPage() {
                 cls: "anim-calc-card-2",
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11.5 8.75C11.15 8.75 10.8542 8.62917 10.6125 8.3875C10.3708 8.14583 10.25 7.85 10.25 7.5C10.25 7.15 10.3708 6.85417 10.6125 6.6125C10.8542 6.37083 11.15 6.25 11.5 6.25C11.85 6.25 12.1458 6.37083 12.3875 6.6125C12.6292 6.85417 12.75 7.15 12.75 7.5C12.75 7.85 12.6292 8.14583 12.3875 8.3875C12.1458 8.62917 11.85 8.75 11.5 8.75ZM6.5 8.75C6.15 8.75 5.85417 8.62917 5.6125 8.3875C5.37083 8.14583 5.25 7.85 5.25 7.5C5.25 7.15 5.37083 6.85417 5.6125 6.6125C5.85417 6.37083 6.15 6.25 6.5 6.25C6.85 6.25 7.14583 6.37083 7.3875 6.6125C7.62917 6.85417 7.75 7.15 7.75 7.5C7.75 7.85 7.62917 8.14583 7.3875 8.3875C7.14583 8.62917 6.85 8.75 6.5 8.75ZM9 14C8 14 7.09583 13.725 6.2875 13.175C5.47917 12.625 4.88333 11.9 4.5 11H13.5C13.1167 11.9 12.5208 12.625 11.7125 13.175C10.9042 13.725 10 14 9 14ZM9 18C7.75 18 6.57917 17.7625 5.4875 17.2875C4.39583 16.8125 3.44583 16.1708 2.6375 15.3625C1.82917 14.5542 1.1875 13.6042 0.7125 12.5125C0.2375 11.4208 0 10.25 0 9C0 7.75 0.2375 6.57917 0.7125 5.4875C1.1875 4.39583 1.82917 3.44583 2.6375 2.6375C3.44583 1.82917 4.39583 1.1875 5.4875 0.7125C6.57917 0.2375 7.75 0 9 0C10.25 0 11.4208 0.2375 12.5125 0.7125C13.6042 1.1875 14.5542 1.82917 15.3625 2.6375C16.1708 3.44583 16.8125 4.39583 17.2875 5.4875C17.7625 6.57917 18 7.75 18 9C18 10.25 17.7625 11.4208 17.2875 12.5125C16.8125 13.6042 16.1708 14.5542 15.3625 15.3625C14.5542 16.1708 13.6042 16.8125 12.5125 17.2875C11.4208 17.7625 10.25 18 9 18ZM9 16C10.9333 16 12.5833 15.3167 13.95 13.95C15.3167 12.5833 16 10.9333 16 9C16 7.06667 15.3167 5.41667 13.95 4.05C12.5833 2.68333 10.9333 2 9 2C7.06667 2 5.41667 2.68333 4.05 4.05C2.68333 5.41667 2 7.06667 2 9C2 10.9333 2.68333 12.5833 4.05 13.95C5.41667 15.3167 7.06667 16 9 16Z" fill="#11D462"/>
+                    <path d="M11.5 8.75C11.15 8.75 10.8542 8.62917 10.6125 8.3875C10.3708 8.14583 10.25 7.85 10.25 7.5C10.25 7.15 10.3708 6.85417 10.6125 6.6125C10.8542 6.37083 11.15 6.25 11.5 6.25C11.85 6.25 12.1458 6.37083 12.3875 6.6125C12.6292 6.85417 12.75 7.15 12.75 7.5C12.75 7.85 12.6292 8.14583 12.3875 8.3875C12.1458 8.62917 11.85 8.75 11.5 8.75ZM6.5 8.75C6.15 8.75 5.85417 8.62917 5.6125 8.3875C5.37083 8.14583 5.25 7.85 5.25 7.5C5.25 7.15 5.37083 6.85417 5.6125 6.6125C5.85417 6.37083 6.15 6.25 6.5 6.25C6.85 6.25 7.14583 6.37083 7.3875 6.6125C7.62917 6.85417 7.75 7.15 7.75 7.5C7.75 7.85 7.62917 8.14583 7.3875 8.3875C7.14583 8.62917 6.85 8.75 6.5 8.75ZM9 14C8 14 7.09583 13.725 6.2875 13.175C5.47917 12.625 4.88333 11.9 4.5 11H13.5C13.1167 11.9 12.5208 12.625 11.7125 13.175C10.9042 13.725 10 14 9 14ZM9 18C7.75 18 6.57917 17.7625 5.4875 17.2875C4.39583 16.8125 3.44583 16.1708 2.6375 15.3625C1.82917 14.5542 1.1875 13.6042 0.7125 12.5125C0.2375 11.4208 0 10.25 0 9C0 7.75 0.2375 6.57917 0.7125 5.4875C1.1875 4.39583 1.82917 3.44583 2.6375 2.6375C3.44583 1.82917 4.39583 1.1875 5.4875 0.7125C6.57917 0.2375 7.75 0 9 0C10.25 0 11.4208 0.2375 12.5125 0.7125C13.6042 1.1875 14.5542 1.82917 15.3625 2.6375C16.1708 3.44583 16.8125 4.39583 17.2875 5.4875C17.7625 6.57917 18 7.75 18 9C18 10.25 17.7625 11.4208 17.2875 12.5125C16.8125 13.6042 16.1708 14.5542 15.3625 15.3625C14.5542 16.1708 13.6042 16.8125 12.5125 17.2875C11.4208 17.7625 10.25 18 9 18ZM9 16C10.9333 16 12.5833 15.3167 13.95 13.95C15.3167 12.5833 16 10.9333 16 9C16 7.06667 15.3167 5.41667 13.95 4.05C12.5833 2.68333 10.9333 2 9 2C7.06667 2 5.41667 2.68333 4.05 4.05C2.68333 5.41667 2 7.06667 2 9C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.06667 16 9 16Z" fill="#11D462"/>
                   </svg>
                 ),
               },

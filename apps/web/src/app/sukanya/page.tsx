@@ -8,33 +8,35 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
 export default function SukanyaSamriddhiCalculatorPage() {
-  const [amountInvested, setAmountInvested] = useState(50000);
+  const [amountInvested, setAmountInvested] = useState("50000");
   const [investingFrequency, setInvestingFrequency] = useState("Yearly");
   const [interestRate] = useState(8.2); // Fixed government rate
-  const [tenure, setTenure] = useState(15);
+  const [tenure, setTenure] = useState("15");
   const [submitted, setSubmitted] = useState(false);
 
+  // Parse to numbers for calculations
+  const _amountInvested = parseFloat(amountInvested) || 0;
+  const _tenure = parseFloat(tenure) || 0;
+
   // Calculation
-  // SSY compounds annually. For yearly: FV = P * [((1+r)^n - 1) / r] * (1+r)
-  // For monthly: convert to monthly rate
   const r = interestRate / 100;
 
   let maturityValue = 0;
   if (investingFrequency === "Yearly") {
-    maturityValue = amountInvested * (((Math.pow(1 + r, tenure) - 1) / r) * (1 + r));
+    maturityValue = _amountInvested * (((_tenure > 0 ? (Math.pow(1 + r, _tenure) - 1) / r : 0)) * (1 + r));
   } else if (investingFrequency === "Monthly") {
     const monthlyRate = r / 12;
-    const months = tenure * 12;
-    const monthlyAmount = amountInvested / 12;
+    const months = _tenure * 12;
+    const monthlyAmount = _amountInvested / 12;
     maturityValue = monthlyAmount * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
   } else if (investingFrequency === "Quarterly") {
     const quarterlyRate = r / 4;
-    const quarters = tenure * 4;
-    const quarterlyAmount = amountInvested / 4;
+    const quarters = _tenure * 4;
+    const quarterlyAmount = _amountInvested / 4;
     maturityValue = quarterlyAmount * (((Math.pow(1 + quarterlyRate, quarters) - 1) / quarterlyRate) * (1 + quarterlyRate));
   }
 
-  const totalInvested = amountInvested * tenure;
+  const totalInvested = _amountInvested * _tenure;
   const totalReturns = maturityValue - totalInvested;
 
   const fmt = (n) => n.toLocaleString("en-IN", { maximumFractionDigits: 2 });
@@ -88,9 +90,7 @@ export default function SukanyaSamriddhiCalculatorPage() {
           font-size:15px; font-weight:500; color:#222; width:100%;
           font-family:var(--font-inter),sans-serif; appearance:none; cursor:pointer;
         }
-        .ssy-select-wrap .chevron {
-          pointer-events:none; color:#888; flex-shrink:0;
-        }
+        .ssy-select-wrap .chevron { pointer-events:none; color:#888; flex-shrink:0; }
         .submit-btn {
           width:100%; padding:16px; background:#0d3d20; color:#fff;
           border:none; border-radius:12px; font-size:16px; font-weight:700;
@@ -98,13 +98,97 @@ export default function SukanyaSamriddhiCalculatorPage() {
           transition:background 0.2s;
         }
         .submit-btn:hover { background:#0a2e18; }
+
+        /* ── Desktop grid helpers ── */
+        .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+        .grid-3col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; text-align:center; }
+        .grid-4col { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        .why-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+        /* ── Mobile (≤ 767px) ── */
+        @media (max-width: 767px) {
+
+          /* Hero */
+          .hero-section {
+            padding: 60px 20px 100px !important;
+            min-height: 260px !important;
+          }
+          .hero-section h1 { font-size: 28px !important; }
+          .hero-section p  { font-size: 13px !important; }
+
+          /* Overlap card */
+          .overlap-card-wrap { padding: 0 16px !important; }
+          .overlap-card-wrap > div { margin-top: -70px !important; padding: 24px 18px !important; }
+          .overlap-card-wrap h2 { font-size: 19px !important; }
+
+          /* Spacer */
+          .section-spacer { height: 32px !important; }
+
+          /* Main content */
+          .main-content { padding: 0 16px 32px !important; }
+
+          /* Calculator card */
+          .calc-card { padding: 22px 16px !important; }
+
+          /* 2-col grids → single column */
+          .grid-2col {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+
+          /* Results → single column with row layout */
+          .grid-3col {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+            text-align: left !important;
+          }
+          .grid-3col > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px 14px;
+          }
+          .grid-3col > div .result-label { font-size: 12px !important; margin-bottom: 0 !important; }
+          .grid-3col > div .result-value { font-size: 15px !important; }
+
+          /* Why section */
+          .why-section { padding: 24px 16px !important; }
+          .why-section h2 { font-size: 20px !important; }
+          .why-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+
+          /* Other calculators → 2 col */
+          .grid-4col { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+          .other-calc-header { margin-bottom: 14px !important; }
+          .other-calc-header h3 { font-size: 15px !important; }
+
+          /* Input tweaks */
+          .ssy-input-wrap  { padding: 12px 14px !important; }
+          .ssy-select-wrap { padding: 12px 14px !important; }
+          .ssy-input-wrap input  { font-size: 14px !important; }
+          .ssy-select-wrap select { font-size: 14px !important; }
+          .ssy-field label { font-size: 12px !important; }
+
+          /* Submit button */
+          .submit-btn { font-size: 15px !important; padding: 14px !important; }
+        }
+
+        /* ── Tablet (768–1023px) ── */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .hero-section    { padding: 70px 32px 110px !important; }
+          .main-content    { padding: 0 32px 40px !important; }
+          .overlap-card-wrap { padding: 0 32px !important; }
+          .grid-4col       { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+          .why-grid        { grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+        }
       `}</style>
 
       <Header />
 
       {/* Hero */}
       <div
-        className="anim-hero"
+        className="anim-hero hero-section"
         style={{ position: "relative", minHeight: "320px", padding: "80px 48px 120px", backgroundColor: "#0d2818" }}
       >
         <img
@@ -132,7 +216,7 @@ export default function SukanyaSamriddhiCalculatorPage() {
       </div>
 
       {/* Overlapping card */}
-      <div style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
+      <div className="overlap-card-wrap" style={{ backgroundColor: "#f5f0e8", padding: "0 24px" }}>
         <div style={{ maxWidth: "680px", margin: "-80px auto 0", position: "relative", zIndex: 10 }}>
           <div
             className="anim-overlap-card"
@@ -147,14 +231,14 @@ export default function SukanyaSamriddhiCalculatorPage() {
         </div>
       </div>
 
-      <div style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
+      <div className="section-spacer" style={{ height: "48px", backgroundColor: "#f5f0e8" }} />
 
       {/* Main Content */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
+      <div className="main-content" style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}>
 
         {/* Calculator Form */}
         <div className="anim-calculator" style={{ marginBottom: 32 }}>
-          <div style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
+          <div className="calc-card" style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
 
             {/* Amount Invested */}
             <div className="ssy-field" style={{ marginBottom: 20 }}>
@@ -164,14 +248,14 @@ export default function SukanyaSamriddhiCalculatorPage() {
                 <input
                   type="number"
                   value={amountInvested}
-                  onChange={(e) => { setAmountInvested(Number(e.target.value)); setSubmitted(false); }}
+                  onChange={(e) => { setAmountInvested(e.target.value); setSubmitted(false); }}
                   placeholder="50,000"
                 />
               </div>
             </div>
 
             {/* Investing Frequency + Interest Rates */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div className="grid-2col">
               <div className="ssy-field">
                 <label>Investing Frequency</label>
                 <div className="ssy-select-wrap">
@@ -193,36 +277,32 @@ export default function SukanyaSamriddhiCalculatorPage() {
               <div className="ssy-field">
                 <label>Interest Rates</label>
                 <div className="ssy-input-wrap">
-                  <input
-                    type="text"
-                    value={`${interestRate}%`}
-                    disabled
-                    style={{ color: "#555" }}
-                  />
+                  <input type="text" value={`${interestRate}%`} disabled style={{ color: "#555" }} />
                 </div>
               </div>
             </div>
 
             {/* Tenure + Maturity Value */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+            <div className="grid-2col" style={{ marginBottom: 24 }}>
               <div className="ssy-field">
                 <label>Tenure</label>
                 <div className="ssy-input-wrap">
                   <input
                     type="number"
                     value={tenure}
-                    onChange={(e) => { setTenure(Number(e.target.value)); setSubmitted(false); }}
+                    onChange={(e) => { setTenure(e.target.value); setSubmitted(false); }}
                     placeholder="15"
                   />
-                  <span className="sfx">%</span>
+                  <span className="sfx">Yrs</span>
                 </div>
               </div>
               <div className="ssy-field">
                 <label>Maturity Value</label>
                 <div className="ssy-input-wrap">
+                  <span className="pfx">₹</span>
                   <input
                     type="text"
-                    value={submitted ? fmt(maturityValue) : fmt(maturityValue)}
+                    value={fmt(maturityValue)}
                     disabled
                     style={{ color: "#0d3d20", fontWeight: 700 }}
                   />
@@ -234,18 +314,18 @@ export default function SukanyaSamriddhiCalculatorPage() {
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, textAlign: "center" }}>
+                <div className="grid-3col">
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Total Invested</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalInvested)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Total Invested</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalInvested)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Returns Earned</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalReturns)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Returns Earned</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#0d3d20" }}>₹{fmt(totalReturns)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Maturity Value</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#11D462" }}>₹{fmt(maturityValue)}</div>
+                    <div className="result-label" style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Maturity Value</div>
+                    <div className="result-value" style={{ fontSize: 16, fontWeight: 800, color: "#11D462" }}>₹{fmt(maturityValue)}</div>
                   </div>
                 </div>
               </div>
@@ -254,10 +334,10 @@ export default function SukanyaSamriddhiCalculatorPage() {
         </div>
 
         {/* Why Sukanya Samriddhi? */}
-        <div className="anim-why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+        <div className="anim-why-section why-section" style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
           <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1f0d", textAlign: "center", marginBottom: 8 }}>Why Sukanya Samriddhi?</h2>
           <div style={{ width: 40, height: 3, background: "#11D462", borderRadius: 2, margin: "0 auto 32px" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div className="why-grid">
             {[
               {
                 cls: "anim-why-card-0",
@@ -301,14 +381,14 @@ export default function SukanyaSamriddhiCalculatorPage() {
 
         {/* Other Calculators */}
         <div>
-          <div className="anim-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+          <div className="anim-calc-header other-calc-header" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2"/>
               <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0d1f0d", margin: 0 }}>Other Powerful Calculators</h3>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          <div className="grid-4col">
             {[
               {
                 title: "Goal Calculator",

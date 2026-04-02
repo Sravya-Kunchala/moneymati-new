@@ -3,17 +3,12 @@
 import React from "react";
 import { Dancing_Script, Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
-import { PUBLICATIONS } from "@/app/lib/books"; // ← uses shared data
+import { PUBLICATIONS } from "@/app/lib/books";
 
-// ... (rest of component unchanged except PublicationCard onClick)
-// KEY CHANGE: PublicationCard now does router.push(`/sepe-book/${pub.id}`) for ALL cards
 const dancing = Dancing_Script({ subsets: ["latin"], weight: ["700"], variable: "--font-dancing" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
-// Re-export PUBLICATIONS from books.ts so the listing uses the same data
-// (See books.ts for the full PUBLICATIONS array)
-
-/* ── icons (unchanged) ── */
+/* ── icons ── */
 const InvestmentIcon = () => (
   <svg width="19" height="14" viewBox="0 0 19 14" fill="none"><path d="M10.8333 7.5C10.1389 7.5 9.54861 7.25694 9.0625 6.77083C8.57639 6.28472 8.33333 5.69444 8.33333 5C8.33333 4.30556 8.57639 3.71528 9.0625 3.22917C9.54861 2.74306 10.1389 2.5 10.8333 2.5C11.5278 2.5 12.1181 2.74306 12.6042 3.22917C13.0903 3.71528 13.3333 4.30556 13.3333 5C13.3333 5.69444 13.0903 6.28472 12.6042 6.77083C12.1181 7.25694 11.5278 7.5 10.8333 7.5ZM5 10C4.54167 10 4.14931 9.83681 3.82292 9.51042C3.49653 9.18403 3.33333 8.79167 3.33333 8.33333V1.66667C3.33333 1.20833 3.49653 0.815972 3.82292 0.489583C4.14931 0.163194 4.54167 0 5 0H16.6667C17.125 0 17.5174 0.163194 17.8438 0.489583C18.1701 0.815972 18.3333 1.20833 18.3333 1.66667V8.33333C18.3333 8.79167 18.1701 9.18403 17.8438 9.51042C17.5174 9.83681 17.125 10 16.6667 10H5ZM6.66667 8.33333H15C15 7.875 15.1632 7.48264 15.4896 7.15625C15.816 6.82986 16.2083 6.66667 16.6667 6.66667V3.33333C16.2083 3.33333 15.816 3.17014 15.4896 2.84375C15.1632 2.51736 15 2.125 15 1.66667H6.66667C6.66667 2.125 6.50347 2.51736 6.17708 2.84375C5.85069 3.17014 5.45833 3.33333 5 3.33333V6.66667C5.45833 6.66667 5.85069 6.82986 6.17708 7.15625C6.50347 7.48264 6.66667 7.875 6.66667 8.33333ZM15.8333 13.3333H1.66667C1.20833 13.3333 0.815972 13.1701 0.489583 12.8438C0.163194 12.5174 0 12.125 0 11.6667V2.5H1.66667V11.6667H15.8333V13.3333ZM5 8.33333V1.66667V8.33333Z" fill="#214533"/></svg>
 );
@@ -58,10 +53,8 @@ const CARD_IMAGES: Record<number, string> = {
   4: "/i4 (2).svg",
 };
 
-/* ── Publication card — now ALL cards navigate to /sepe-book/[id] ── */
 function PublicationCard({ pub }: { pub: { id: number; category: string; categoryColor: string; date: string; title: string; description: string; ctaLabel: string; ctaIcon: "read" | "download" } }) {
   const router = useRouter();
-
   return (
     <div
       onClick={() => router.push(`/e-book/${pub.id}`)}
@@ -89,46 +82,10 @@ function PublicationCard({ pub }: { pub: { id: number; category: string; categor
   );
 }
 
-function FeaturedEbook() {
-  const router = useRouter();
-  return (
-    <div style={{ marginBottom: "40px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
-        <StarIcon />
-        <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 700, color: "#1e293b", letterSpacing: "0.01em" }}>Featured E-Book</span>
-      </div>
-      <div
-        onClick={() => router.push("/sepe-book/4")}
-        style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "56px 40px", display: "flex", gap: "32px", alignItems: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", minHeight: "260px", cursor: "pointer" }}
-      >
-        <div style={{ width: "160px", minWidth: "160px", height: "240px", borderRadius: "8px", position: "relative", overflow: "hidden", flexShrink: 0 }}>
-          <img src="/e-book.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-          <div style={{ position: "absolute", bottom: "10px", left: "8px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
-        </div>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
-          <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "18px", lineHeight: "26px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
-          <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-            <button
-              onClick={e => { e.stopPropagation(); router.push("/sepe-book/4"); }}
-              style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#0d4f35", color: "#fff", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: 600, fontFamily: "var(--font-inter), sans-serif", cursor: "pointer" }}
-            >
-              <DownloadIcon />Download Now
-            </button>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <EyeIcon />
-              <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Sidebar() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Categories */}
       <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)" }}>
         <p style={{ margin: "0 0 16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>Categories</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
@@ -141,6 +98,7 @@ function Sidebar() {
           ))}
         </div>
       </div>
+      {/* Popular Tags */}
       <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)" }}>
         <p style={{ margin: "0 0 14px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>Popular Tags</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -161,29 +119,149 @@ const PUBLICATIONS_LIST = [
 ];
 
 export default function FinancialResources() {
+  const router = useRouter();
+
   return (
-    <div className={`${inter.className} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh" }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 24px 64px", display: "grid", gridTemplateColumns: "1fr 280px", gap: "32px", alignItems: "start" }}>
-        <div>
-          <FeaturedEbook />
+    <>
+      <style>{`
+        /* ── Desktop defaults ── */
+        .fr-featured-mobile { display: none; }
+        .fr-featured-desktop { display: flex; }
+        .fr-mobile-sidebar { display: none; }
+
+        @media (max-width: 768px) {
+          /* Swap featured card variants */
+          .fr-featured-mobile  { display: block !important; }
+          .fr-featured-desktop { display: none  !important; }
+
+          /* Collapse outer grid to single full-width column */
+          .fr-outer-grid {
+            grid-template-columns: 1fr !important;
+            padding: 24px 16px 48px !important;
+            gap: 24px !important;
+          }
+
+          /* Hide the desktop sticky sidebar column */
+          .fr-desktop-sidebar { display: none !important; }
+
+          /* Show the mobile sidebar (rendered between featured & publications in DOM) */
+          .fr-mobile-sidebar { display: block !important; }
+
+          /* Single-column publication cards */
+          .fr-pubs-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+        }
+      `}</style>
+
+      <div className={`${inter.className} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh" }}>
+        <div
+          className="fr-outer-grid"
+          style={{
+            maxWidth: "1100px",
+            margin: "0 auto",
+            padding: "40px 24px 64px",
+            display: "grid",
+            gridTemplateColumns: "1fr 280px",
+            gap: "32px",
+            alignItems: "start",
+          }}
+        >
+          {/* ── Left / main column ── */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-              <h2 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "20px", color: "#1e293b" }}>Latest Publications</h2>
-              <button style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: "#047857" }}>
-                View All <ArrowRight />
-              </button>
+
+            {/* Featured E-Book label + cards */}
+            <div style={{ marginBottom: "40px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
+                <StarIcon />
+                <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 700, color: "#1e293b", letterSpacing: "0.01em" }}>Featured E-Book</span>
+              </div>
+
+              {/* Desktop featured card */}
+              <div
+                className="fr-featured-desktop"
+                onClick={() => router.push("/sepe-book/4")}
+                style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "56px 40px", gap: "32px", alignItems: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", minHeight: "260px", cursor: "pointer" }}
+              >
+                <div style={{ width: "160px", minWidth: "160px", height: "240px", borderRadius: "8px", position: "relative", overflow: "hidden", flexShrink: 0 }}>
+                  <img src="/e-book.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", bottom: "10px", left: "8px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
+                </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "18px", lineHeight: "26px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
+                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+                    <button
+                      onClick={e => { e.stopPropagation(); router.push("/sepe-book/4"); }}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#0d4f35", color: "#fff", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: 600, fontFamily: "var(--font-inter), sans-serif", cursor: "pointer" }}
+                    >
+                      <DownloadIcon />Download Now
+                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <EyeIcon />
+                      <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile featured card */}
+              <div
+                className="fr-featured-mobile"
+                onClick={() => router.push("/sepe-book/4")}
+                style={{ backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", cursor: "pointer" }}
+              >
+                <div style={{ width: "100%", height: "220px", position: "relative", overflow: "hidden" }}>
+                  <img src="/e-book.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
+                </div>
+                <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "16px", lineHeight: "24px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
+                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+                    <button
+                      onClick={e => { e.stopPropagation(); router.push("/sepe-book/4"); }}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#0d4f35", color: "#fff", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: 600, fontFamily: "var(--font-inter), sans-serif", cursor: "pointer" }}
+                    >
+                      <DownloadIcon />Download Now
+                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <EyeIcon />
+                      <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-              {PUBLICATIONS_LIST.map((pub) => (
-                <PublicationCard key={pub.id} pub={pub} />
-              ))}
+
+            {/* ── Mobile-only sidebar: Categories + Tags between Featured and Publications ── */}
+            <div className="fr-mobile-sidebar" style={{ marginBottom: "28px" }}>
+              <Sidebar />
+            </div>
+
+            {/* Latest Publications */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                <h2 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "20px", color: "#1e293b" }}>Latest Publications</h2>
+                <button style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: "#047857" }}>
+                  View All <ArrowRight />
+                </button>
+              </div>
+              <div className="fr-pubs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                {PUBLICATIONS_LIST.map((pub) => (
+                  <PublicationCard key={pub.id} pub={pub} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        <div style={{ position: "sticky", top: "24px" }}>
-          <Sidebar />
+
+          {/* ── Right / desktop sticky sidebar ── */}
+          <div className="fr-desktop-sidebar" style={{ position: "sticky", top: "24px" }}>
+            <Sidebar />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

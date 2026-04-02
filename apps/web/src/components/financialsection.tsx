@@ -53,7 +53,7 @@ export default function FinancialConfidence() {
           top: "55%",
           left: 0,
           zIndex: 2,
-          opacity: 0.1,
+          opacity: 0.03
         }}
       >
         <path d="M0.0931396 47.6235C288.093 -15.2931 576.093 -15.2931 864.093 47.6235C1152.09 110.54 1344.09 110.54 1440.09 47.6235" stroke="white" strokeWidth="0.87225"/>
@@ -72,7 +72,7 @@ export default function FinancialConfidence() {
           top: "40%",
           left: 0,
           zIndex: 2,
-          opacity: 0.1,
+          opacity: 0.03
         }}
       >
         <path d="M0.135498 59.2935C240.136 -19.1831 480.136 -19.1831 720.136 59.2935C960.136 137.77 1200.14 137.77 1440.14 59.2935" stroke="white" strokeWidth="0.87225"/>
@@ -90,7 +90,7 @@ export default function FinancialConfidence() {
           top: "0.025%",
           right: 0,
           zIndex: 2,
-          opacity: 0.1,
+          opacity: 0.03
         }}
       >
         <path d="M0 307.77C8 307.77 688 102.909 1027 0.478516" stroke="white" strokeDasharray="22 22"/>

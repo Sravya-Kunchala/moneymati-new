@@ -17,7 +17,7 @@ function Breadcrumb() {
   return (
     <nav className="breadcrumb anim-breadcrumb" style={{ marginBottom: "20px", display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <a href="/" onClick={e => { e.preventDefault(); router.push("/"); }}>Home</a><span>&gt;</span>
-      <a href="/blog" onClick={e => { e.preventDefault(); router.push("/blog"); }}>Blog</a><span>&gt;</span>
+      <a href="/Blog" onClick={e => { e.preventDefault(); router.push("/Blog"); }}>Blog</a><span>&gt;</span>
       <a href="/blog/investing" onClick={e => { e.preventDefault(); router.push("/blog/investing"); }}>Investing</a><span>&gt;</span>
       <span style={{ color: "#555", fontWeight: 400 }}>Mutual Funds: The Midas Touch for your Portfolio</span>
     </nav>
@@ -53,7 +53,13 @@ export default function MutualFundsMidas() {
           .read-more-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #2d8a5e; text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase; }
           .read-more-link:hover { text-decoration: underline; }
 
-          .page-container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+          .page-container { max-width: 1100px; margin: 0 auto; padding: 0; }
+
+          /* ── Reusable layout classes ── */
+          .hero-wrapper { padding-bottom: 48px; max-width: 1100px; margin: 0 auto; }
+          .body-container { max-width: 1100px; margin: 0 auto; padding: 0; }
+          .related-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+          .newsletter-row { display: flex; gap: 10px; max-width: 460px; margin: 0 auto 12px; }
 
           @keyframes fadeInUp   { from { opacity: 0; transform: translateY(40px); }  to { opacity: 1; transform: translateY(0); } }
           @keyframes fadeIn     { from { opacity: 0; }                                to { opacity: 1; } }
@@ -75,9 +81,40 @@ export default function MutualFundsMidas() {
           .anim-rel-card-1 { animation: cardIn   0.6s ease 0.6s  both; }
           .anim-rel-card-2 { animation: cardIn   0.6s ease 0.7s  both; }
           .anim-rel-card-3 { animation: cardIn   0.6s ease 0.8s  both; }
+
+          /* ── Mobile styles ── */
+          @media (max-width: 768px) {
+            .page-container { padding: 0 20px; }
+            .body-container { padding: 0 20px; }
+            .hero-wrapper { padding: 0 20px 32px; }
+
+            .anim-hero-img { border-radius: 12px !important; }
+
+            /* Quote block: tighten padding and remove br */
+            .anim-quote { padding: 20px 20px !important; text-align: left !important; }
+
+            /* Related articles: single column */
+            .related-grid { grid-template-columns: 1fr; }
+
+            /* Newsletter: stack input + button */
+            .newsletter-row { flex-direction: column; gap: 10px; max-width: 100%; }
+            .newsletter-input { width: 100%; }
+            .join-btn { width: 100%; text-align: center; }
+
+            /* Section top padding */
+            .mfm-page > div:first-child { padding-top: 24px !important; }
+          }
+
+          @media (max-width: 480px) {
+            .page-container { padding: 0 16px; }
+            .body-container { padding: 0 16px; }
+            .hero-wrapper { padding: 0 16px 24px; }
+
+            .anim-insight { padding: 16px 18px !important; }
+          }
         `}</style>
 
-        {/* ── Breadcrumb + Title ── */}
+        {/* ── Breadcrumb + Title + Meta ── */}
         <div style={{ background: "#f5f3ee", padding: "40px 0 0" }}>
           <div className="page-container">
             <Breadcrumb />
@@ -89,43 +126,64 @@ export default function MutualFundsMidas() {
 
             {/* Title */}
             <h1 className="anim-title" style={{ marginBottom: 16, lineHeight: 1.1 }}>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(36px,5vw,54px)", color: "#0d1f0d" }}>
+              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: "clamp(28px,5vw,54px)", color: "#0d1f0d" }}>
                 Mutual Funds:
               </span>
               {" "}
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(36px,5vw,54px)", color: "#064E3B" }}>
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 700, fontSize: "clamp(28px,5vw,54px)", color: "#064E3B" }}>
                 The Midas touch for your Portfolio
               </span>
             </h1>
 
             {/* Meta */}
-            <div className="anim-meta" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: 32, fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#888" }}>
+            <div className="anim-meta" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: 20, fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#888" }}>
               <span>Oct 24, 2023</span>
               <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#888", display: "inline-block" }} />
               <span>6 min read</span>
             </div>
           </div>
-        </div>
 
-        {/* ── Hero Image ── */}
-        <div style={{ padding: "0 0 48px" }}>
-          <div className="page-container">
-            <div className="anim-hero-img" style={{ borderRadius: 16, overflow: "hidden", width: "100%", background: "transparent", position: "relative", aspectRatio: "16/7" }}>
-              <Image src="/Hero Section2.svg" alt="Mutual Funds Investment" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          {/* ── Hero Image ── */}
+          <div className="hero-wrapper">
+            <div
+              className="anim-hero-img"
+              style={{
+                borderRadius: "16px",
+                overflow: "hidden",
+                width: "100%",
+                position: "relative",
+                aspectRatio: "16/7",
+                backgroundColor: "#111",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/Hero Section2.svg"
+                alt="Mutual Funds Investment"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: "120%",
+                  height: "120%",
+                  transform: "translate(-50%, -50%)",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  display: "block",
+                }}
+              />
             </div>
           </div>
         </div>
 
         {/* ── Article Body ── */}
         <div style={{ paddingBottom: 8 }}>
-          <div className="page-container">
+          <div className="body-container">
 
-            {/* Subtitle line */}
             <p className="anim-body" style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#222", marginBottom: 20 }}>
               Add the midas touch to your portfolio 🌟
             </p>
 
-            {/* Intro paragraphs */}
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#333", marginBottom: 20 }}>
               As the founder of Moneymati, I've seen firsthand how a well-structured asset allocation strategy can be the game-changer in building wealth. It's not just about chasing returns—it's about balancing growth, stability, and risk.
             </p>
@@ -145,7 +203,6 @@ export default function MutualFundsMidas() {
               </p>
             </div>
 
-            {/* Enhanced Returns section */}
             <h2 className="anim-section" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 22, color: "#0d1f0d", marginBottom: 14 }}>
               Enhanced Returns
             </h2>
@@ -156,11 +213,10 @@ export default function MutualFundsMidas() {
             {/* Quote block */}
             <div className="anim-quote" style={{ borderLeft: "3px solid #11D462", background: "#f8fdf9", borderRadius: "0 12px 12px 0", padding: "28px 36px", marginBottom: 36, textAlign: "center" }}>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, color: "#333", margin: 0, fontStyle: "italic" }}>
-                "💬 I'd love to hear your thoughts! Have you experienced the magic of diversification<br />in your investments?"
+                "💬 I'd love to hear your thoughts! Have you experienced the magic of diversification in your investments?"
               </p>
             </div>
 
-            {/* Closing bold line */}
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.85, fontWeight: 700, color: "#0d1f0d", marginBottom: 36 }}>
               Follow Moneymati for more updates on strategic asset allocation, wealth preservation, and staying resilient in volatile markets.
             </p>
@@ -193,7 +249,7 @@ export default function MutualFundsMidas() {
                   ✅ You're subscribed! Check your inbox.
                 </div>
               ) : (
-                <div style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto 12px" }}>
+                <div className="newsletter-row">
                   <input className="newsletter-input" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && email && setSubscribed(true)} />
                   <button className="join-btn" onClick={() => email && setSubscribed(true)}>Join Newsletter</button>
                 </div>
@@ -214,7 +270,7 @@ export default function MutualFundsMidas() {
                 <a href="#" style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#333", textDecoration: "none", fontWeight: 500 }}>View all →</a>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+              <div className="related-grid">
                 {relatedArticles.map((article, i) => (
                   <div key={i} className={`related-card anim-rel-card-${i + 1}`} style={{ cursor: "pointer" }}>
                     <div style={{ height: 160, overflow: "hidden", position: "relative" }}>

@@ -14,13 +14,8 @@ interface Article {
   excerpt: string;
   author: string;
   readTime: string;
-  href: string; // 👈 added: link for each article
-}
-
-interface Contributor {
-  name: string;
-  role: string;
-  avatar: string;
+  href: string;
+  category?: string;
 }
 
 const articles: Article[] = [
@@ -31,7 +26,8 @@ const articles: Article[] = [
     excerpt: "As a hashtag #couple we have some mandatory financial goals as a family and some individual goals...",
     author: "Amit Sharma",
     readTime: "5 min read",
-    href: "/sepblog-family", // 🔗 replace with real URL e.g. "/blog/familys-financial-goals"
+    href: "/sepblog-family",
+    category: "EMPOWERMENT",
   },
   {
     id: 2,
@@ -40,7 +36,8 @@ const articles: Article[] = [
     excerpt: "Dealing with substantial portfolio losses during a black swan event requires a combination of emotion...",
     author: "Priya Kapur",
     readTime: "8 min read",
-    href: "/sepblog-tax", // 🔗 replace with real URL e.g. "/blog/black-swan-events"
+    href: "/sepblog-tax",
+    category: "INVESTING",
   },
   {
     id: 3,
@@ -49,7 +46,8 @@ const articles: Article[] = [
     excerpt: "Add the midas touch to your portfolio 🌟 As the founder of Moneymati, I've seen firsthand how a we...",
     author: "Rajesh V.",
     readTime: "6 min read",
-    href: "/sepblog-mutual", // 🔗 replace with real URL e.g. "/blog/midas-touch-portfolio"
+    href: "/sepblog-mutual",
+    category: "FINTECH",
   },
   {
     id: 4,
@@ -58,19 +56,15 @@ const articles: Article[] = [
     excerpt: "Unit Linked Insurance Plans (ULIPs) have historically faced criticism due to several issues that made them...",
     author: "Sarah M.",
     readTime: "10 min read",
-    href: "/sepblog-ulips", // 🔗 replace with real URL e.g. "/blog/problems-with-ulips"
+    href: "/sepblog-ulips",
+    category: "INSURANCE",
   },
 ];
 
 const tags = ["Mutual Funds", "Family", "Risk Migration", "Retirement", "NPS", "MoneyMati", "SmartWomenInvest", "Budgeting"];
 
-const contributors: Contributor[] = [
-  { name: "Dr. Naveen Kumar", role: "CFA, Wealth Strategist", avatar: "/naveen.svg" },
-  { name: "Ananya Deshpande", role: "Women Entrepreneur", avatar: "/ananya.svg" },
-];
-
-const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
-  // 👇 Entire card is now an anchor tag — clicking anywhere opens the article page
+/* ── Desktop card (unchanged) ── */
+const DesktopArticleCard: React.FC<{ article: Article }> = ({ article }) => (
   <a
     href={article.href}
     style={{
@@ -86,7 +80,7 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
       position: "relative",
       zIndex: 1,
       isolation: "isolate",
-      color: "inherit", // prevent anchor default blue color on children
+      color: "inherit",
     }}
     onMouseEnter={(e) => {
       (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.10)";
@@ -97,34 +91,20 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
       (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
     }}
   >
-    {/* Image area */}
     <div style={{ position: "relative", width: "100%", height: "180px", backgroundColor: "#e2e8f0" }}>
-      <Image
-        src={article.image}
-        alt={article.title}
-        fill
-        style={{ objectFit: "cover" }}
-        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-      />
+      <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }}
+        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
       <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "rgba(255,255,255,0.92)", borderRadius: "6px", padding: "4px 10px" }}>
         <span style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px", color: "#1a1a1a", textTransform: "uppercase" }}>Read More</span>
       </div>
     </div>
-
-    {/* Content area */}
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-      <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>
-        {article.title}
-      </h3>
-      <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>
-        {article.excerpt}
-      </p>
+      <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>{article.title}</h3>
+      <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.excerpt}</p>
       <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #f1f5f9" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <div style={{ backgroundColor: "#11D4621A", borderRadius: "4px", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.66667 4.66667C4.025 4.66667 3.47569 4.43819 3.01875 3.98125C2.56181 3.52431 2.33333 2.975 2.33333 2.33333C2.33333 1.69167 2.56181 1.14236 3.01875 0.685417C3.47569 0.228472 4.025 0 4.66667 0C5.30833 0 5.85764 0.228472 6.31458 0.685417C6.77153 1.14236 7 1.69167 7 2.33333C7 2.975 6.77153 3.52431 6.31458 3.98125C5.85764 4.43819 5.30833 4.66667 4.66667 4.66667ZM0 9.33333V7.7C0 7.36944 0.0850694 7.06563 0.255208 6.78854C0.425347 6.51146 0.651389 6.3 0.933333 6.15417C1.53611 5.85278 2.14861 5.62674 2.77083 5.47604C3.39306 5.32535 4.025 5.25 4.66667 5.25C5.30833 5.25 5.94028 5.32535 6.5625 5.47604C7.18472 5.62674 7.79722 5.85278 8.4 6.15417C8.68194 6.3 8.90799 6.51146 9.07812 6.78854C9.24826 7.06563 9.33333 7.36944 9.33333 7.7V9.33333H0ZM1.16667 8.16667H8.16667V7.7C8.16667 7.59306 8.13993 7.49583 8.08646 7.40833C8.03299 7.32083 7.9625 7.25278 7.875 7.20417C7.35 6.94167 6.82014 6.74479 6.28542 6.61354C5.75069 6.48229 5.21111 6.41667 4.66667 6.41667C4.12222 6.41667 3.58264 6.48229 3.04792 6.61354C2.51319 6.74479 1.98333 6.94167 1.45833 7.20417C1.37083 7.25278 1.30035 7.32083 1.24688 7.40833C1.1934 7.49583 1.16667 7.59306 1.16667 7.7V8.16667ZM4.66667 3.5C4.9875 3.5 5.26215 3.38576 5.49062 3.15729C5.7191 2.92882 5.83333 2.65417 5.83333 2.33333C5.83333 2.0125 5.7191 1.73785 5.49062 1.50937C5.26215 1.2809 4.9875 1.16667 4.66667 1.16667C4.34583 1.16667 4.07118 1.2809 3.84271 1.50937C3.61424 1.73785 3.5 2.0125 3.5 2.33333C3.5 2.65417 3.61424 2.92882 3.84271 3.15729C4.07118 3.38576 4.34583 3.5 4.66667 3.5Z" fill="#11D462"/>
-            </svg>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4.66667 4.66667C4.025 4.66667 3.47569 4.43819 3.01875 3.98125C2.56181 3.52431 2.33333 2.975 2.33333 2.33333C2.33333 1.69167 2.56181 1.14236 3.01875 0.685417C3.47569 0.228472 4.025 0 4.66667 0C5.30833 0 5.85764 0.228472 6.31458 0.685417C6.77153 1.14236 7 1.69167 7 2.33333C7 2.975 6.77153 3.52431 6.31458 3.98125C5.85764 4.43819 5.30833 4.66667 4.66667 4.66667ZM0 9.33333V7.7C0 7.36944 0.0850694 7.06563 0.255208 6.78854C0.425347 6.51146 0.651389 6.3 0.933333 6.15417C1.53611 5.85278 2.14861 5.62674 2.77083 5.47604C3.39306 5.32535 4.025 5.25 4.66667 5.25C5.30833 5.25 5.94028 5.32535 6.5625 5.47604C7.18472 5.62674 7.79722 5.85278 8.4 6.15417C8.68194 6.3 8.90799 6.51146 9.07812 6.78854C9.24826 7.06563 9.33333 7.36944 9.33333 7.7V9.33333H0ZM1.16667 8.16667H8.16667V7.7C8.16667 7.59306 8.13993 7.49583 8.08646 7.40833C8.03299 7.32083 7.9625 7.25278 7.875 7.20417C7.35 6.94167 6.82014 6.74479 6.28542 6.61354C5.75069 6.48229 5.21111 6.41667 4.66667 6.41667C4.12222 6.41667 3.58264 6.48229 3.04792 6.61354C2.51319 6.74479 1.98333 6.94167 1.45833 7.20417C1.37083 7.25278 1.30035 7.32083 1.24688 7.40833C1.1934 7.49583 1.16667 7.59306 1.16667 7.7V8.16667ZM4.66667 3.5C4.9875 3.5 5.26215 3.38576 5.49062 3.15729C5.7191 2.92882 5.83333 2.65417 5.83333 2.33333C5.83333 2.0125 5.7191 1.73785 5.49062 1.50937C5.26215 1.2809 4.9875 1.16667 4.66667 1.16667C4.34583 1.16667 4.07118 1.2809 3.84271 1.50937C3.61424 1.73785 3.5 2.0125 3.5 2.33333C3.5 2.65417 3.61424 2.92882 3.84271 3.15729C4.07118 3.38576 4.34583 3.5 4.66667 3.5Z" fill="#11D462"/></svg>
           </div>
           <span style={{ fontSize: "13px", color: "#475569", fontWeight: 500, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.author}</span>
         </div>
@@ -133,6 +113,90 @@ const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
     </div>
   </a>
 );
+
+/* ── Mobile card: full-width vertical, matching screenshot ── */
+const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
+  const initials = article.author.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  return (
+    <a
+      href={article.href}
+      style={{
+        textDecoration: "none",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#ffffff",
+        borderRadius: "16px",
+        overflow: "hidden",
+        color: "inherit",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+      }}
+    >
+      {/* Top image */}
+      <div style={{ position: "relative", width: "100%", height: "200px", backgroundColor: "#e2e8f0" }}>
+        <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "16px 16px 20px", display: "flex", flexDirection: "column", gap: "10px" }}>
+
+        {/* Category + read time row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {article.category && (
+            <span style={{
+              fontFamily: "var(--font-dm-sans), sans-serif",
+              fontSize: "11px",
+              fontWeight: 700,
+              letterSpacing: "0.6px",
+              textTransform: "uppercase",
+              color: "#11D462",
+              backgroundColor: "rgba(17,212,98,0.10)",
+              padding: "3px 10px",
+              borderRadius: "20px",
+            }}>{article.category}</span>
+          )}
+          <span style={{ fontSize: "12px", color: "#94a3b8", fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
+        </div>
+
+        {/* Title */}
+        <h3 style={{
+          margin: 0,
+          fontSize: "20px",
+          lineHeight: "28px",
+          fontWeight: 700,
+          color: "#1a1a1a",
+          fontFamily: "var(--font-playfair), serif",
+        }}>{article.title}</h3>
+
+        {/* Excerpt */}
+        <p style={{
+          margin: 0,
+          fontSize: "13px",
+          lineHeight: "20px",
+          color: "#64748b",
+          fontFamily: "var(--font-dm-sans), sans-serif",
+        }}>{article.excerpt}</p>
+
+        {/* Author + Read More */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "8px", borderTop: "1px solid #f1f5f9" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* Avatar with initials */}
+            <div style={{
+              width: "28px", height: "28px", borderRadius: "50%",
+              backgroundColor: "#004D40",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <span style={{ fontSize: "10px", fontWeight: 700, color: "#ffffff", fontFamily: "var(--font-dm-sans), sans-serif" }}>{initials}</span>
+            </div>
+            <span style={{ fontSize: "13px", color: "#475569", fontWeight: 500, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.author}</span>
+          </div>
+          <span style={{ fontSize: "13px", fontWeight: 600, color: "#004D40", fontFamily: "var(--font-dm-sans), sans-serif" }}>Read More →</span>
+        </div>
+      </div>
+    </a>
+  );
+};
 
 const WeeklyDigest: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -158,7 +222,7 @@ const WeeklyDigest: React.FC = () => {
 const PopularTags: React.FC = () => (
   <div style={{ display: "flex", flexDirection: "column", gap: "14px", backgroundColor: "#f5f0e8", paddingTop: "4px", position: "relative", zIndex: 5, isolation: "isolate" }}>
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
         <path d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H13C13.3167 0 13.6167 0.0708333 13.9 0.2125C14.1833 0.354167 14.4167 0.55 14.6 0.8L20 8L14.6 15.2C14.4167 15.45 14.1833 15.6458 13.9 15.7875C13.6167 15.9292 13.3167 16 13 16H2ZM2 14H13L17.5 8L13 2H2V14Z" fill="#11D462"/>
       </svg>
       <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Popular Tags</h3>
@@ -169,25 +233,6 @@ const PopularTags: React.FC = () => (
           onMouseEnter={(e) => { (e.currentTarget as HTMLSpanElement).style.backgroundColor = "#004D40"; (e.currentTarget as HTMLSpanElement).style.color = "#ffffff"; (e.currentTarget as HTMLSpanElement).style.borderColor = "#004D40"; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLSpanElement).style.backgroundColor = "#F1F5F9"; (e.currentTarget as HTMLSpanElement).style.color = "#475569"; (e.currentTarget as HTMLSpanElement).style.borderColor = "#e2e8f0"; }}
         >{tag}</span>
-      ))}
-    </div>
-  </div>
-);
-
-const ExpertContributors: React.FC = () => (
-  <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px 24px", display: "flex", flexDirection: "column", gap: "16px", position: "relative", zIndex: 5, isolation: "isolate" }}>
-    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Expert Contributors</h3>
-    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-      {contributors.map((c) => (
-        <div key={c.name} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{ width: "44px", height: "44px", borderRadius: "50%", backgroundColor: "#e2e8f0", overflow: "hidden", flexShrink: 0, position: "relative" }}>
-            <Image src={c.avatar} alt={c.name} fill style={{ objectFit: "cover" }} onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-          </div>
-          <div>
-            <div style={{ fontSize: "14px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-dm-sans), sans-serif" }}>{c.name}</div>
-            <div style={{ fontSize: "12px", color: "#94a3b8", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{c.role}</div>
-          </div>
-        </div>
       ))}
     </div>
   </div>
@@ -211,8 +256,29 @@ export default function LatestArticles() {
       className={`${playfair.variable} ${dmSans.variable}`}
       style={{ backgroundColor: "#f5f0e8", padding: "48px 40px", position: "relative", overflow: "hidden" }}
     >
+      <style>{`
+        /* ── Mobile layout (≤ 640px) ── */
+        @media (max-width: 640px) {
+          .latest-section {
+            padding: 24px 16px !important;
+          }
+          .latest-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0 !important;
+          }
+          .desktop-cards-grid { display: none !important; }
+          .mobile-cards-list {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+          }
+          .latest-sidebar { margin-top: 20px; }
+        }
+      `}</style>
+
       {/* Decorative SVGs */}
-      <div style={{ position: "absolute", top: "200px", left: "50%", transform: "translateX(-50%)", zIndex: 0, opacity: 0.6, pointerEvents: "none", display: "flex" }}>
+      <div className="latest-deco" style={{ position: "absolute", top: "200px", left: "50%", transform: "translateX(-50%)", zIndex: 0, opacity: 0.6, pointerEvents: "none", display: "flex" }}>
         <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
         </svg>
@@ -222,12 +288,12 @@ export default function LatestArticles() {
       </div>
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 300px", gap: "24px", alignItems: "start" }}>
+        <div className="latest-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 300px", gap: "24px", alignItems: "start" }}>
 
           {/* Article cards column */}
-          <div style={{ gridColumn: "1 / 3", display: "flex", flexDirection: "column", gap: "20px", position: "relative", zIndex: 1, isolation: "isolate", backgroundColor: "#f5f0e8" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 900, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Latest Articles</h2>
+          <div className="latest-articles-col" style={{ gridColumn: "1 / 3", display: "flex", flexDirection: "column", gap: "20px", position: "relative", zIndex: 1, isolation: "isolate", backgroundColor: "#f5f0e8" }}>
+            <div className="latest-articles-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 900, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Latest Insights</h2>
               <a href="#" style={{ fontSize: "14px", fontWeight: 600, color: "#475569", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                 View All
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
@@ -237,20 +303,29 @@ export default function LatestArticles() {
                 </svg>
               </a>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+
+            {/* Desktop 2-col grid */}
+            <div className="desktop-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
               {articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <DesktopArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+
+            {/* Mobile single-col list */}
+            <div className="mobile-cards-list" style={{ display: "none" }}>
+              {articles.map((article) => (
+                <MobileArticleCard key={article.id} article={article} />
               ))}
             </div>
           </div>
 
           {/* Sidebar */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div className="latest-sidebar" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <WeeklyDigest />
             <PopularTags />
-            <ExpertContributors />
           </div>
         </div>
+
         <Pagination current={page} total={3} onChange={setPage} />
       </div>
     </section>
