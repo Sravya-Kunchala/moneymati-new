@@ -38,7 +38,7 @@ const testimonials = [
       "This was a wonderful session on \"Money Matters for Women\" that covered various aspects on managing money, budgeting, prudent borrowing and rules for investing. It was very well received by the motley group of women professionals.",
     name: "Anita K Manda",
     role: "EVP with Broadridge | Founder of The ProjeKT40 | Doctoral Student at ISB",
-    avatar: "/Anita K Manda.svg",
+    avatar: "/anita.jpeg",
   },
 ];
 

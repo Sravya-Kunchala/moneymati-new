@@ -53,12 +53,12 @@ function drawSpread(
   cx.clearRect(0, 0, W, H);
   if (isCover && rightPage) { cx.drawImage(rightPage, 0, 0, W, H); return; }
   if (leftPage)  { cx.drawImage(leftPage,  0,   0, pw, H); }
-  else           { cx.fillStyle = "#f0f0f0"; cx.fillRect(0, 0, pw, H); }
+  else           { cx.fillStyle = "#f8f8f8"; cx.fillRect(0, 0, pw, H); }
   if (rightPage) { cx.drawImage(rightPage, pw,  0, pw, H); }
   else           { cx.fillStyle = "#ffffff"; cx.fillRect(pw, 0, pw, H); }
   const sg = cx.createLinearGradient(pw - 5, 0, pw + 8, 0);
-  sg.addColorStop(0,   "rgba(0,0,0,0.40)");
-  sg.addColorStop(0.5, "rgba(0,0,0,0.15)");
+  sg.addColorStop(0,   "rgba(0,0,0,0.18)");
+  sg.addColorStop(0.5, "rgba(0,0,0,0.07)");
   sg.addColorStop(1,   "rgba(0,0,0,0)");
   cx.fillStyle = sg;
   cx.fillRect(pw - 5, 0, 13, H);
@@ -71,7 +71,7 @@ function drawSinglePage(
 ) {
   cx.clearRect(0, 0, W, H);
   if (page) { cx.drawImage(page, 0, 0, W, H); }
-  else      { cx.fillStyle = "#f0f0f0"; cx.fillRect(0, 0, W, H); }
+  else      { cx.fillStyle = "#f8f8f8"; cx.fillRect(0, 0, W, H); }
 }
 
 function drawCurl(
@@ -92,7 +92,7 @@ function drawCurl(
   if (bgIsCover && bgRight) { cx.drawImage(bgRight, 0, 0, W, H); }
   else {
     if (bgLeft)  cx.drawImage(bgLeft,  0,   0, pw, H);
-    else         { cx.fillStyle = "#f0f0f0"; cx.fillRect(0, 0, pw, H); }
+    else         { cx.fillStyle = "#f8f8f8"; cx.fillRect(0, 0, pw, H); }
     if (bgRight) cx.drawImage(bgRight, pw,  0, pw, H);
     else         { cx.fillStyle = "#ffffff"; cx.fillRect(pw, 0, pw, H); }
   }
@@ -168,7 +168,7 @@ function drawCurl(
     if (srcPage) {
       if (forward) drawImageInQuad(srcPage, frontTL.x, frontTL.y, frontTR.x, frontTR.y, frontBR.x, frontBR.y, frontBL.x, frontBL.y);
       else         drawImageInQuad(srcPage, frontTR.x, frontTR.y, frontTL.x, frontTL.y, frontBL.x, frontBL.y, frontBR.x, frontBR.y);
-    } else { cx.fillStyle = "#f0f0f0"; cx.fill(); }
+    } else { cx.fillStyle = "#f8f8f8"; cx.fill(); }
     cx.restore();
   }
 
@@ -191,10 +191,10 @@ function drawCurl(
     if (dstPage) {
       if (forward) drawImageInQuad(dstPage, backTR.x, backTR.y, backTL.x, backTL.y, backBL.x, backBL.y, backBR.x, backBR.y);
       else         drawImageInQuad(dstPage, backTL.x, backTL.y, backTR.x, backTR.y, backBR.x, backBR.y, backBL.x, backBL.y);
-      cx.fillStyle = "rgba(0,0,0,0.18)"; cx.fill();
+      cx.fillStyle = "rgba(0,0,0,0.10)"; cx.fill();
     } else {
-      cx.fillStyle = "#f0f0f0"; cx.fill();
-      cx.fillStyle = "rgba(0,0,0,0.08)"; cx.fill();
+      cx.fillStyle = "#f8f8f8"; cx.fill();
+      cx.fillStyle = "rgba(0,0,0,0.04)"; cx.fill();
     }
     cx.restore(); cx.restore();
   }
@@ -210,13 +210,13 @@ function drawCurl(
     const gx0   = forward ? frontTL.x : frontTR.x;
     const gx1   = forward ? frontTL.x + shadW : frontTR.x - shadW;
     const grad  = cx.createLinearGradient(gx0, 0, gx1, 0);
-    grad.addColorStop(0, `rgba(0,0,0,${foldArc * 0.32})`);
+    grad.addColorStop(0, `rgba(0,0,0,${foldArc * 0.15})`);
     grad.addColorStop(1, "rgba(0,0,0,0)");
     cx.fillStyle = grad; cx.fillRect(0, 0, W, H);
     cx.restore();
   }
 
-  const shadowI = Math.sin(p * Math.PI) * 0.45;
+  const shadowI = Math.sin(p * Math.PI) * 0.25;
   if (shadowI > 0.02) {
     const shadowW = pw * 0.38 * Math.sin(p * Math.PI);
     cx.save();
@@ -235,8 +235,8 @@ function drawCurl(
   }
 
   const sg2 = cx.createLinearGradient(pw - 5, 0, pw + 8, 0);
-  sg2.addColorStop(0,   "rgba(0,0,0,0.40)");
-  sg2.addColorStop(0.5, "rgba(0,0,0,0.15)");
+  sg2.addColorStop(0,   "rgba(0,0,0,0.18)");
+  sg2.addColorStop(0.5, "rgba(0,0,0,0.07)");
   sg2.addColorStop(1,   "rgba(0,0,0,0)");
   cx.fillStyle = sg2; cx.fillRect(pw - 5, 0, 13, H);
 }
@@ -254,7 +254,7 @@ function drawMobileFlip(
   const outX = forward ? -p * W : p * W;
   const inX  = forward ? W - p * W : -(W - p * W);
   if (srcPage) cx.drawImage(srcPage, outX, 0, W, H);
-  else { cx.fillStyle = "#f0f0f0"; cx.fillRect(outX, 0, W, H); }
+  else { cx.fillStyle = "#f8f8f8"; cx.fillRect(outX, 0, W, H); }
   if (dstPage) cx.drawImage(dstPage, inX, 0, W, H);
   else { cx.fillStyle = "#ffffff"; cx.fillRect(inX, 0, W, H); }
 }
@@ -267,8 +267,9 @@ interface BgCanvasProps {
   pageCanvases: Map<number, HTMLCanvasElement>;
   isCover?: boolean;
   isMobile?: boolean;
+  onPainted?: () => void;
 }
-function BgCanvas({ W, H, leftPage, rightPage, pageCanvases, isCover, isMobile }: BgCanvasProps) {
+function BgCanvas({ W, H, leftPage, rightPage, pageCanvases, isCover, isMobile, onPainted }: BgCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (!ref.current || W === 0 || H === 0) return;
@@ -281,7 +282,8 @@ function BgCanvas({ W, H, leftPage, rightPage, pageCanvases, isCover, isMobile }
     } else {
       drawSpread(cx, W, H, get(leftPage), get(rightPage), isCover);
     }
-  }, [W, H, leftPage, rightPage, pageCanvases, isCover, isMobile]);
+    if (onPainted) requestAnimationFrame(() => onPainted());
+  }, [W, H, leftPage, rightPage, pageCanvases, isCover, isMobile, onPainted]);
   return (
     <canvas
       ref={ref}
@@ -299,12 +301,16 @@ interface FlipCanvasProps {
   pageCanvases: Map<number, HTMLCanvasElement>;
   bgIsCover?: boolean;
   isMobile?: boolean;
+  visible: boolean;
   onDone: () => void;
   onSettled: () => void;
+  nextBgLeft: number | null;
+  nextBgRight: number | null;
 }
 function FlipCanvas({
   W, H, forward, srcPage, dstPage, bgLeft, bgRight,
-  pageCanvases, bgIsCover, isMobile, onDone, onSettled,
+  pageCanvases, bgIsCover, isMobile, visible, onDone, onSettled,
+  nextBgLeft, nextBgRight,
 }: FlipCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef    = useRef<number>(0);
@@ -330,8 +336,13 @@ function FlipCanvas({
       if (t < 1) { rafRef.current = requestAnimationFrame(frame); return; }
       if (doneRef.current) return;
       doneRef.current = true;
+
+      if (isMobile) {
+        drawSinglePage(cx, W, H, get(dstPage));
+      } else {
+        drawSpread(cx, W, H, get(nextBgLeft), get(nextBgRight), false);
+      }
       onDone();
-      requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(() => { onSettled(); })));
     };
 
     rafRef.current = requestAnimationFrame(frame);
@@ -344,7 +355,12 @@ function FlipCanvas({
       ref={canvasRef}
       width={W}
       height={H}
-      style={{ position: "absolute", inset: 0, display: "block", zIndex: 10, pointerEvents: "none" }}
+      style={{
+        position: "absolute", inset: 0, display: "block",
+        zIndex: 10, pointerEvents: "none",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0s",
+      }}
     />
   );
 }
@@ -359,6 +375,7 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
   const [bgSpread, setBgSpread]         = useState(0);
   const [flipping, setFlipping]         = useState(false);
   const [settling, setSettling]         = useState(false);
+  const [flipVisible, setFlipVisible]   = useState(false);
   const [flipDir, setFlipDir]           = useState<"fwd" | "bwd">("fwd");
   const [nextSpread, setNextSpread]     = useState(0);
   const [pdfErr, setPdfErr]             = useState(false);
@@ -367,6 +384,9 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
   const [pageCanvases, setPageCanvases] = useState<Map<number, HTMLCanvasElement>>(new Map());
   const [zoom, setZoom]                 = useState(1.0);
   const [isMobile, setIsMobile]         = useState(false);
+
+  // FIX 2: ref to avoid stale closure in handleBgPainted
+  const settlingRef = useRef(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const total = totalSpreads(numPages);
@@ -395,9 +415,10 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
 
   useEffect(() => {
     setNumPages(0); setSpread(0); setBgSpread(0);
-    setFlipping(false); setSettling(false);
+    setFlipping(false); setSettling(false); setFlipVisible(false);
     setPdfErr(false); setPageCanvases(new Map());
     setZoom(1.0);
+    settlingRef.current = false;
   }, [pdfFile]);
 
   const handleCapture = useCallback((n: number, c: HTMLCanvasElement) => {
@@ -411,6 +432,7 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
     playFlip(dir);
     setFlipDir(dir);
     setNextSpread(nxt);
+    setFlipVisible(true);
     setFlipping(true);
   }, [flipping, settling, spread, total]);
 
@@ -432,35 +454,46 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [go, zoomIn, zoomOut]);
 
+  // FIX 2: set settlingRef alongside settling state
   const handleDone = useCallback(() => {
-    setSpread(nextSpread);
     setBgSpread(nextSpread);
+    setSpread(nextSpread);
     setFlipping(false);
+    settlingRef.current = true;
     setSettling(true);
   }, [nextSpread]);
 
-  const handleSettled = useCallback(() => { setSettling(false); }, []);
+  // FIX 2: read ref instead of closure — no stale capture possible
+  const handleBgPainted = useCallback(() => {
+    if (!settlingRef.current) return;
+    settlingRef.current = false;
+    setFlipVisible(false);
+    setSettling(false);
+  }, []);
 
-  const cur       = spreadPages(bgSpread);
-  const nxt       = spreadPages(nextSpread);
-  const bgIsCover = bgSpread === 0;
+  const cur = spreadPages(bgSpread);
+  const nxt = spreadPages(nextSpread);
+
+  const bgIsCover   = bgSpread === 0;
+  const isCoverIdle = bgSpread === 0 && !flipping && !settling && nextSpread === 0;
 
   const mobileCurrentPage = cur.R ?? cur.L;
   const mobileNextPage    = flipDir === "fwd" ? (nxt.R ?? nxt.L) : (nxt.L ?? nxt.R);
 
+  // FIX 3: prefetch ahead from nextSpread during a flip, not from stale spread
+  const prefetchAhead = flipping ? nextSpread : spread;
   const neededPages = Array.from(new Set([
     cur.L, cur.R,
     nxt.L, nxt.R,
-    spreadPages(spread + 1).L, spreadPages(spread + 1).R,
-    spread > 0 ? spreadPages(spread - 1).L : null,
-    spread > 0 ? spreadPages(spread - 1).R : null,
+    spreadPages(prefetchAhead + 1).L, spreadPages(prefetchAhead + 1).R,
+    prefetchAhead > 0 ? spreadPages(prefetchAhead - 1).L : null,
+    prefetchAhead > 0 ? spreadPages(prefetchAhead - 1).R : null,
   ].filter((n): n is number => n !== null && n >= 1 && n <= numPages)));
 
   const animSrc        = flipDir === "fwd" ? spreadPages(bgSpread).R : spreadPages(bgSpread).L;
   const animDst        = flipDir === "fwd" ? nxt.L : nxt.R;
   const canvasBgL      = nxt.L;
   const canvasBgR      = nxt.R;
-  const isCoverIdle    = bgSpread === 0 && !flipping && !settling;
   const desktopBookW   = isCoverIdle ? zoomedPw : zoomedPw * 2;
   const containerW     = isMobile ? zoomedPw : desktopBookW;
   const desktopCanvasW = (flipping || settling) ? zoomedPw * 2 : desktopBookW;
@@ -499,41 +532,43 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
   const isPrevDisabled = flipping || settling || spread <= 0;
   const isNextDisabled = flipping || settling || spread >= total - 1;
 
-  /* ── Nav button style — turn.js-style dark circle ── */
   const navBtnStyle = (side: "prev" | "next", disabled: boolean): React.CSSProperties => ({
     position: "absolute",
     top: "50%",
     transform: "translateY(-50%)",
-    /* On mobile: inside the book. On desktop: outside. */
-    [side === "prev" ? "left" : "right"]: isMobile ? 10 : -68,
-    width:        isMobile ? 38 : 48,
-    height:       isMobile ? 38 : 48,
-    borderRadius: "50%",
-    border:       "none",
-    background:   disabled ? "rgba(0,0,0,0.20)" : "rgba(0,0,0,0.65)",
-    color:        disabled ? "rgba(255,255,255,0.25)" : "#ffffff",
-    fontSize:     isMobile ? 24 : 30,
-    lineHeight:   1,
-    display:      "flex",
-    alignItems:   "center",
+    [side === "prev" ? "left" : "right"]: isMobile ? 10 : -56,
+    width:          isMobile ? 36 : 44,
+    height:         isMobile ? 36 : 44,
+    borderRadius:   "50%",
+    border:         "1px solid rgba(0,0,0,0.10)",
+    background:     disabled ? "rgba(255,255,255,0.4)" : "#ffffff",
+    color:          disabled ? "rgba(0,0,0,0.2)" : "#1a3a2e",
+    fontSize:       isMobile ? 22 : 26,
+    lineHeight:     1,
+    display:        "flex",
+    alignItems:     "center",
     justifyContent: "center",
-    cursor:       disabled ? "default" : "pointer",
-    zIndex:       40,
-    padding:      0,
-    transition:   "background 0.15s, color 0.15s",
-    userSelect:   "none" as const,
-    /* Remove default button outline */
-    outline: "none",
+    cursor:         disabled ? "default" : "pointer",
+    zIndex:         40,
+    padding:        0,
+    boxShadow:      disabled ? "none" : "0 2px 8px rgba(0,0,0,0.12)",
+    transition:     "background 0.15s, box-shadow 0.15s",
+    userSelect:     "none" as const,
+    outline:        "none",
   });
 
   return (
-    <div style={{ width: "100%", height: "100vh", background: "#102218", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{
+      width: "100%", height: "100vh",
+      background: "#1a3a2e",
+      display: "flex", flexDirection: "column", overflow: "hidden",
+    }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         .react-pdf__Page { display: flex !important; }
         .react-pdf__Page canvas { display: block !important; }
         .bv-nav-btn:focus { outline: none; }
-        .bv-nav-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 2px; }
+        .bv-nav-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.4); outline-offset: 2px; }
       `}</style>
 
       {/* ── Viewer area ── */}
@@ -547,18 +582,18 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
           onLoadError={() => setPdfErr(true)}
           loading={
             <div style={{ textAlign: "center" }}>
-              <div style={{ width: 40, height: 40, border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "#D4A843", borderRadius: "50%", animation: "spin .8s linear infinite", margin: "0 auto 12px" }} />
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: 0, fontFamily: "system-ui,sans-serif" }}>Loading...</p>
+              <div style={{ width: 40, height: 40, border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "#ffffff", borderRadius: "50%", animation: "spin .8s linear infinite", margin: "0 auto 12px" }} />
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: 0, fontFamily: "system-ui,sans-serif" }}>Loading...</p>
             </div>
           }
         >
           {pdfErr ? (
-            <div style={{ borderRadius: 8, background: "rgba(255,255,255,0.05)", padding: 60, textAlign: "center", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div style={{ borderRadius: 12, background: "rgba(255,255,255,0.08)", padding: 60, textAlign: "center", border: "1px solid rgba(255,255,255,0.12)" }}>
               <p style={{ fontSize: 48, margin: "0 0 16px" }}>📄</p>
-              <p style={{ color: "rgba(255,255,255,0.8)", fontWeight: 700, fontSize: 18, margin: "0 0 8px", fontFamily: "system-ui,sans-serif" }}>PDF not found</p>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, margin: 0, fontFamily: "system-ui,sans-serif" }}>
+              <p style={{ color: "rgba(255,255,255,0.9)", fontWeight: 700, fontSize: 18, margin: "0 0 8px", fontFamily: "system-ui,sans-serif" }}>PDF not found</p>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: 0, fontFamily: "system-ui,sans-serif" }}>
                 Place your PDF at{" "}
-                <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 3, color: "#D4A843" }}>{pdfFile}</code>
+                <code style={{ background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 3, color: "#90e0b0" }}>{pdfFile}</code>
               </p>
             </div>
           ) : (
@@ -566,13 +601,15 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
               {numPages > 0 && zoomedPw > 0 && neededPages.map(n => offscreenPage(n))}
 
               <div style={{ position: "relative" }}>
-                {/* ── Book canvas ── */}
+                {/* ── White book card ── */}
                 <div style={{
                   width: containerW,
                   height: ph,
                   position: "relative",
-                  boxShadow: "0 8px 48px rgba(0,0,0,0.72), 0 2px 8px rgba(0,0,0,0.45)",
+                  borderRadius: 12,
                   overflow: "hidden",
+                  background: "#ffffff",
+                  boxShadow: "0 8px 40px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.16)",
                 }}>
                   {zoomedPw > 0 && ph > 0 && (
                     <BgCanvas
@@ -583,6 +620,7 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
                       pageCanvases={pageCanvases}
                       isCover={bgIsCover}
                       isMobile={isMobile}
+                      onPainted={handleBgPainted}
                     />
                   )}
                   {(flipping || settling) && zoomedPw > 0 && ph > 0 && (
@@ -594,44 +632,39 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
                       dstPage={isMobile ? mobileNextPage : animDst}
                       bgLeft={isMobile ? null : canvasBgL}
                       bgRight={isMobile ? null : canvasBgR}
+                      nextBgLeft={isMobile ? null : nxt.L}
+                      nextBgRight={isMobile ? null : nxt.R}
                       pageCanvases={pageCanvases}
                       bgIsCover={bgIsCover}
                       isMobile={isMobile}
+                      visible={flipVisible}
                       onDone={handleDone}
-                      onSettled={handleSettled}
+                      onSettled={() => {}}
                     />
                   )}
                 </div>
 
-                {/* ── Prev button (turn.js dark circle style) ── */}
+                {/* ── Prev button ── */}
                 <button
                   className="bv-nav-btn"
                   style={navBtnStyle("prev", isPrevDisabled)}
                   disabled={isPrevDisabled}
                   onClick={() => go("bwd")}
-                  onMouseEnter={e => {
-                    if (!isPrevDisabled) e.currentTarget.style.background = "rgba(0,0,0,0.88)";
-                  }}
-                  onMouseLeave={e => {
-                    if (!isPrevDisabled) e.currentTarget.style.background = "rgba(0,0,0,0.65)";
-                  }}
+                  onMouseEnter={e => { if (!isPrevDisabled) { e.currentTarget.style.background = "#f0f0f0"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.18)"; }}}
+                  onMouseLeave={e => { if (!isPrevDisabled) { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.12)"; }}}
                   aria-label="Previous page"
                 >
                   &#8249;
                 </button>
 
-                {/* ── Next button (turn.js dark circle style) ── */}
+                {/* ── Next button ── */}
                 <button
                   className="bv-nav-btn"
                   style={navBtnStyle("next", isNextDisabled)}
                   disabled={isNextDisabled}
                   onClick={() => go("fwd")}
-                  onMouseEnter={e => {
-                    if (!isNextDisabled) e.currentTarget.style.background = "rgba(0,0,0,0.88)";
-                  }}
-                  onMouseLeave={e => {
-                    if (!isNextDisabled) e.currentTarget.style.background = "rgba(0,0,0,0.65)";
-                  }}
+                  onMouseEnter={e => { if (!isNextDisabled) { e.currentTarget.style.background = "#f0f0f0"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.18)"; }}}
+                  onMouseLeave={e => { if (!isNextDisabled) { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.12)"; }}}
                   aria-label="Next page"
                 >
                   &#8250;
@@ -650,8 +683,10 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
         flexWrap: isMobile ? "wrap" : "nowrap",
         gap: isMobile ? 8 : 0,
         padding: isMobile ? "8px 12px" : "10px 24px",
-        borderTop: "1px solid rgba(255,255,255,0.1)",
+        background: "rgba(0,0,0,0.25)",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
         flexShrink: 0,
+        backdropFilter: "blur(8px)",
       }}>
         {/* Zoom controls */}
         <div style={{
@@ -685,7 +720,7 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
 
         {/* Page label */}
         <span style={{
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(255,255,255,0.55)",
           fontSize: 13,
           fontFamily: "system-ui,sans-serif",
           order: 2,
@@ -694,7 +729,7 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
           {label()}
         </span>
 
-        {/* Download */}
+        {/* FIX 1: restored missing opening <a tag */}
         <div style={{
           order: 3,
           flex: isMobile ? "1 1 100%" : undefined,
@@ -705,9 +740,9 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
             href={pdfFile}
             download
             style={{
-              background: "#D4A843",
-              border: "1px solid #D4A843",
-              color: "#102218",
+              background: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.2)",
+              color: "#1a3a2e",
               cursor: "pointer",
               padding: "0 16px",
               borderRadius: 8,
@@ -738,9 +773,9 @@ export default function BookViewer({ pdfFile }: BookViewerProps) {
 
 /* ── Shared toolbar button style ─────────────────────────────────────────── */
 const tbStyle: React.CSSProperties = {
-  background:   "rgba(255,255,255,0.08)",
+  background:   "rgba(255,255,255,0.10)",
   border:       "1px solid rgba(255,255,255,0.15)",
-  color:        "rgba(255,255,255,0.7)",
+  color:        "rgba(255,255,255,0.75)",
   cursor:       "pointer",
   padding:      "0 12px",
   borderRadius: 8,

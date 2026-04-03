@@ -138,7 +138,7 @@ export default function NewsletterBanner() {
 
       <div
         className={inter.className}
-        style={{ backgroundColor: "#F8F6F1", padding: "40px 48px", width: "100%" }}
+        style={{ backgroundColor: "#f5f0e8", padding: "40px 48px", width: "100%" }}
       >
         <section className="nl-section">
           {/* Left: Heading */}

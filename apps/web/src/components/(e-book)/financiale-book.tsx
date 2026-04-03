@@ -53,6 +53,23 @@ const CARD_IMAGES: Record<number, string> = {
   4: "/i4 (2).svg",
 };
 
+/* ── shared download button style ── */
+const downloadBtnStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  backgroundColor: "#0d4f35",
+  color: "#fff",
+  border: "none",
+  borderRadius: "8px",
+  padding: "9px 18px",
+  fontSize: "13px",
+  fontWeight: 600,
+  fontFamily: "var(--font-inter), sans-serif",
+  cursor: "pointer",
+  textDecoration: "none",
+};
+
 function PublicationCard({ pub }: { pub: { id: number; category: string; categoryColor: string; date: string; title: string; description: string; ctaLabel: string; ctaIcon: "read" | "download" } }) {
   const router = useRouter();
   return (
@@ -124,30 +141,20 @@ export default function FinancialResources() {
   return (
     <>
       <style>{`
-        /* ── Desktop defaults ── */
         .fr-featured-mobile { display: none; }
         .fr-featured-desktop { display: flex; }
         .fr-mobile-sidebar { display: none; }
 
         @media (max-width: 768px) {
-          /* Swap featured card variants */
           .fr-featured-mobile  { display: block !important; }
           .fr-featured-desktop { display: none  !important; }
-
-          /* Collapse outer grid to single full-width column */
           .fr-outer-grid {
             grid-template-columns: 1fr !important;
             padding: 24px 16px 48px !important;
             gap: 24px !important;
           }
-
-          /* Hide the desktop sticky sidebar column */
           .fr-desktop-sidebar { display: none !important; }
-
-          /* Show the mobile sidebar (rendered between featured & publications in DOM) */
           .fr-mobile-sidebar { display: block !important; }
-
-          /* Single-column publication cards */
           .fr-pubs-grid {
             grid-template-columns: 1fr !important;
             gap: 16px !important;
@@ -171,33 +178,41 @@ export default function FinancialResources() {
           {/* ── Left / main column ── */}
           <div>
 
-            {/* Featured E-Book label + cards */}
+            {/* Featured E-Book */}
             <div style={{ marginBottom: "40px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
                 <StarIcon />
                 <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 700, color: "#1e293b", letterSpacing: "0.01em" }}>Featured E-Book</span>
               </div>
 
-              {/* Desktop featured card */}
+              {/* ── Desktop featured card ── */}
               <div
                 className="fr-featured-desktop"
                 onClick={() => router.push("/sepe-book/4")}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "56px 40px", gap: "32px", alignItems: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", minHeight: "260px", cursor: "pointer" }}
               >
+                {/* Book cover image */}
                 <div style={{ width: "160px", minWidth: "160px", height: "240px", borderRadius: "8px", position: "relative", overflow: "hidden", flexShrink: 0 }}>
-                  <img src="/e-book.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img src="/navatri.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: "10px", left: "8px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
                 </div>
+
+                {/* Text + actions */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
                   <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "18px", lineHeight: "26px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
                   <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-                    <button
-                      onClick={e => { e.stopPropagation(); router.push("/sepe-book/4"); }}
-                      style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#0d4f35", color: "#fff", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: 600, fontFamily: "var(--font-inter), sans-serif", cursor: "pointer" }}
+
+                    {/* ✅ Download button — triggers PDF download, stops card navigation */}
+                    <a
+                      href="/FLIP-BOOK.pdf"
+                      download
+                      onClick={e => e.stopPropagation()}
+                      style={downloadBtnStyle}
                     >
                       <DownloadIcon />Download Now
-                    </button>
+                    </a>
+
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                       <EyeIcon />
                       <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
@@ -206,26 +221,31 @@ export default function FinancialResources() {
                 </div>
               </div>
 
-              {/* Mobile featured card */}
+              {/* ── Mobile featured card ── */}
               <div
                 className="fr-featured-mobile"
                 onClick={() => router.push("/sepe-book/4")}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", cursor: "pointer" }}
               >
                 <div style={{ width: "100%", height: "220px", position: "relative", overflow: "hidden" }}>
-                  <img src="/e-book.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img src="/navatri.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
                 </div>
                 <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: "10px" }}>
                   <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "16px", lineHeight: "24px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
                   <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-                    <button
-                      onClick={e => { e.stopPropagation(); router.push("/sepe-book/4"); }}
-                      style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#0d4f35", color: "#fff", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: 600, fontFamily: "var(--font-inter), sans-serif", cursor: "pointer" }}
+
+                    {/* ✅ Download button — triggers PDF download, stops card navigation */}
+                    <a
+                      href="/FLIP-BOOK.pdf"
+                      download
+                      onClick={e => e.stopPropagation()}
+                      style={downloadBtnStyle}
                     >
                       <DownloadIcon />Download Now
-                    </button>
+                    </a>
+
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                       <EyeIcon />
                       <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
@@ -235,7 +255,7 @@ export default function FinancialResources() {
               </div>
             </div>
 
-            {/* ── Mobile-only sidebar: Categories + Tags between Featured and Publications ── */}
+            {/* Mobile sidebar */}
             <div className="fr-mobile-sidebar" style={{ marginBottom: "28px" }}>
               <Sidebar />
             </div>
@@ -256,7 +276,7 @@ export default function FinancialResources() {
             </div>
           </div>
 
-          {/* ── Right / desktop sticky sidebar ── */}
+          {/* Desktop sidebar */}
           <div className="fr-desktop-sidebar" style={{ position: "sticky", top: "24px" }}>
             <Sidebar />
           </div>
