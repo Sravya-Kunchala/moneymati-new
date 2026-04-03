@@ -116,7 +116,7 @@ export default function AboutHero() {
 
       {/* Vector2 */}
       <img
-        src="/vector2.svg"
+        src="/Vector2.svg"
         alt=""
         aria-hidden="true"
         className="absolute pointer-events-none"
@@ -133,7 +133,7 @@ export default function AboutHero() {
 
       {/* Vector3 */}
       <img
-        src="/vector3.svg"
+        src="/Vector3.svg"
         alt=""
         aria-hidden="true"
         className="absolute pointer-events-none"
