@@ -4,10 +4,10 @@ const playfair = Playfair_Display({ subsets: ["latin"] });
 const dancing = Dancing_Script({ subsets: ["latin"], weight: "700" });
 
 const stats = [
-  { value: "25k+", label: "WOMEN EMPOWERED" },
-  { value: "500+", label: "RESOURCES SHARED" },
+  { value: "5.2k+", label: "WOMEN EMPOWERED" },
+  { value: "250+", label: "RESOURCES SHARED" },
   { value: "120+", label: "WEBINARS HOSTED" },
-  { value: "1.2k", label: "SUCCESS STORIES" },
+  { value: "50+", label: "SUCCESS STORIES" },
 ];
 
 export default function ImpactSection() {
