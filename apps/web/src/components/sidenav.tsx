@@ -7,35 +7,6 @@ export default function SideNav() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const navItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
-          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
-          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
-          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
-        </svg>
-      ),
-    },
-    {
-      id: "blog",
-      label: "Blog",
-      href: "/blog",
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-          <line x1="5" y1="5.5" x2="11" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="5" y1="10.5" x2="8.5" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-  ];
-
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
@@ -126,11 +97,11 @@ export default function SideNav() {
       </div>
 
       {/* Nav Items */}
-      <div style={{ padding: "0 8px", flex: 1 }}>
+      <div style={{ padding: "0 8px", flex: 1, overflowY: "auto" }}>
 
         {/* Dashboard */}
         <div
-          className={`nav-item ${isActive("/dashboard") && !isActive("/blog") ? "active" : ""}`}
+          className={`nav-item ${isActive("/dashboard") && !isActive("/blog") && !isActive("/webinar") && !isActive("/ebooks") ? "active" : ""}`}
           onClick={() => router.push("/dashboard")}
         >
           <span className="icon">
@@ -144,7 +115,7 @@ export default function SideNav() {
           Dashboard
         </div>
 
-        {/* CONTENT section */}
+        {/* CONTENT section label */}
         <div
           style={{
             fontSize: "10px",
@@ -174,6 +145,56 @@ export default function SideNav() {
           </span>
           Blog
         </div>
+
+        {/* Manage Blogs */}
+        <div
+          className="nav-item"
+          onClick={() => router.push("/manageblog")}
+        >
+          <span className="icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="5" y1="5.5" x2="11" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="5" y1="10.5" x2="8.5" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </span>
+          Manage Blogs
+        </div>
+
+        {/* Webinar Management */}
+        <div
+          className="nav-item"
+          onClick={() => router.push("/webiner")}
+        >
+          <span className="icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="5.5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+              <circle cx="10.5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M1.5 13c0-2 1.8-3.5 4-3.5s4 1.5 4 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              <path d="M10.5 9.5c1.5 0 4 .8 4 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </span>
+          Webinar Management
+        </div>
+
+        {/* E-Books Management */}
+        <div
+          className={`nav-item ${isActive("/ebooks") ? "active" : ""}`}
+          onClick={() => router.push("/e-bookmanager")}
+        >
+          <span className="icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+              <line x1="5.5" y1="5.5" x2="10.5" y2="5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <line x1="5.5" y1="8" x2="10.5" y2="8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <line x1="5.5" y1="10.5" x2="8.5" y2="10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <rect x="2" y="2" width="2" height="12" rx="1" fill="currentColor" opacity="0.25" />
+            </svg>
+          </span>
+          E-Books Management
+        </div>
+
       </div>
 
       {/* Settings */}

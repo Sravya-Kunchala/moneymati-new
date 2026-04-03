@@ -202,6 +202,17 @@ exports.Prisma.BlogPostScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WebinarScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  host: 'host',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  thumbType: 'thumbType',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -234,13 +245,20 @@ exports.AppointmentStatus = exports.$Enums.AppointmentStatus = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.WebinarStatus = exports.$Enums.WebinarStatus = {
+  UPCOMING: 'UPCOMING',
+  LIVE: 'LIVE',
+  COMPLETED: 'COMPLETED'
+};
+
 exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  BlogPost: 'BlogPost'
+  BlogPost: 'BlogPost',
+  Webinar: 'Webinar'
 };
 
 /**

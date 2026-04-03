@@ -3,68 +3,15 @@
 import React, { useState } from "react";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Image from "next/image";
+import { blogArticles } from "@/data/blogs";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700", "900"], variable: "--font-playfair" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-dm-sans" });
 
-interface Article {
-  id: number;
-  image: string;
-  title: string;
-  excerpt: string;
-  author: string;
-  readTime: string;
-  href: string;
-  category?: string;
-}
-
-const articles: Article[] = [
-  {
-    id: 1,
-    image: "/financial-goals.svg",
-    title: "Family's Financial Goals",
-    excerpt: "As a hashtag #couple we have some mandatory financial goals as a family and some individual goals...",
-    author: "Amit Sharma",
-    readTime: "5 min read",
-    href: "/sepblog-family",
-    category: "EMPOWERMENT",
-  },
-  {
-    id: 2,
-    image: "/black-swan.svg",
-    title: "How to deal with losses during black swan events?",
-    excerpt: "Dealing with substantial portfolio losses during a black swan event requires a combination of emotion...",
-    author: "Priya Kapur",
-    readTime: "8 min read",
-    href: "/sepblog-tax",
-    category: "INVESTING",
-  },
-  {
-    id: 3,
-    image: "/midas.svg",
-    title: "The midas touch for your portfolio",
-    excerpt: "Add the midas touch to your portfolio 🌟 As the founder of Moneymati, I've seen firsthand how a we...",
-    author: "Rajesh V.",
-    readTime: "6 min read",
-    href: "/sepblog-mutual",
-    category: "FINTECH",
-  },
-  {
-    id: 4,
-    image: "/ulips.svg",
-    title: "Problems with ULIPs in India",
-    excerpt: "Unit Linked Insurance Plans (ULIPs) have historically faced criticism due to several issues that made them...",
-    author: "Sarah M.",
-    readTime: "10 min read",
-    href: "/sepblog-ulips",
-    category: "INSURANCE",
-  },
-];
-
 const tags = ["Mutual Funds", "Family", "Risk Migration", "Retirement", "NPS", "MoneyMati", "SmartWomenInvest", "Budgeting"];
 
-/* ── Desktop card (unchanged) ── */
-const DesktopArticleCard: React.FC<{ article: Article }> = ({ article }) => (
+/* ── Desktop card ── */
+const DesktopArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = ({ article }) => (
   <a
     href={article.href}
     style={{
@@ -114,8 +61,8 @@ const DesktopArticleCard: React.FC<{ article: Article }> = ({ article }) => (
   </a>
 );
 
-/* ── Mobile card: full-width vertical, matching screenshot ── */
-const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
+/* ── Mobile card ── */
+const MobileArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = ({ article }) => {
   const initials = article.author.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   return (
     <a
@@ -131,18 +78,14 @@ const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
       }}
     >
-      {/* Top image */}
       <div style={{ position: "relative", width: "100%", height: "200px", backgroundColor: "#e2e8f0" }}>
         <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
       </div>
 
-      {/* Content */}
       <div style={{ padding: "16px 16px 20px", display: "flex", flexDirection: "column", gap: "10px" }}>
-
-        {/* Category + read time row */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          {article.category && (
+          {article.tags && (
             <span style={{
               fontFamily: "var(--font-dm-sans), sans-serif",
               fontSize: "11px",
@@ -153,12 +96,11 @@ const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
               backgroundColor: "rgba(17,212,98,0.10)",
               padding: "3px 10px",
               borderRadius: "20px",
-            }}>{article.category}</span>
+            }}>{article.tags.split(",")[0]}</span>
           )}
           <span style={{ fontSize: "12px", color: "#94a3b8", fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
         </div>
 
-        {/* Title */}
         <h3 style={{
           margin: 0,
           fontSize: "20px",
@@ -168,7 +110,6 @@ const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
           fontFamily: "var(--font-playfair), serif",
         }}>{article.title}</h3>
 
-        {/* Excerpt */}
         <p style={{
           margin: 0,
           fontSize: "13px",
@@ -177,10 +118,8 @@ const MobileArticleCard: React.FC<{ article: Article }> = ({ article }) => {
           fontFamily: "var(--font-dm-sans), sans-serif",
         }}>{article.excerpt}</p>
 
-        {/* Author + Read More */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "8px", borderTop: "1px solid #f1f5f9" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {/* Avatar with initials */}
             <div style={{
               width: "28px", height: "28px", borderRadius: "50%",
               backgroundColor: "#004D40",
@@ -257,7 +196,6 @@ export default function LatestArticles() {
       style={{ backgroundColor: "#f5f0e8", padding: "48px 40px", position: "relative", overflow: "hidden" }}
     >
       <style>{`
-        /* ── Mobile layout (≤ 640px) ── */
         @media (max-width: 640px) {
           .latest-section {
             padding: 24px 16px !important;
@@ -277,7 +215,6 @@ export default function LatestArticles() {
         }
       `}</style>
 
-      {/* Decorative SVGs */}
       <div className="latest-deco" style={{ position: "absolute", top: "200px", left: "50%", transform: "translateX(-50%)", zIndex: 0, opacity: 0.6, pointerEvents: "none", display: "flex" }}>
         <svg width="965" height="306" viewBox="0 0 965 306" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 305.5C15.4354 299.924 31.8263 293.98 47.2054 288.444C190.536 236.862 333.766 186.541 477.968 138.103C622.177 90.5243 766.394 40.9642 914.866 7.55337C930.335 4.39589 948.679 1.0486 964.5 0C948.674 0.982021 930.312 4.26774 914.829 7.36718C766.199 40.2597 621.867 89.5736 477.65 137.155C333.437 185.597 190.289 236.175 47.1406 288.266C31.7818 293.858 15.4126 299.861 0 305.5Z" fill="#677E73"/>
@@ -289,8 +226,6 @@ export default function LatestArticles() {
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
         <div className="latest-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 300px", gap: "24px", alignItems: "start" }}>
-
-          {/* Article cards column */}
           <div className="latest-articles-col" style={{ gridColumn: "1 / 3", display: "flex", flexDirection: "column", gap: "20px", position: "relative", zIndex: 1, isolation: "isolate", backgroundColor: "#f5f0e8" }}>
             <div className="latest-articles-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 900, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Latest Insights</h2>
@@ -304,22 +239,19 @@ export default function LatestArticles() {
               </a>
             </div>
 
-            {/* Desktop 2-col grid */}
             <div className="desktop-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-              {articles.map((article) => (
+              {blogArticles.map((article) => (
                 <DesktopArticleCard key={article.id} article={article} />
               ))}
             </div>
 
-            {/* Mobile single-col list */}
             <div className="mobile-cards-list" style={{ display: "none" }}>
-              {articles.map((article) => (
+              {blogArticles.map((article) => (
                 <MobileArticleCard key={article.id} article={article} />
               ))}
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="latest-sidebar" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <WeeklyDigest />
             <PopularTags />

@@ -50,7 +50,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
     return newErrors;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -58,8 +58,24 @@ function BookingModal({ onClose }: { onClose: () => void }) {
       return;
     }
     setErrors({});
-    setBookedDetails({ fullName, email, phone, datetime });
-    setShowSuccess(true);
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, phone, datetime }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const msg = data?.error || "Booking failed. Please try again.";
+        setErrors({ form: msg });
+        return;
+      }
+      const created = await res.json();
+      setBookedDetails(created);
+      setShowSuccess(true);
+    } catch {
+      setErrors({ form: "Network error. Please retry." });
+    }
   }
 
   const inputStyle: React.CSSProperties = {
@@ -217,6 +233,8 @@ function BookingModal({ onClose }: { onClose: () => void }) {
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
+          {errors.form && <p style={{ ...errorStyle, paddingLeft: 0 }}>{errors.form}</p>}
+
           {/* Full Name */}
           <div>
             <label style={labelStyle}>Full Name</label>
@@ -456,7 +474,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
           onClick={() => {
             if (!bookedDetails?.datetime) return;
             const start = new Date(bookedDetails.datetime);
-            const end = new Date(start.getTime() + 30 * 60 * 1000);
+      const end = new Date(start.getTime() + 30 * 60 * 1000);
             const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
             const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=MoneyMati+Consultation&dates=${fmt(start)}/${fmt(end)}&details=Your+MoneyMati+wealth+consultation`;
             window.open(url, "_blank");

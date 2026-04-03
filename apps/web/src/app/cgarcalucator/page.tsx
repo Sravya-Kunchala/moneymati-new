@@ -8,7 +8,6 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
 export default function CAGRCalculatorPage() {
-  // Store as strings so backspace/clear works naturally without snapping to 0
   const [lsInvestment, setLsInvestment] = useState("50000");
   const [lsMaturityAmount, setLsMaturityAmount] = useState("10");
   const [lsYears, setLsYears] = useState("5000");
@@ -22,7 +21,6 @@ export default function CAGRCalculatorPage() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Parse helper — returns 0 for empty/invalid strings
   const n = (v: string) => parseFloat(v) || 0;
 
   const lsCAGR =
@@ -37,6 +35,53 @@ export default function CAGRCalculatorPage() {
 
   const fmt = (v: number) =>
     isFinite(v) ? v.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "0.00";
+
+  const calcCards = [
+    {
+      title: "Goal Calculator",
+      desc: "Target your dreams precisely.",
+      cls: "anim-calc-card-0",
+      href: "/goal-calucator",
+      icon: (
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.7 16C8.1 15.9167 6.75 15.3 5.65 14.15C4.55 13 4 11.6167 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C11.6167 4 13 4.55 14.15 5.65C15.3 6.75 15.9167 8.1 16 9.7L13.9 9.075C13.6833 8.175 13.2167 7.4375 12.5 6.8625C11.7833 6.2875 10.95 6 10 6C8.9 6 7.95833 6.39167 7.175 7.175C6.39167 7.95833 6 8.9 6 10C6 10.95 6.2875 11.7833 6.8625 12.5C7.4375 13.2167 8.175 13.6833 9.075 13.9L9.7 16ZM10.9 19.95C10.75 19.9833 10.6 20 10.45 20C10.3 20 10.15 20 10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 10.15 20 10.3 20 10.45C20 10.6 19.9833 10.75 19.95 10.9L18 10.3V10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18C10.05 18 10.1 18 10.15 18C10.2 18 10.25 18 10.3 18L10.9 19.95ZM18.525 20.5L14.25 16.225L13 20L10 10L20 13L16.225 14.25L20.5 18.525L18.525 20.5Z" fill="#11D462"/>
+        </svg>
+      ),
+    },
+    {
+      title: "SIP Calculator",
+      desc: "Exact monthly contribution needed.",
+      cls: "anim-calc-card-1",
+      href: "/sipcalucator",
+      icon: (
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.7 16C8.1 15.9167 6.75 15.3 5.65 14.15C4.55 13 4 11.6167 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C11.6167 4 13 4.55 14.15 5.65C15.3 6.75 15.9167 8.1 16 9.7L13.9 9.075C13.6833 8.175 13.2167 7.4375 12.5 6.8625C11.7833 6.2875 10.95 6 10 6C8.9 6 7.95833 6.39167 7.175 7.175C6.39167 7.95833 6 8.9 6 10C6 10.95 6.2875 11.7833 6.8625 12.5C7.4375 13.2167 8.175 13.6833 9.075 13.9L9.7 16ZM10.9 19.95C10.75 19.9833 10.6 20 10.45 20C10.3 20 10.15 20 10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 10.15 20 10.3 20 10.45C20 10.6 19.9833 10.75 19.95 10.9L18 10.3V10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18C10.05 18 10.1 18 10.15 18C10.2 18 10.25 18 10.3 18L10.9 19.95ZM18.525 20.5L14.25 16.225L13 20L10 10L20 13L16.225 14.25L20.5 18.525L18.525 20.5Z" fill="#11D462"/>
+        </svg>
+      ),
+    },
+    {
+      title: "Retirement Calculator",
+      desc: "Build your post-work nest egg.",
+      cls: "anim-calc-card-2",
+      href: "#/reteriment",
+      icon: (
+        <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.6 18.025L10.25 11.675L11.65 10.275L18 16.625L16.6 18.025ZM2.95 17.325C1.95 16.325 1.20833 15.2 0.725 13.95C0.241667 12.7 0 11.425 0 10.125C0 8.825 0.241667 7.55833 0.725 6.325C1.20833 5.09167 1.95 3.975 2.95 2.975C3.95 1.975 5.07083 1.22917 6.3125 0.7375C7.55417 0.245833 8.825 0 10.125 0C11.425 0 12.6958 0.245833 13.9375 0.7375C15.1792 1.22917 16.3 1.975 17.3 2.975L2.95 17.325ZM3.15 14.275L4.5 12.925C4.23333 12.575 3.97917 12.2167 3.7375 11.85C3.49583 11.4833 3.275 11.1167 3.075 10.75C2.875 10.3833 2.7 10.0167 2.55 9.65C2.4 9.28333 2.26667 8.925 2.15 8.575C1.96667 9.55833 1.95417 10.5417 2.1125 11.525C2.27083 12.5083 2.61667 13.425 3.15 14.275ZM5.95 11.525L11.5 5.925C10.7833 5.375 10.0625 4.92917 9.3375 4.5875C8.6125 4.24583 7.93333 4.0125 7.3 3.8875C6.66667 3.7625 6.09583 3.74167 5.5875 3.825C5.07917 3.90833 4.68333 4.09167 4.4 4.375C4.11667 4.675 3.93333 5.07917 3.85 5.5875C3.76667 6.09583 3.7875 6.67083 3.9125 7.3125C4.0375 7.95417 4.27083 8.63333 4.6125 9.35C4.95417 10.0667 5.4 10.7917 5.95 11.525ZM12.9 4.525L14.3 3.175C13.4167 2.64167 12.4833 2.29167 11.5 2.125C10.5167 1.95833 9.53333 1.975 8.55 2.175C8.91667 2.29167 9.28333 2.425 9.65 2.575C10.0167 2.725 10.3833 2.89583 10.75 3.0875C11.1167 3.27917 11.4792 3.49583 11.8375 3.7375C12.1958 3.97917 12.55 4.24167 12.9 4.525Z" fill="#11D462"/>
+        </svg>
+      ),
+    },
+    {
+      title: "Sukanya Samriddhi",
+      desc: "Secure your daughter's future.",
+      cls: "anim-calc-card-3",
+      href: "/sukanya",
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#11D462"/>
+        </svg>
+      ),
+    },
+  ];
 
   return (
     <div
@@ -100,75 +145,49 @@ export default function CAGRCalculatorPage() {
           font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
           color:#0d3d20; margin-bottom:20px;
         }
-
-        /* two-col grid for form fields */
         .field-grid-2 {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
           margin-bottom: 20px;
         }
-
-        /* why cards grid */
         .why-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 20px;
         }
-
-        /* other calculators grid */
         .calc-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 16px;
         }
 
-        /* ── Mobile (≤ 640px) ── */
+        /* calc card link styles */
+        .calc-card-link {
+          text-decoration: none;
+          display: block;
+        }
+        .calc-card-link:hover > div {
+          box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+          transform: translateY(-2px);
+          transition: box-shadow 0.2s, transform 0.2s;
+        }
+
         @media (max-width: 640px) {
-          .hero-section {
-            padding: 60px 20px 100px !important;
-          }
-          .hero-title {
-            font-size: 30px !important;
-          }
-          .overlap-card-wrap {
-            padding: 0 16px !important;
-          }
-          .overlap-card {
-            padding: 28px 20px !important;
-            margin-top: -70px !important;
-          }
-          .overlap-card h2 {
-            font-size: 20px !important;
-          }
-          .main-content {
-            padding: 0 16px 40px !important;
-          }
-          .calc-form-card {
-            padding: 24px 16px !important;
-          }
-          .field-grid-2 {
-            grid-template-columns: 1fr !important;
-          }
-          .why-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .calc-grid {
-            grid-template-columns: 1fr 1fr !important;
-          }
-          .why-section {
-            padding: 24px 16px !important;
-          }
-          .why-section h2 {
-            font-size: 20px !important;
-          }
-          .result-grid {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-          }
-          .other-calc-header h3 {
-            font-size: 16px !important;
-          }
+          .hero-section { padding: 60px 20px 100px !important; }
+          .hero-title { font-size: 30px !important; }
+          .overlap-card-wrap { padding: 0 16px !important; }
+          .overlap-card { padding: 28px 20px !important; margin-top: -70px !important; }
+          .overlap-card h2 { font-size: 20px !important; }
+          .main-content { padding: 0 16px 40px !important; }
+          .calc-form-card { padding: 24px 16px !important; }
+          .field-grid-2 { grid-template-columns: 1fr !important; }
+          .why-grid { grid-template-columns: 1fr !important; }
+          .calc-grid { grid-template-columns: 1fr 1fr !important; }
+          .why-section { padding: 24px 16px !important; }
+          .why-section h2 { font-size: 20px !important; }
+          .result-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+          .other-calc-header h3 { font-size: 16px !important; }
           .spacer { height: 32px !important; }
         }
       `}</style>
@@ -229,7 +248,6 @@ export default function CAGRCalculatorPage() {
         <div className="anim-calculator" style={{ marginBottom: 32 }}>
           <div className="calc-form-card" style={{ background: "#ffffff", borderRadius: 20, padding: "36px 40px", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", maxWidth: 720, margin: "0 auto" }}>
 
-            {/* LUMPSUM CAGR */}
             <div className="section-label">LUMPSUM CAGR CALCULATOR</div>
 
             <div className="cagr-field" style={{ marginBottom: 20 }}>
@@ -267,7 +285,6 @@ export default function CAGRCalculatorPage() {
 
             <hr className="section-divider" />
 
-            {/* ULIP CAGR */}
             <div className="section-label" style={{ marginTop: 4 }}>ULIP CAGR CALCULATOR</div>
 
             <div className="field-grid-2">
@@ -405,54 +422,16 @@ export default function CAGRCalculatorPage() {
             </svg>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0d1f0d", margin: 0 }}>Other Powerful Calculators</h3>
           </div>
+
           <div className="calc-grid">
-            {[
-              {
-                title: "Goal Calculator",
-                desc: "Target your dreams precisely.",
-                cls: "anim-calc-card-0",
-                icon: (
-                  <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.7 16C8.1 15.9167 6.75 15.3 5.65 14.15C4.55 13 4 11.6167 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C11.6167 4 13 4.55 14.15 5.65C15.3 6.75 15.9167 8.1 16 9.7L13.9 9.075C13.6833 8.175 13.2167 7.4375 12.5 6.8625C11.7833 6.2875 10.95 6 10 6C8.9 6 7.95833 6.39167 7.175 7.175C6.39167 7.95833 6 8.9 6 10C6 10.95 6.2875 11.7833 6.8625 12.5C7.4375 13.2167 8.175 13.6833 9.075 13.9L9.7 16ZM10.9 19.95C10.75 19.9833 10.6 20 10.45 20C10.3 20 10.15 20 10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 10.15 20 10.3 20 10.45C20 10.6 19.9833 10.75 19.95 10.9L18 10.3V10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18C10.05 18 10.1 18 10.15 18C10.2 18 10.25 18 10.3 18L10.9 19.95ZM18.525 20.5L14.25 16.225L13 20L10 10L20 13L16.225 14.25L20.5 18.525L18.525 20.5Z" fill="#11D462"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "SIP Calculator",
-                desc: "Exact monthly contribution needed.",
-                cls: "anim-calc-card-1",
-                icon: (
-                  <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.7 16C8.1 15.9167 6.75 15.3 5.65 14.15C4.55 13 4 11.6167 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C11.6167 4 13 4.55 14.15 5.65C15.3 6.75 15.9167 8.1 16 9.7L13.9 9.075C13.6833 8.175 13.2167 7.4375 12.5 6.8625C11.7833 6.2875 10.95 6 10 6C8.9 6 7.95833 6.39167 7.175 7.175C6.39167 7.95833 6 8.9 6 10C6 10.95 6.2875 11.7833 6.8625 12.5C7.4375 13.2167 8.175 13.6833 9.075 13.9L9.7 16ZM10.9 19.95C10.75 19.9833 10.6 20 10.45 20C10.3 20 10.15 20 10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 10.15 20 10.3 20 10.45C20 10.6 19.9833 10.75 19.95 10.9L18 10.3V10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18C10.05 18 10.1 18 10.15 18C10.2 18 10.25 18 10.3 18L10.9 19.95ZM18.525 20.5L14.25 16.225L13 20L10 10L20 13L16.225 14.25L20.5 18.525L18.525 20.5Z" fill="#11D462"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "Retirement Calculator",
-                desc: "Build your post-work nest egg.",
-                cls: "anim-calc-card-2",
-                icon: (
-                  <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16.6 18.025L10.25 11.675L11.65 10.275L18 16.625L16.6 18.025ZM2.95 17.325C1.95 16.325 1.20833 15.2 0.725 13.95C0.241667 12.7 0 11.425 0 10.125C0 8.825 0.241667 7.55833 0.725 6.325C1.20833 5.09167 1.95 3.975 2.95 2.975C3.95 1.975 5.07083 1.22917 6.3125 0.7375C7.55417 0.245833 8.825 0 10.125 0C11.425 0 12.6958 0.245833 13.9375 0.7375C15.1792 1.22917 16.3 1.975 17.3 2.975L2.95 17.325ZM3.15 14.275L4.5 12.925C4.23333 12.575 3.97917 12.2167 3.7375 11.85C3.49583 11.4833 3.275 11.1167 3.075 10.75C2.875 10.3833 2.7 10.0167 2.55 9.65C2.4 9.28333 2.26667 8.925 2.15 8.575C1.96667 9.55833 1.95417 10.5417 2.1125 11.525C2.27083 12.5083 2.61667 13.425 3.15 14.275ZM5.95 11.525L11.5 5.925C10.7833 5.375 10.0625 4.92917 9.3375 4.5875C8.6125 4.24583 7.93333 4.0125 7.3 3.8875C6.66667 3.7625 6.09583 3.74167 5.5875 3.825C5.07917 3.90833 4.68333 4.09167 4.4 4.375C4.11667 4.675 3.93333 5.07917 3.85 5.5875C3.76667 6.09583 3.7875 6.67083 3.9125 7.3125C4.0375 7.95417 4.27083 8.63333 4.6125 9.35C4.95417 10.0667 5.4 10.7917 5.95 11.525ZM12.9 4.525L14.3 3.175C13.4167 2.64167 12.4833 2.29167 11.5 2.125C10.5167 1.95833 9.53333 1.975 8.55 2.175C8.91667 2.29167 9.28333 2.425 9.65 2.575C10.0167 2.725 10.3833 2.89583 10.75 3.0875C11.1167 3.27917 11.4792 3.49583 11.8375 3.7375C12.1958 3.97917 12.55 4.24167 12.9 4.525Z" fill="#11D462"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "Sukanya Samriddhi",
-                desc: "Secure your daughter's future.",
-                cls: "anim-calc-card-3",
-                icon: (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#11D462"/>
-                  </svg>
-                ),
-              },
-            ].map((item) => (
-              <div key={item.title} className={item.cls} style={{ background: "#ffffff", borderRadius: 14, padding: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", cursor: "pointer" }}>
-                <div style={{ width: 40, height: 40, background: "#f0faf4", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>{item.icon}</div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#0d1f0d", margin: "0 0 6px" }}>{item.title}</p>
-                <p style={{ fontSize: 12, color: "#888", margin: 0 }}>{item.desc}</p>
-              </div>
+            {calcCards.map((item) => (
+              <a key={item.title} href={item.href} className={`calc-card-link ${item.cls}`}>
+                <div style={{ background: "#ffffff", borderRadius: 14, padding: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", transition: "box-shadow 0.2s, transform 0.2s" }}>
+                  <div style={{ width: 40, height: 40, background: "#f0faf4", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>{item.icon}</div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: "#0d1f0d", margin: "0 0 6px" }}>{item.title}</p>
+                  <p style={{ fontSize: 12, color: "#888", margin: 0 }}>{item.desc}</p>
+                </div>
+              </a>
             ))}
           </div>
         </div>

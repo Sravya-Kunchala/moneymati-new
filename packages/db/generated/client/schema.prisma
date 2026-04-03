@@ -102,3 +102,20 @@ model BlogPost {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
+enum WebinarStatus {
+  UPCOMING
+  LIVE
+  COMPLETED
+}
+
+model Webinar {
+  id          String        @id @default(cuid())
+  title       String
+  host        String
+  scheduledAt DateTime
+  status      WebinarStatus @default(UPCOMING)
+  thumbType   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}

@@ -20,8 +20,13 @@ const ssl = {
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-export const prisma =
-  globalForPrisma.prisma ??
+// Reuse across hot reloads, but recreate if the generated client schema changed (e.g., new models)
+const hasWebinarDelegate = (client: PrismaClient | undefined) =>
+  client && typeof (client as any).webinar?.findMany === "function";
+
+// Ensure prisma is always a PrismaClient instance (no undefined in the type)
+export const prisma: PrismaClient =
+  hasWebinarDelegate(globalForPrisma.prisma) ? globalForPrisma.prisma! :
   new PrismaClient({
     adapter: new PrismaPg({
       connectionString,

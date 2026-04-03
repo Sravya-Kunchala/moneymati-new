@@ -3,7 +3,6 @@
 import React from "react";
 import { Dancing_Script, Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
-import { PUBLICATIONS } from "@/app/lib/books";
 
 const dancing = Dancing_Script({ subsets: ["latin"], weight: ["700"], variable: "--font-dancing" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
@@ -137,6 +136,8 @@ const PUBLICATIONS_LIST = [
 
 export default function FinancialResources() {
   const router = useRouter();
+  const publications = PUBLICATIONS_LIST;
+  const featured = publications[0];
 
   return (
     <>
@@ -269,7 +270,7 @@ export default function FinancialResources() {
                 </button>
               </div>
               <div className="fr-pubs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                {PUBLICATIONS_LIST.map((pub) => (
+                {publications.map((pub) => (
                   <PublicationCard key={pub.id} pub={pub} />
                 ))}
               </div>

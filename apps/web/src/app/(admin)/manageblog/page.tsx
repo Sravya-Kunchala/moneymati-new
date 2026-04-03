@@ -1,66 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideNav from "@/components/sidenav";
 import TopNav from "@/components/topnav";
+import { useRouter } from "next/navigation";
+import { blogArticles } from "@/data/blogs";
 
-// ── Data ─────────────────────────────────────────────────────
-const initialPosts = [
-  {
-    id: 1,
-    title: "The Architecture of Sovereign Wealth",
-    author: "Swathi",
-    date: "Oct 24, 2025",
-    status: "published",
-    thumb: "📊",
-    thumbBg: "#e8f0ea",
-  },
-  {
-    id: 2,
-    title: "Navigating High-Frequency Markets",
-    author: "Swathi",
-    date: "Oct 21, 2025",
-    status: "hidden",
-    thumb: "🌐",
-    thumbBg: "#eff6ff",
-  },
-  {
-    id: 3,
-    title: "The Future of Digital Assets in 2025",
-    author: "Swathi",
-    date: "Oct 19, 2025",
-    status: "draft",
-    thumb: "🪴",
-    thumbBg: "#f0fdf4",
-  },
-  {
-    id: 4,
-    title: "Understanding Compound Interest Strategies",
-    author: "Swathi",
-    date: "Oct 15, 2025",
-    status: "published",
-    thumb: "💹",
-    thumbBg: "#faf5ff",
-  },
-  {
-    id: 5,
-    title: "Diversification in Modern Portfolios",
-    author: "Swathi",
-    date: "Oct 10, 2025",
-    status: "draft",
-    thumb: "📈",
-    thumbBg: "#fff7ed",
-  },
-  {
-    id: 6,
-    title: "Tax-Loss Harvesting: A Deep Dive",
-    author: "Swathi",
-    date: "Oct 05, 2025",
-    status: "hidden",
-    thumb: "🔍",
-    thumbBg: "#fef2f2",
-  },
-];
+const fallbackPosts = blogArticles.map((b, idx) => ({
+  id: b.id ?? `sample-${idx}`,
+  title: b.title,
+  author: b.author ?? "Admin",
+  date: b.date ?? "2025-10-24",
+  status: b.published === false ? "draft" : "published",
+  thumb: b.image,
+  thumbBg: ["#e8f0ea", "#eff6ff", "#f0fdf4", "#faf5ff", "#fff7ed", "#fef2f2"][idx % 6],
+  __sample: true as const,
+}));
 
 const TABS = ["All Posts", "Published", "Hidden", "Drafts"];
 const POSTS_PER_PAGE = 3;
@@ -71,7 +26,6 @@ const statusConfig = {
   draft:     { label: "DRAFT",     color: "#b45309", bg: "#fefce8", dot: "#f59e0b" },
 };
 
-// ── Icons ─────────────────────────────────────────────────────
 const EditIcon = () => (
   <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M2.6359 16.3109H4.07503L12.8891 7.4968L11.4782 6.07181L2.6359 14.9141V16.3109ZM0 18.9609V13.8065L13.1717 0.645656C13.3906 0.43406 13.635 0.273552 13.9049 0.164131C14.1748 0.0547104 14.4573 0 14.7522 0C15.0377 0 15.3196 0.0547104 15.5978 0.164131C15.8761 0.273552 16.1257 0.437683 16.3468 0.656525L18.3294 2.62177C18.5482 2.83337 18.7106 3.08065 18.8164 3.36362C18.9222 3.6466 18.975 3.93192 18.975 4.21961C18.975 4.51454 18.9222 4.79932 18.8164 5.07396C18.7106 5.3486 18.5482 5.59534 18.3294 5.81418L5.18266 18.9609H0ZM16.1696 4.21961L14.7554 2.79135L16.1696 4.21961ZM12.1782 6.78267L11.4782 6.07181L12.8891 7.4968L12.1782 6.78267Z" fill="#475569"/>
@@ -83,7 +37,7 @@ const EyeIcon = () => (
   </svg>
 );
 const EyeOffIcon = () => (
-  <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{position:"relative"}}>
+  <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: "relative" }}>
     <path d="M11.4381 12.4381C12.6881 12.4381 13.7506 12.0006 14.6256 11.1256C15.5006 10.2506 15.9381 9.18807 15.9381 7.93807C15.9381 6.68807 15.5006 5.62557 14.6256 4.75057C13.7506 3.87557 12.6881 3.43807 11.4381 3.43807C10.1881 3.43807 9.12557 3.87557 8.25057 4.75057C7.37557 5.62557 6.93807 6.68807 6.93807 7.93807C6.93807 9.18807 7.37557 10.2506 8.25057 11.1256C9.12557 12.0006 10.1881 12.4381 11.4381 12.4381ZM11.4406 10.3413C10.7737 10.3413 10.206 10.1079 9.73753 9.64109C9.26906 9.17428 9.03482 8.60744 9.03482 7.94056C9.03482 7.27368 9.26823 6.70601 9.73504 6.23753C10.2019 5.76906 10.7687 5.53482 11.4356 5.53482C12.1024 5.53482 12.6701 5.76823 13.1386 6.23504C13.6071 6.70185 13.8413 7.2687 13.8413 7.93557C13.8413 8.60245 13.6079 9.17012 13.1411 9.6386C12.6743 10.1071 12.1074 10.3413 11.4406 10.3413ZM11.4381 15.8761C8.89168 15.8761 6.58316 15.1499 4.51251 13.6973C2.44185 12.2448 0.937683 10.325 0 7.93807C0.937683 5.5511 2.44185 3.63135 4.51251 2.17881C6.58316 0.72627 8.89168 0 11.4381 0C13.9844 0 16.293 0.72627 18.3636 2.17881C20.4343 3.63135 21.9384 5.5511 22.8761 7.93807C21.9384 10.325 20.4343 12.2448 18.3636 13.6973C16.293 15.1499 13.9844 15.8761 11.4381 15.8761ZM11.4393 13.4381C13.3124 13.4381 15.0317 12.9399 16.5973 11.9435C18.1629 10.9471 19.3623 9.61198 20.1957 7.93807C19.3623 6.26415 18.1625 4.92901 16.596 3.93263C15.0296 2.93625 13.3099 2.43807 11.4368 2.43807C9.56373 2.43807 7.84441 2.93625 6.27883 3.93263C4.71325 4.92901 3.51379 6.26415 2.68046 7.93807C3.51379 9.61198 4.71367 10.9471 6.28009 11.9435C7.84651 12.9399 9.56625 13.4381 11.4393 13.4381Z" fill="#475569"/>
     <line x1="2" y1="1" x2="21" y2="15" stroke="#475569" strokeWidth="1.8" strokeLinecap="round"/>
   </svg>
@@ -115,15 +69,15 @@ const ChevronRight = () => (
   </svg>
 );
 
-// ── Main Component ────────────────────────────────────────────
 export default function ManageBlogs() {
   const [activeTab, setActiveTab] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState(fallbackPosts);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  // Filter logic
+  const router = useRouter();
   const filtered = posts.filter((p) => {
     const matchesTab =
       activeTab === "All Posts" ||
@@ -147,8 +101,19 @@ export default function ManageBlogs() {
     setCurrentPage(1);
   };
 
-  const handleDelete = (id) => {
-    setPosts((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = async (id) => {
+    // keep sample posts always
+    const isSample = fallbackPosts.some((p) => p.id === id);
+    if (isSample) return;
+    try {
+      await fetch(`/api/blog/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.warn("Delete request failed, removing locally", e);
+    }
+    setPosts((prev) => {
+      const next = prev.filter((p) => p.id !== id);
+      return next.length ? next : fallbackPosts;
+    });
   };
 
   const handleToggleVisibility = (id) => {
@@ -161,6 +126,43 @@ export default function ManageBlogs() {
     );
   };
 
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/blog");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const body = await res.json();
+        const data = body?.data ?? [];
+        const mapped = data.map((b, idx: number) => {
+          const dateSrc = b.publishedAt || b.createdAt || new Date().toISOString();
+          const status = b.published ? "published" : "draft";
+          return {
+            id: b.id ?? `db-${idx}`,
+            title: b.title ?? "Untitled",
+            author: b.authorId ?? "Admin",
+            date: dateSrc,
+            status,
+            thumb: b.coverImage ?? null,
+            thumbBg: ["#e8f0ea", "#eff6ff", "#f0fdf4", "#faf5ff", "#fff7ed", "#fef2f2"][idx % 6],
+          };
+        });
+        const combined = [
+          ...fallbackPosts,
+          ...mapped.filter((m) => !fallbackPosts.some((f) => f.id === m.id)),
+        ];
+        setPosts(combined);
+        setLoadError(mapped.length ? null : "No blog posts found; showing samples.");
+      } catch (err: any) {
+        setPosts(fallbackPosts);
+        setLoadError("Unable to load blogs from the server; showing samples.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden", fontFamily: "'DM Sans', sans-serif" }}>
       <style>{`
@@ -168,7 +170,6 @@ export default function ManageBlogs() {
         * { box-sizing: border-box; }
         .card { background: #ffffff; border-radius: 14px; border: 1px solid #e8ede9; }
 
-        /* ── Tab buttons ── */
         .tab-btn {
           padding: 16px 32px; border-radius: 9999px; border: none;
           font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
@@ -178,7 +179,6 @@ export default function ManageBlogs() {
         .tab-btn:hover { background: #c8d4cb; }
         .tab-btn.active { background: #0e3d27; color: #ffffff; }
 
-        /* ── Action icon buttons ── */
         .action-icon-btn {
           display: flex; align-items: center; justify-content: center;
           cursor: pointer; background: transparent; border: none; padding: 4px;
@@ -187,13 +187,10 @@ export default function ManageBlogs() {
         .action-icon-btn:hover { opacity: 0.6; }
         .action-icon-btn.danger:hover { opacity: 0.7; }
 
-        /* ── Table rows ── */
         .blog-row {
           display: grid;
           grid-template-columns: 1fr 140px 130px 120px 110px;
           align-items: center;
-
-          border-radius: 0;
           padding: 14px 16px;
           border-bottom: 1px solid #f0f5f1;
           transition: background 0.12s;
@@ -208,14 +205,8 @@ export default function ManageBlogs() {
           height: 55px;
           align-items: center;
           background: #F6F8F7;
-          border-radius: 0;
-
-
-
-
         }
 
-        /* ── Pagination ── */
         .page-btn {
           width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #e8ede9;
           display: flex; align-items: center; justify-content: center;
@@ -226,7 +217,6 @@ export default function ManageBlogs() {
         .page-btn.active { background: #0EAF50; color: #ffffff; border-color: #0EAF50; }
         .page-btn:disabled { opacity: 0.35; cursor: default; }
 
-        /* ── Create blog button ── */
         .create-btn {
           display: flex; align-items: center; gap: 7px;
           padding: 10px 20px; border-radius: 99px; border: none;
@@ -236,7 +226,6 @@ export default function ManageBlogs() {
         }
         .create-btn:hover { opacity: 0.88; }
 
-        /* ── Search input ── */
         .search-input {
           width: 100%; height: 55px;
           padding: 18px 16px 18px 48px;
@@ -249,7 +238,6 @@ export default function ManageBlogs() {
         .search-input:focus { box-shadow: 0 0 0 2px rgba(14,61,39,0.15), 0 1px 2px 0 rgba(0,0,0,0.05); }
         .search-input::placeholder { color: #9ab09e; }
 
-        /* ── Mobile ── */
         .mobile-topbar {
           display: none; align-items: center; justify-content: space-between;
           padding: 0 16px; height: 52px; background: #ffffff;
@@ -280,12 +268,10 @@ export default function ManageBlogs() {
           .mobile-topbar { display: flex !important; }
           .mobile-nav-overlay { display: block !important; }
           .mobile-nav-panel { display: flex !important; flex-direction: column; }
-
           .page-root { flex-direction: column !important; height: auto !important; overflow: auto !important; }
           .page-main { overflow: visible !important; height: 100vh; display: flex; flex-direction: column; }
           .page-scroll { flex: 1; overflow-y: auto; }
           .page-content { padding: 14px !important; }
-
           .blog-header { display: none !important; }
           .blog-row {
             display: flex !important; flex-direction: column !important;
@@ -306,7 +292,6 @@ export default function ManageBlogs() {
         .mobile-nav-panel.open { transform: translateX(0); }
       `}</style>
 
-      {/* Mobile Nav Overlay */}
       <div
         className={`mobile-nav-overlay${mobileNavOpen ? " open" : ""}`}
         onClick={() => setMobileNavOpen(false)}
@@ -315,15 +300,12 @@ export default function ManageBlogs() {
         <SideNav />
       </div>
 
-      {/* Desktop Sidebar */}
       <div className="sidenav-wrapper">
         <SideNav />
       </div>
 
-      {/* Main area */}
       <div className="page-main" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* Mobile Top Bar */}
         <div className="mobile-topbar">
           <button className="icon-btn" onClick={() => setMobileNavOpen(true)} aria-label="Open menu">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -334,16 +316,13 @@ export default function ManageBlogs() {
           <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#e8f0ea", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "#0e3d27" }}>A</div>
         </div>
 
-        {/* Desktop TopNav */}
         <div className="desktop-topnav">
           <TopNav />
         </div>
 
-        {/* Scrollable content */}
         <main className="page-scroll" style={{ flex: 1, overflowY: "auto", backgroundColor: "#f4f6f4" }}>
           <div className="page-content" style={{ padding: "24px" }}>
 
-            {/* Page Header */}
             <div className="top-controls" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "20px" }}>
               <div>
                 <h1 style={{ margin: 0, fontFamily: "'DM Serif Display', serif", fontSize: "26px", color: "#1a3a22", fontWeight: 400 }}>
@@ -353,13 +332,18 @@ export default function ManageBlogs() {
                   The sovereign hub for your architectural wealth insights. Delete, Edit, Hide
                 </p>
               </div>
-              <button className="create-btn">
+              <button className="create-btn" onClick={() => router.push("/blog")}>
                 <PlusIcon />
                 Create Blog
               </button>
             </div>
 
-            {/* Search + Tabs — outside the table card */}
+            {loadError && (
+              <div style={{ margin: "10px 0 16px", padding: "10px 12px", borderRadius: 10, background: "#fef2f2", color: "#b91c1c", fontSize: 12.5, fontWeight: 600 }}>
+                {loadError}
+              </div>
+            )}
+
             <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "14px", flexWrap: "wrap" }}>
               <div style={{ position: "relative", flex: "1", minWidth: "200px", maxWidth: "560px" }}>
                 <div style={{ position: "absolute", left: "18px", top: "50%", transform: "translateY(-50%)" }}>
@@ -386,17 +370,14 @@ export default function ManageBlogs() {
               </div>
             </div>
 
-            {/* Table Card */}
             <div className="card" style={{ padding: "0", overflow: "hidden" }}>
 
-              {/* Table Header */}
               <div className="blog-header">
                 {["TITLE", "AUTHOR", "DATE", "STATUS", "ACTIONS"].map((h) => (
                   <span key={h} style={{ fontSize: "10px", fontWeight: 700, color: "#9ab09e", letterSpacing: "0.07em" }}>{h}</span>
                 ))}
               </div>
 
-              {/* Table Rows */}
               {paginated.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 20px", color: "#9ab09e", fontSize: "13.5px" }}>
                   No posts found.
@@ -406,14 +387,13 @@ export default function ManageBlogs() {
                   const sc = statusConfig[post.status];
                   return (
                     <div key={post.id} className="blog-row">
-                      {/* Title */}
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
                         <div style={{
                           width: "40px", height: "40px", borderRadius: "10px",
                           background: post.thumbBg, display: "flex", alignItems: "center",
-                          justifyContent: "center", fontSize: "18px", flexShrink: 0
+                          justifyContent: "center", flexShrink: 0
                         }}>
-                          {post.thumb}
+                          <img src={post.thumb} alt="" width={22} height={22} />
                         </div>
                         <span style={{
                           fontSize: "13.5px", fontWeight: 600, color: "#1a3a22",
@@ -423,13 +403,9 @@ export default function ManageBlogs() {
                         </span>
                       </div>
 
-                      {/* Author */}
                       <span style={{ fontSize: "13px", color: "#5a7060", fontWeight: 500 }}>{post.author}</span>
-
-                      {/* Date */}
                       <span style={{ fontSize: "12.5px", color: "#7a9880" }}>{post.date}</span>
 
-                      {/* Status badge */}
                       <div>
                         <span style={{
                           display: "inline-flex", alignItems: "center", gap: "5px",
@@ -442,13 +418,14 @@ export default function ManageBlogs() {
                         </span>
                       </div>
 
-                      {/* Actions */}
                       <div className="row-actions" style={{ display: "flex", gap: "6px" }}>
-                        {/* Edit */}
-                        <div className="action-icon-btn" title="Edit">
-                          <EditIcon />
-                        </div>
-                        {/* Toggle visibility */}
+                        <div
+  className="action-icon-btn"
+  title="Edit"
+  onClick={() => router.push(`/edit/${post.id}`)}
+>
+  <EditIcon />
+</div>
                         <div
                           className="action-icon-btn"
                           title={post.status === "hidden" ? "Show" : "Hide"}
@@ -456,7 +433,6 @@ export default function ManageBlogs() {
                         >
                           {post.status === "hidden" ? <EyeOffIcon /> : <EyeIcon />}
                         </div>
-                        {/* Delete */}
                         <div
                           className="action-icon-btn danger"
                           title="Delete"
@@ -470,7 +446,6 @@ export default function ManageBlogs() {
                 })
               )}
 
-              {/* Pagination */}
               {filtered.length > 0 && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "24px 32px", flexWrap: "wrap", gap: "10px", background: "#ffffff", borderTop: "1px solid rgba(226,232,240,0.3)", height: "89px" }}>
                   <span style={{ fontSize: "12.5px", color: "#9ab09e" }}>
@@ -480,7 +455,6 @@ export default function ManageBlogs() {
                     </strong>{" "}
                     of <strong style={{ color: "#1a3a22" }}>{filtered.length}</strong> blog posts
                   </span>
-
                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <button
                       className="page-btn"
@@ -510,7 +484,6 @@ export default function ManageBlogs() {
               )}
             </div>
 
-            {/* Footer */}
             <div style={{ textAlign: "center", fontSize: "11.5px", color: "#9ab09e", paddingTop: "16px", paddingBottom: "8px" }}>
               © 2026 MoneyMati. All administrative rights reserved.
             </div>
