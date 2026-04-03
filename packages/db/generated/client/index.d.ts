@@ -48,6 +48,11 @@ export type BlogPost = $Result.DefaultSelection<Prisma.$BlogPostPayload>
  * 
  */
 export type Webinar = $Result.DefaultSelection<Prisma.$WebinarPayload>
+/**
+ * Model Ebook
+ * 
+ */
+export type Ebook = $Result.DefaultSelection<Prisma.$EbookPayload>
 
 /**
  * Enums
@@ -271,6 +276,16 @@ export class PrismaClient<
     * ```
     */
   get webinar(): Prisma.WebinarDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ebook`: Exposes CRUD operations for the **Ebook** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Ebooks
+    * const ebooks = await prisma.ebook.findMany()
+    * ```
+    */
+  get ebook(): Prisma.EbookDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -711,7 +726,8 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     BlogPost: 'BlogPost',
-    Webinar: 'Webinar'
+    Webinar: 'Webinar',
+    Ebook: 'Ebook'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -727,7 +743,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "appointment" | "user" | "session" | "account" | "verification" | "blogPost" | "webinar"
+      modelProps: "appointment" | "user" | "session" | "account" | "verification" | "blogPost" | "webinar" | "ebook"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1249,6 +1265,80 @@ export namespace Prisma {
           }
         }
       }
+      Ebook: {
+        payload: Prisma.$EbookPayload<ExtArgs>
+        fields: Prisma.EbookFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EbookFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EbookFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          findFirst: {
+            args: Prisma.EbookFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EbookFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          findMany: {
+            args: Prisma.EbookFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>[]
+          }
+          create: {
+            args: Prisma.EbookCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          createMany: {
+            args: Prisma.EbookCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EbookCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>[]
+          }
+          delete: {
+            args: Prisma.EbookDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          update: {
+            args: Prisma.EbookUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          deleteMany: {
+            args: Prisma.EbookDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EbookUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EbookUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>[]
+          }
+          upsert: {
+            args: Prisma.EbookUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EbookPayload>
+          }
+          aggregate: {
+            args: Prisma.EbookAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEbook>
+          }
+          groupBy: {
+            args: Prisma.EbookGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EbookGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EbookCountArgs<ExtArgs>
+            result: $Utils.Optional<EbookCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1364,6 +1454,7 @@ export namespace Prisma {
     verification?: VerificationOmit
     blogPost?: BlogPostOmit
     webinar?: WebinarOmit
+    ebook?: EbookOmit
   }
 
   /* Types for Logging */
@@ -9220,6 +9311,1105 @@ export namespace Prisma {
 
 
   /**
+   * Model Ebook
+   */
+
+  export type AggregateEbook = {
+    _count: EbookCountAggregateOutputType | null
+    _avg: EbookAvgAggregateOutputType | null
+    _sum: EbookSumAggregateOutputType | null
+    _min: EbookMinAggregateOutputType | null
+    _max: EbookMaxAggregateOutputType | null
+  }
+
+  export type EbookAvgAggregateOutputType = {
+    pages: number | null
+  }
+
+  export type EbookSumAggregateOutputType = {
+    pages: number | null
+  }
+
+  export type EbookMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    pages: number | null
+    format: string | null
+    href: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EbookMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    pages: number | null
+    format: string | null
+    href: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EbookCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    category: number
+    pages: number
+    format: number
+    href: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EbookAvgAggregateInputType = {
+    pages?: true
+  }
+
+  export type EbookSumAggregateInputType = {
+    pages?: true
+  }
+
+  export type EbookMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    pages?: true
+    format?: true
+    href?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EbookMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    pages?: true
+    format?: true
+    href?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EbookCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    pages?: true
+    format?: true
+    href?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EbookAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Ebook to aggregate.
+     */
+    where?: EbookWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Ebooks to fetch.
+     */
+    orderBy?: EbookOrderByWithRelationInput | EbookOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EbookWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Ebooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Ebooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Ebooks
+    **/
+    _count?: true | EbookCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EbookAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EbookSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EbookMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EbookMaxAggregateInputType
+  }
+
+  export type GetEbookAggregateType<T extends EbookAggregateArgs> = {
+        [P in keyof T & keyof AggregateEbook]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEbook[P]>
+      : GetScalarType<T[P], AggregateEbook[P]>
+  }
+
+
+
+
+  export type EbookGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EbookWhereInput
+    orderBy?: EbookOrderByWithAggregationInput | EbookOrderByWithAggregationInput[]
+    by: EbookScalarFieldEnum[] | EbookScalarFieldEnum
+    having?: EbookScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EbookCountAggregateInputType | true
+    _avg?: EbookAvgAggregateInputType
+    _sum?: EbookSumAggregateInputType
+    _min?: EbookMinAggregateInputType
+    _max?: EbookMaxAggregateInputType
+  }
+
+  export type EbookGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    category: string
+    pages: number
+    format: string
+    href: string | null
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: EbookCountAggregateOutputType | null
+    _avg: EbookAvgAggregateOutputType | null
+    _sum: EbookSumAggregateOutputType | null
+    _min: EbookMinAggregateOutputType | null
+    _max: EbookMaxAggregateOutputType | null
+  }
+
+  type GetEbookGroupByPayload<T extends EbookGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EbookGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EbookGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EbookGroupByOutputType[P]>
+            : GetScalarType<T[P], EbookGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EbookSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    pages?: boolean
+    format?: boolean
+    href?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["ebook"]>
+
+  export type EbookSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    pages?: boolean
+    format?: boolean
+    href?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["ebook"]>
+
+  export type EbookSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    pages?: boolean
+    format?: boolean
+    href?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["ebook"]>
+
+  export type EbookSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    pages?: boolean
+    format?: boolean
+    href?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EbookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "category" | "pages" | "format" | "href" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["ebook"]>
+
+  export type $EbookPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Ebook"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      category: string
+      pages: number
+      format: string
+      href: string | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["ebook"]>
+    composites: {}
+  }
+
+  type EbookGetPayload<S extends boolean | null | undefined | EbookDefaultArgs> = $Result.GetResult<Prisma.$EbookPayload, S>
+
+  type EbookCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EbookFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EbookCountAggregateInputType | true
+    }
+
+  export interface EbookDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Ebook'], meta: { name: 'Ebook' } }
+    /**
+     * Find zero or one Ebook that matches the filter.
+     * @param {EbookFindUniqueArgs} args - Arguments to find a Ebook
+     * @example
+     * // Get one Ebook
+     * const ebook = await prisma.ebook.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EbookFindUniqueArgs>(args: SelectSubset<T, EbookFindUniqueArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Ebook that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EbookFindUniqueOrThrowArgs} args - Arguments to find a Ebook
+     * @example
+     * // Get one Ebook
+     * const ebook = await prisma.ebook.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EbookFindUniqueOrThrowArgs>(args: SelectSubset<T, EbookFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Ebook that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookFindFirstArgs} args - Arguments to find a Ebook
+     * @example
+     * // Get one Ebook
+     * const ebook = await prisma.ebook.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EbookFindFirstArgs>(args?: SelectSubset<T, EbookFindFirstArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Ebook that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookFindFirstOrThrowArgs} args - Arguments to find a Ebook
+     * @example
+     * // Get one Ebook
+     * const ebook = await prisma.ebook.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EbookFindFirstOrThrowArgs>(args?: SelectSubset<T, EbookFindFirstOrThrowArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Ebooks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Ebooks
+     * const ebooks = await prisma.ebook.findMany()
+     * 
+     * // Get first 10 Ebooks
+     * const ebooks = await prisma.ebook.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ebookWithIdOnly = await prisma.ebook.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EbookFindManyArgs>(args?: SelectSubset<T, EbookFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Ebook.
+     * @param {EbookCreateArgs} args - Arguments to create a Ebook.
+     * @example
+     * // Create one Ebook
+     * const Ebook = await prisma.ebook.create({
+     *   data: {
+     *     // ... data to create a Ebook
+     *   }
+     * })
+     * 
+     */
+    create<T extends EbookCreateArgs>(args: SelectSubset<T, EbookCreateArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Ebooks.
+     * @param {EbookCreateManyArgs} args - Arguments to create many Ebooks.
+     * @example
+     * // Create many Ebooks
+     * const ebook = await prisma.ebook.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EbookCreateManyArgs>(args?: SelectSubset<T, EbookCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Ebooks and returns the data saved in the database.
+     * @param {EbookCreateManyAndReturnArgs} args - Arguments to create many Ebooks.
+     * @example
+     * // Create many Ebooks
+     * const ebook = await prisma.ebook.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Ebooks and only return the `id`
+     * const ebookWithIdOnly = await prisma.ebook.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EbookCreateManyAndReturnArgs>(args?: SelectSubset<T, EbookCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Ebook.
+     * @param {EbookDeleteArgs} args - Arguments to delete one Ebook.
+     * @example
+     * // Delete one Ebook
+     * const Ebook = await prisma.ebook.delete({
+     *   where: {
+     *     // ... filter to delete one Ebook
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EbookDeleteArgs>(args: SelectSubset<T, EbookDeleteArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Ebook.
+     * @param {EbookUpdateArgs} args - Arguments to update one Ebook.
+     * @example
+     * // Update one Ebook
+     * const ebook = await prisma.ebook.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EbookUpdateArgs>(args: SelectSubset<T, EbookUpdateArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Ebooks.
+     * @param {EbookDeleteManyArgs} args - Arguments to filter Ebooks to delete.
+     * @example
+     * // Delete a few Ebooks
+     * const { count } = await prisma.ebook.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EbookDeleteManyArgs>(args?: SelectSubset<T, EbookDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Ebooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Ebooks
+     * const ebook = await prisma.ebook.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EbookUpdateManyArgs>(args: SelectSubset<T, EbookUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Ebooks and returns the data updated in the database.
+     * @param {EbookUpdateManyAndReturnArgs} args - Arguments to update many Ebooks.
+     * @example
+     * // Update many Ebooks
+     * const ebook = await prisma.ebook.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Ebooks and only return the `id`
+     * const ebookWithIdOnly = await prisma.ebook.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EbookUpdateManyAndReturnArgs>(args: SelectSubset<T, EbookUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Ebook.
+     * @param {EbookUpsertArgs} args - Arguments to update or create a Ebook.
+     * @example
+     * // Update or create a Ebook
+     * const ebook = await prisma.ebook.upsert({
+     *   create: {
+     *     // ... data to create a Ebook
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Ebook we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EbookUpsertArgs>(args: SelectSubset<T, EbookUpsertArgs<ExtArgs>>): Prisma__EbookClient<$Result.GetResult<Prisma.$EbookPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Ebooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookCountArgs} args - Arguments to filter Ebooks to count.
+     * @example
+     * // Count the number of Ebooks
+     * const count = await prisma.ebook.count({
+     *   where: {
+     *     // ... the filter for the Ebooks we want to count
+     *   }
+     * })
+    **/
+    count<T extends EbookCountArgs>(
+      args?: Subset<T, EbookCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EbookCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Ebook.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EbookAggregateArgs>(args: Subset<T, EbookAggregateArgs>): Prisma.PrismaPromise<GetEbookAggregateType<T>>
+
+    /**
+     * Group by Ebook.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EbookGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EbookGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EbookGroupByArgs['orderBy'] }
+        : { orderBy?: EbookGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EbookGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEbookGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Ebook model
+   */
+  readonly fields: EbookFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Ebook.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EbookClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Ebook model
+   */
+  interface EbookFieldRefs {
+    readonly id: FieldRef<"Ebook", 'String'>
+    readonly title: FieldRef<"Ebook", 'String'>
+    readonly description: FieldRef<"Ebook", 'String'>
+    readonly category: FieldRef<"Ebook", 'String'>
+    readonly pages: FieldRef<"Ebook", 'Int'>
+    readonly format: FieldRef<"Ebook", 'String'>
+    readonly href: FieldRef<"Ebook", 'String'>
+    readonly status: FieldRef<"Ebook", 'String'>
+    readonly createdAt: FieldRef<"Ebook", 'DateTime'>
+    readonly updatedAt: FieldRef<"Ebook", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Ebook findUnique
+   */
+  export type EbookFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter, which Ebook to fetch.
+     */
+    where: EbookWhereUniqueInput
+  }
+
+  /**
+   * Ebook findUniqueOrThrow
+   */
+  export type EbookFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter, which Ebook to fetch.
+     */
+    where: EbookWhereUniqueInput
+  }
+
+  /**
+   * Ebook findFirst
+   */
+  export type EbookFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter, which Ebook to fetch.
+     */
+    where?: EbookWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Ebooks to fetch.
+     */
+    orderBy?: EbookOrderByWithRelationInput | EbookOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Ebooks.
+     */
+    cursor?: EbookWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Ebooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Ebooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Ebooks.
+     */
+    distinct?: EbookScalarFieldEnum | EbookScalarFieldEnum[]
+  }
+
+  /**
+   * Ebook findFirstOrThrow
+   */
+  export type EbookFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter, which Ebook to fetch.
+     */
+    where?: EbookWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Ebooks to fetch.
+     */
+    orderBy?: EbookOrderByWithRelationInput | EbookOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Ebooks.
+     */
+    cursor?: EbookWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Ebooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Ebooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Ebooks.
+     */
+    distinct?: EbookScalarFieldEnum | EbookScalarFieldEnum[]
+  }
+
+  /**
+   * Ebook findMany
+   */
+  export type EbookFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter, which Ebooks to fetch.
+     */
+    where?: EbookWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Ebooks to fetch.
+     */
+    orderBy?: EbookOrderByWithRelationInput | EbookOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Ebooks.
+     */
+    cursor?: EbookWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Ebooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Ebooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Ebooks.
+     */
+    distinct?: EbookScalarFieldEnum | EbookScalarFieldEnum[]
+  }
+
+  /**
+   * Ebook create
+   */
+  export type EbookCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Ebook.
+     */
+    data: XOR<EbookCreateInput, EbookUncheckedCreateInput>
+  }
+
+  /**
+   * Ebook createMany
+   */
+  export type EbookCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Ebooks.
+     */
+    data: EbookCreateManyInput | EbookCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Ebook createManyAndReturn
+   */
+  export type EbookCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * The data used to create many Ebooks.
+     */
+    data: EbookCreateManyInput | EbookCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Ebook update
+   */
+  export type EbookUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Ebook.
+     */
+    data: XOR<EbookUpdateInput, EbookUncheckedUpdateInput>
+    /**
+     * Choose, which Ebook to update.
+     */
+    where: EbookWhereUniqueInput
+  }
+
+  /**
+   * Ebook updateMany
+   */
+  export type EbookUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Ebooks.
+     */
+    data: XOR<EbookUpdateManyMutationInput, EbookUncheckedUpdateManyInput>
+    /**
+     * Filter which Ebooks to update
+     */
+    where?: EbookWhereInput
+    /**
+     * Limit how many Ebooks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Ebook updateManyAndReturn
+   */
+  export type EbookUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * The data used to update Ebooks.
+     */
+    data: XOR<EbookUpdateManyMutationInput, EbookUncheckedUpdateManyInput>
+    /**
+     * Filter which Ebooks to update
+     */
+    where?: EbookWhereInput
+    /**
+     * Limit how many Ebooks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Ebook upsert
+   */
+  export type EbookUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Ebook to update in case it exists.
+     */
+    where: EbookWhereUniqueInput
+    /**
+     * In case the Ebook found by the `where` argument doesn't exist, create a new Ebook with this data.
+     */
+    create: XOR<EbookCreateInput, EbookUncheckedCreateInput>
+    /**
+     * In case the Ebook was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EbookUpdateInput, EbookUncheckedUpdateInput>
+  }
+
+  /**
+   * Ebook delete
+   */
+  export type EbookDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+    /**
+     * Filter which Ebook to delete.
+     */
+    where: EbookWhereUniqueInput
+  }
+
+  /**
+   * Ebook deleteMany
+   */
+  export type EbookDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Ebooks to delete
+     */
+    where?: EbookWhereInput
+    /**
+     * Limit how many Ebooks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Ebook without action
+   */
+  export type EbookDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Ebook
+     */
+    select?: EbookSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Ebook
+     */
+    omit?: EbookOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9345,6 +10535,22 @@ export namespace Prisma {
   };
 
   export type WebinarScalarFieldEnum = (typeof WebinarScalarFieldEnum)[keyof typeof WebinarScalarFieldEnum]
+
+
+  export const EbookScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    category: 'category',
+    pages: 'pages',
+    format: 'format',
+    href: 'href',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EbookScalarFieldEnum = (typeof EbookScalarFieldEnum)[keyof typeof EbookScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10064,6 +11270,85 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Webinar"> | Date | string
   }
 
+  export type EbookWhereInput = {
+    AND?: EbookWhereInput | EbookWhereInput[]
+    OR?: EbookWhereInput[]
+    NOT?: EbookWhereInput | EbookWhereInput[]
+    id?: StringFilter<"Ebook"> | string
+    title?: StringFilter<"Ebook"> | string
+    description?: StringNullableFilter<"Ebook"> | string | null
+    category?: StringFilter<"Ebook"> | string
+    pages?: IntFilter<"Ebook"> | number
+    format?: StringFilter<"Ebook"> | string
+    href?: StringNullableFilter<"Ebook"> | string | null
+    status?: StringFilter<"Ebook"> | string
+    createdAt?: DateTimeFilter<"Ebook"> | Date | string
+    updatedAt?: DateTimeFilter<"Ebook"> | Date | string
+  }
+
+  export type EbookOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    pages?: SortOrder
+    format?: SortOrder
+    href?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EbookWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EbookWhereInput | EbookWhereInput[]
+    OR?: EbookWhereInput[]
+    NOT?: EbookWhereInput | EbookWhereInput[]
+    title?: StringFilter<"Ebook"> | string
+    description?: StringNullableFilter<"Ebook"> | string | null
+    category?: StringFilter<"Ebook"> | string
+    pages?: IntFilter<"Ebook"> | number
+    format?: StringFilter<"Ebook"> | string
+    href?: StringNullableFilter<"Ebook"> | string | null
+    status?: StringFilter<"Ebook"> | string
+    createdAt?: DateTimeFilter<"Ebook"> | Date | string
+    updatedAt?: DateTimeFilter<"Ebook"> | Date | string
+  }, "id">
+
+  export type EbookOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    pages?: SortOrder
+    format?: SortOrder
+    href?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EbookCountOrderByAggregateInput
+    _avg?: EbookAvgOrderByAggregateInput
+    _max?: EbookMaxOrderByAggregateInput
+    _min?: EbookMinOrderByAggregateInput
+    _sum?: EbookSumOrderByAggregateInput
+  }
+
+  export type EbookScalarWhereWithAggregatesInput = {
+    AND?: EbookScalarWhereWithAggregatesInput | EbookScalarWhereWithAggregatesInput[]
+    OR?: EbookScalarWhereWithAggregatesInput[]
+    NOT?: EbookScalarWhereWithAggregatesInput | EbookScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Ebook"> | string
+    title?: StringWithAggregatesFilter<"Ebook"> | string
+    description?: StringNullableWithAggregatesFilter<"Ebook"> | string | null
+    category?: StringWithAggregatesFilter<"Ebook"> | string
+    pages?: IntWithAggregatesFilter<"Ebook"> | number
+    format?: StringWithAggregatesFilter<"Ebook"> | string
+    href?: StringNullableWithAggregatesFilter<"Ebook"> | string | null
+    status?: StringWithAggregatesFilter<"Ebook"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
+  }
+
   export type AppointmentCreateInput = {
     id?: string
     fullName: string
@@ -10721,6 +12006,97 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EbookCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category?: string
+    pages?: number
+    format?: string
+    href?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EbookUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category?: string
+    pages?: number
+    format?: string
+    href?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EbookUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    pages?: IntFieldUpdateOperationsInput | number
+    format?: StringFieldUpdateOperationsInput | string
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EbookUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    pages?: IntFieldUpdateOperationsInput | number
+    format?: StringFieldUpdateOperationsInput | string
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EbookCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category?: string
+    pages?: number
+    format?: string
+    href?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EbookUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    pages?: IntFieldUpdateOperationsInput | number
+    format?: StringFieldUpdateOperationsInput | string
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EbookUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    pages?: IntFieldUpdateOperationsInput | number
+    format?: StringFieldUpdateOperationsInput | string
+    href?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11281,6 +12657,80 @@ export namespace Prisma {
     _max?: NestedEnumWebinarStatusFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EbookCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    pages?: SortOrder
+    format?: SortOrder
+    href?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EbookAvgOrderByAggregateInput = {
+    pages?: SortOrder
+  }
+
+  export type EbookMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    pages?: SortOrder
+    format?: SortOrder
+    href?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EbookMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    pages?: SortOrder
+    format?: SortOrder
+    href?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EbookSumOrderByAggregateInput = {
+    pages?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -11436,6 +12886,14 @@ export namespace Prisma {
 
   export type EnumWebinarStatusFieldUpdateOperationsInput = {
     set?: $Enums.WebinarStatus
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -11667,6 +13125,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWebinarStatusFilter<$PrismaModel>
     _max?: NestedEnumWebinarStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type SessionCreateWithoutUserInput = {
