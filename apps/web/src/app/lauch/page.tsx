@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const logoSrc = "/best new moneymati logo.svg";
+// Use URL-encoded path so spaces in the filename don't break in production
+const logoSrc = "/best%20new%20moneymati%20logo.svg";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
@@ -39,7 +40,7 @@ const styles = `
     background: var(--green-deep);
     overflow: hidden;
     transition: opacity 0.7s ease;
-    padding-bottom: 80px;
+    padding: 32px 0 80px;
   }
   .mm-launch.fade-out { opacity: 0; pointer-events: none; }
 
@@ -96,16 +97,17 @@ const styles = `
   }
 
   .mm-logo-mark {
-    width: 88px; height: 88px;
+    width: 84px; height: 84px;
     border-radius: 20px;
     display: flex; align-items: center; justify-content: center;
+    margin-top: 8px;
     margin-bottom: 28px;
     opacity: 0;
     transform: scale(0.8) translateY(8px);
     animation: riseIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
     filter: drop-shadow(0 0 24px rgba(46,125,82,0.5));
   }
-  .mm-logo-mark img { width: 88px; height: 88px; border-radius: 18px; object-fit: cover; display: block; }
+  .mm-logo-mark img { width: 84px; height: 84px; border-radius: 18px; object-fit: contain; display: block; background: #fff; padding: 6px; }
 
   .mm-eyebrow {
     font-family: var(--font-body);
