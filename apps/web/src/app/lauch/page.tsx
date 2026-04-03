@@ -291,7 +291,11 @@ const styles = `
   }
 `;
 
-export default function MoneyMatiLaunch() {
+type MoneyMatiLaunchProps = {
+  onEnter?: () => void;
+};
+
+export default function MoneyMatiLaunch({ onEnter }: MoneyMatiLaunchProps) {
   const router = useRouter();
   const [btnLoading, setBtnLoading] = useState(false);
   const [launchFading, setLaunchFading] = useState(false);
@@ -308,6 +312,7 @@ export default function MoneyMatiLaunch() {
       setTimeout(() => {
         setLaunchFading(true);
         setTimeout(() => {
+          onEnter?.();
           router.push("/");
         }, 700);
       }, 2000);
