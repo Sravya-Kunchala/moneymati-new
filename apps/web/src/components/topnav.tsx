@@ -125,7 +125,6 @@ export default function TopNav() {
               lineHeight: "1.2",
             }}
           >
-            Swathi
           </div>
           <div
             style={{

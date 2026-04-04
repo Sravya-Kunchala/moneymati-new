@@ -197,7 +197,7 @@ export default function SideNav() {
 
       </div>
 
-      {/* Settings */}
+      {/* Settings
       <div style={{ padding: "12px 8px 20px", borderTop: "1px solid #f0f5f1" }}>
         <div
           className={`nav-item ${isActive("/dashboard/settings") ? "active" : ""}`}
@@ -215,6 +215,31 @@ export default function SideNav() {
             </svg>
           </span>
           Settings
+        </div>
+      </div>*/}
+
+      {/* Logout */}
+      <div style={{ padding: "12px 8px 20px", borderTop: "1px solid #f0f5f1" }}>
+        <div
+          className="nav-item"
+          onClick={async () => {
+            try {
+              await fetch("/api/logout", { method: "POST" });
+            } catch (e) {
+              console.warn("Logout failed, redirecting anyway", e);
+            } finally {
+              router.push("/admin/signin");
+            }
+          }}
+        >
+          <span className="icon" style={{ background: "transparent", color: "#dc2626" }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 2H3.5A1.5 1.5 0 0 0 2 3.5v9A1.5 1.5 0 0 0 3.5 14H6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              <path d="M10.5 11.5 14 8l-3.5-3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M6 8h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </span>
+          Logout
         </div>
       </div>
     </nav>

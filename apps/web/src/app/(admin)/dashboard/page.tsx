@@ -358,7 +358,6 @@ export default function Dashboard() {
                   >
                     <option value={14}>Last 14 Days</option>
                     <option value={30}>Last 30 Days</option>
-                    <option value={90}>Last 90 Days</option>
                   </select>
                 </div>
                 <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "10px", height: "180px", padding: "0 4px" }}>
@@ -388,17 +387,20 @@ export default function Dashboard() {
                   <span style={{ fontSize: "11.5px", fontWeight: 600, color: "#0e3d27", cursor: "pointer" }}>View Detailed Report</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {(analytics?.trafficSources ?? fallbackTraffic).map((t) => (
+                  {(analytics?.trafficSources ?? fallbackTraffic).map((t, idx) => {
+                    const palette = ["#0e3d27", "#1d4ed8", "#ca8a04", "#7c3aed", "#ef4444", "#0f172a"];
+                    const barColor = palette[idx % palette.length];
+                    return (
                     <div key={t.label}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
                         <span style={{ fontSize: "12.5px", fontWeight: 500, color: "#1a3a22" }}>{t.label}</span>
                         <span style={{ fontSize: "12.5px", fontWeight: 600, color: "#1a3a22" }}>{Math.round((t.percent ?? 0) * 100)}%</span>
                       </div>
                       <div style={{ height: "5px", borderRadius: "99px", background: "#f0f5f1", overflow: "hidden" }}>
-                        <div style={{ width: `${Math.round((t.percent ?? 0) * 100)}%`, height: "100%", borderRadius: "99px", background: "#0e3d27" }} />
+                        <div style={{ width: `${Math.round((t.percent ?? 0) * 100)}%`, height: "100%", borderRadius: "99px", background: barColor }} />
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             </div>
@@ -473,20 +475,6 @@ export default function Dashboard() {
                 <div className="blog-btn-row" style={{ display: "flex", gap: "10px" }}>
                   <button onClick={() => window.location.href = '/blog'} style={{ width: "auto", minWidth: "153px", height: "42px", whiteSpace: "nowrap", borderRadius: "8px", background: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 700, color: "#0B4634", cursor: "pointer", padding: "10px 20px", boxShadow: "0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)" }}>Create New Post</button>
                   <button style={{ width: "153.52px", height: "42px", borderRadius: "8px", background: "rgba(17,212,98,0.2)", border: "1px solid rgba(255,255,255,0.2)", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 700, color: "#ffffff", cursor: "pointer", padding: "10px 20px", boxShadow: "0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)" }}>Manage Archive</button>
-                </div>
-              </div>
-
-              <div className="card" style={{ padding: "22px 26px", position: "relative", overflow: "hidden" }}>
-                <div className="deco-icon" style={{ position: "absolute", right: "16px", bottom: "12px" }}>
-                  <svg width="135" height="135" viewBox="0 0 135 135" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M150 150L120 120H45C40.875 120 37.3438 118.531 34.4062 115.594C31.4688 112.656 30 109.125 30 105V97.5H112.5C116.625 97.5 120.156 96.0312 123.094 93.0938C126.031 90.1562 127.5 86.625 127.5 82.5V30H135C139.125 30 142.656 31.4688 145.594 34.4062C148.531 37.3438 150 40.875 150 45V150ZM15 76.3125L23.8125 67.5H97.5V15H15V76.3125ZM0 112.5V15C0 10.875 1.46875 7.34375 4.40625 4.40625C7.34375 1.46875 10.875 0 15 0H97.5C101.625 0 105.156 1.46875 108.094 4.40625C111.031 7.34375 112.5 10.875 112.5 15V67.5C112.5 71.625 111.031 75.1562 108.094 78.0938C105.156 81.0312 101.625 82.5 97.5 82.5H30L0 112.5ZM15 67.5V15V67.5Z" fill="#F1F5F9"/>
-                  </svg>
-                </div>
-                <h3 style={{ margin: "0 0 8px", fontFamily: "'DM Serif Display', serif", fontSize: "18px", fontWeight: 700, color: "#0f172a" }}>Community Moderator</h3>
-                <p style={{ margin: "0 0 20px", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 400, lineHeight: "20px", color: "#64748B", maxWidth: "280px" }}>Monitor forum discussions, resolve flags, and engage with MoneyMati members.</p>
-                <div className="community-btn-row" style={{ display: "flex", gap: "10px" }}>
-                  <button style={{ width: "154.64px", height: "42px", borderRadius: "8px", background: "#0f172a", border: "none", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 700, color: "#ffffff", cursor: "pointer", padding: "10px 20px", boxShadow: "0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)" }}>Open Dashboard</button>
-                  <button style={{ width: "auto", minWidth: "153px", height: "42px", whiteSpace: "nowrap", borderRadius: "8px", background: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 700, color: "#0f172a", cursor: "pointer", padding: "10px 20px", boxShadow: "0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)" }}>View 12 Pending Flags</button>
                 </div>
               </div>
             </div>
