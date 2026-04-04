@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dancing_Script, Playfair_Display, DM_Sans } from "next/font/google";
 
 const dancingScript = Dancing_Script({ subsets: ["latin"], variable: "--font-dancing" });
@@ -10,32 +10,28 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 const testimonials = [
   {
     stars: 5,
-    quote:
-      "A wonderful session that taught me to be more confident to manage my investments through diverse mutual funds. I wish to learn more about equities, and how to plan my taxes.",
+    quote: "A wonderful session that taught me to be more confident to manage my investments through diverse mutual funds. I wish to learn more about equities, and how to plan my taxes.",
     name: "Maloncho Raychaudhuri",
     role: "Global Real Estate and Program Lead Workplace Experience @ JPMorganChase",
     avatar: "/image 14.svg",
   },
   {
     stars: 5,
-    quote:
-      "You are an inspiration in this field. Wishing you continued success and may the knowledge that you share result in better financial outcomes for those who are not very much into it.",
+    quote: "You are an inspiration in this field. Wishing you continued success and may the knowledge that you share result in better financial outcomes for those who are not very much into it.",
     name: "Prashantha Sawhney",
     role: "Scaleup CEOs",
     avatar: "/Sarah Johnson.svg",
   },
   {
     stars: 5,
-    quote:
-      "Truly inspiring work ... Real impact begins with awareness and action—more power to you and this mission",
+    quote: "Truly inspiring work ... Real impact begins with awareness and action—more power to you and this mission",
     name: "Meenu Krishna",
     role: "Business Consultant",
     avatar: "/Amara Okafor.svg",
   },
   {
     stars: 5,
-    quote:
-      "This was a wonderful session on \"Money Matters for Women\" that covered various aspects on managing money, budgeting, prudent borrowing and rules for investing. It was very well received by the motley group of women professionals.",
+    quote: "This was a wonderful session on \"Money Matters for Women\" that covered various aspects on managing money, budgeting, prudent borrowing and rules for investing.",
     name: "Anita K Manda",
     role: "EVP with Broadridge | Founder of The ProjeKT40 | Doctoral Student at ISB",
     avatar: "/anita.jpeg",
@@ -58,51 +54,54 @@ function StarRating({ count }: { count: number }) {
 
 export default function Testimonials() {
   const [startIndex, setStartIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [cardWidth, setCardWidth] = useState(0);
 
+  const totalPages = testimonials.length - CARDS_VISIBLE + 1;
   const canPrev = startIndex > 0;
   const canNext = startIndex + CARDS_VISIBLE < testimonials.length;
 
-  const handlePrev = () => { if (canPrev) setStartIndex((i) => i - 1); };
-  const handleNext = () => { if (canNext) setStartIndex((i) => i + 1); };
+  useEffect(() => {
+    const updateCardWidth = () => {
+      if (trackRef.current?.children[0]) {
+        const card = trackRef.current.children[0] as HTMLElement;
+        setCardWidth(card.offsetWidth + 20); // card width + gap
+      }
+    };
+    updateCardWidth();
+    window.addEventListener("resize", updateCardWidth);
+    return () => window.removeEventListener("resize", updateCardWidth);
+  }, []);
 
-  const visible = testimonials.slice(startIndex, startIndex + CARDS_VISIBLE);
+  const goTo = (index: number) => {
+    if (isAnimating) return;
+    const clamped = Math.max(0, Math.min(index, testimonials.length - CARDS_VISIBLE));
+    setIsAnimating(true);
+    setStartIndex(clamped);
+    setTimeout(() => setIsAnimating(false), 480);
+  };
+
+  const handlePrev = () => { if (canPrev) goTo(startIndex - 1); };
+  const handleNext = () => { if (canNext) goTo(startIndex + 1); };
 
   return (
     <>
       <style>{`
-        @media (max-width: 768px) {
-          .tm-section {
-            padding: 40px 20px 40px !important;
-          }
-          .tm-heading-wrap {
-            margin-bottom: 28px !important;
-          }
-          .tm-heading {
-            font-size: 32px !important;
-            line-height: 42px !important;
-          }
-          .tm-subheading {
-            display: block !important;
-            font-size: 13px !important;
-            color: #6b7a6b !important;
-            margin-top: 8px !important;
-            line-height: 1.5 !important;
-          }
-          .tm-grid {
-            grid-template-columns: 1fr !important;
-            gap: 16px !important;
-          }
-          .tm-nav {
-            display: none !important;
-          }
-          .tm-card {
-            padding: 20px 16px 16px !important;
-          }
+        .tm-track {
+          transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: transform;
         }
-        @media (min-width: 769px) {
-          .tm-subheading {
-            display: none !important;
-          }
+        .dot-btn {
+          width: 7px; height: 7px; border-radius: 50%;
+          border: none; padding: 0; cursor: pointer;
+          transition: background 0.3s, transform 0.3s;
+        }
+        @media (max-width: 768px) {
+          .tm-section { padding: 40px 20px 40px !important; }
+          .tm-heading { margin-bottom: 28px !important; }
+          .tm-heading h2 { font-size: 28px !important; }
+          .tm-card { flex: 0 0 85vw !important; }
         }
       `}</style>
 
@@ -115,9 +114,11 @@ export default function Testimonials() {
         }}
       >
         {/* Heading */}
-        <div className="tm-heading-wrap" style={{ textAlign: "center", maxWidth: "560px", margin: "0 auto 48px" }}>
+        <div
+          className="tm-heading"
+          style={{ textAlign: "center", maxWidth: "560px", margin: "0 auto 48px" }}
+        >
           <h2
-            className="tm-heading"
             style={{
               fontFamily: "var(--font-playfair), serif",
               fontWeight: 700,
@@ -125,156 +126,107 @@ export default function Testimonials() {
               color: "#1a2e1a",
               lineHeight: 1.3,
               letterSpacing: "0.04em",
+              margin: 0,
             }}
           >
             What Our Community Says
           </h2>
-          {/* Mobile-only subtitle */}
-          <p
-            className="tm-subheading"
+        </div>
+
+        {/* Viewport */}
+        <div style={{ overflow: "hidden", maxWidth: "1060px", margin: "0 auto 40px" }}>
+          <div
+            ref={trackRef}
+            className="tm-track"
             style={{
-              fontFamily: "var(--font-dm-sans), sans-serif",
+              display: "flex",
+              gap: "20px",
+              transform: `translateX(-${startIndex * cardWidth}px)`,
             }}
           >
-            Real stories from women who took control of their financial futures.
-          </p>
-        </div>
-
-        {/* Cards */}
-        <div
-          className="tm-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "20px",
-            maxWidth: "1060px",
-            margin: "0 auto 40px",
-          }}
-        >
-          {visible.map((t, i) => (
-            <div
-              key={startIndex + i}
-              className="tm-card"
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: "16px",
-                padding: "28px 24px 24px",
-                boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <StarRating count={t.stars} />
-
-              <p
+            {testimonials.map((t, i) => (
+              <div
+                key={i}
+                className="tm-card"
                 style={{
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  fontSize: "0.86rem",
-                  color: "#4a5a4a",
-                  lineHeight: 1.75,
-                  fontStyle: "italic",
-                  marginBottom: "20px",
-                  flex: 1,
+                  flex: `0 0 calc(${100 / CARDS_VISIBLE}% - ${(20 * (CARDS_VISIBLE - 1)) / CARDS_VISIBLE}px)`,
+                  backgroundColor: "#ffffff",
+                  borderRadius: "16px",
+                  padding: "28px 24px 24px",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxSizing: "border-box",
                 }}
               >
-                {t.quote}
-              </p>
-
-              {/* Author */}
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    flexShrink: 0,
-                    backgroundColor: "#d0cfc8",
-                  }}
-                >
-                  <img
-                    src={t.avatar}
-                    alt={t.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                </div>
-                <div>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-playfair), serif",
-                      fontWeight: 700,
-                      fontSize: "0.88rem",
-                      color: "#1a2e1a",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    {t.name}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-dm-sans), sans-serif",
-                      fontSize: "0.75rem",
-                      color: "#8a9a8a",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {t.role}
-                  </p>
+                <StarRating count={t.stars} />
+                <p style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.86rem", color: "#4a5a4a", lineHeight: 1.75, fontStyle: "italic", marginBottom: "20px", flex: 1 }}>
+                  {t.quote}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ width: "44px", height: "44px", borderRadius: "50%", overflow: "hidden", flexShrink: 0, backgroundColor: "#d0cfc8" }}>
+                    <img src={t.avatar} alt={t.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 700, fontSize: "0.88rem", color: "#1a2e1a", marginBottom: "2px" }}>{t.name}</p>
+                    <p style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.75rem", color: "#8a9a8a", lineHeight: 1.4 }}>{t.role}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Navigation arrows — hidden on mobile */}
-        <div className="tm-nav" style={{ display: "flex", justifyContent: "center", gap: "16px" }}>
+        {/* Navigation */}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px" }}>
           <button
             onClick={handlePrev}
-            disabled={!canPrev}
+            disabled={!canPrev || isAnimating}
             aria-label="Previous"
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
+              width: "40px", height: "40px", borderRadius: "50%",
               border: `1.5px solid ${canPrev ? "#4a6741" : "#c8c8c0"}`,
-              backgroundColor: "transparent",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              backgroundColor: "transparent", display: "flex",
+              alignItems: "center", justifyContent: "center",
               cursor: canPrev ? "pointer" : "not-allowed",
               opacity: canPrev ? 1 : 0.45,
-              transition: "background 0.2s, opacity 0.2s",
+              transition: "background 0.2s, transform 0.15s",
             }}
-            onMouseEnter={(e) => { if (canPrev) (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#eef2ed"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={canPrev ? "#4a6741" : "#a0a098"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
 
+          {/* Dot indicators */}
+          <div style={{ display: "flex", gap: "6px" }}>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                className="dot-btn"
+                onClick={() => goTo(i)}
+                style={{
+                  background: i === startIndex ? "#4a6741" : "#c8c8c0",
+                  transform: i === startIndex ? "scale(1.3)" : "scale(1)",
+                }}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
           <button
             onClick={handleNext}
-            disabled={!canNext}
+            disabled={!canNext || isAnimating}
             aria-label="Next"
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
+              width: "40px", height: "40px", borderRadius: "50%",
               border: `1.5px solid ${canNext ? "#4a6741" : "#c8c8c0"}`,
-              backgroundColor: "transparent",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              backgroundColor: "transparent", display: "flex",
+              alignItems: "center", justifyContent: "center",
               cursor: canNext ? "pointer" : "not-allowed",
               opacity: canNext ? 1 : 0.45,
-              transition: "background 0.2s, opacity 0.2s",
+              transition: "background 0.2s, transform 0.15s",
             }}
-            onMouseEnter={(e) => { if (canNext) (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#eef2ed"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={canNext ? "#4a6741" : "#a0a098"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6" />

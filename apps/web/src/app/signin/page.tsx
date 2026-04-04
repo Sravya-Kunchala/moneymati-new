@@ -26,13 +26,21 @@ export default function LoginPage() {
       const res = await authClient.signIn.email({
         email,
         password,
-        callbackURL: "/",
+        // We manually redirect based on role after we inspect the response.
+        callbackURL: undefined,
       });
-      if (res.error) {
-        setError(res.error.message ?? "Invalid email or password.");
-      } else {
-        router.push("/");
+      const role =
+        (res as any)?.data?.user?.role ??
+        (res as any)?.data?.user?.additionalFields?.role ??
+        (res as any)?.data?.role ??
+        "USER";
+
+      if ((res as any)?.error) {
+        setError((res as any).error.message ?? "Invalid email or password.");
+        return;
       }
+
+      router.push(role === "ADMIN" ? "/dashboard" : "/");
     } catch (e: any) {
       setError(e?.message ?? "Something went wrong.");
     } finally {
@@ -43,7 +51,8 @@ export default function LoginPage() {
   const handleOAuth = async (provider: "google" | "linkedin") => {
     await authClient.signIn.social({
       provider,
-      callbackURL: "/",
+      // Use a neutral callback where we can route based on role from the session cookie.
+      callbackURL: "/auth/route",
     });
   };
 

@@ -35,6 +35,11 @@ enum AppointmentStatus {
   COMPLETED
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id            String    @id
   name          String
@@ -42,6 +47,7 @@ model User {
   emailVerified Boolean   @default(false)
   password      String?
   image         String?
+  role          Role      @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

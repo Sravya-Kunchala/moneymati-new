@@ -33,7 +33,7 @@ const calculators: Calculator[] = [
   {
     id: 2,
     tag: "SIP PLANNING",
-    title: "How much SIP to do?",
+    title: "SIP Calculator",
     description: "Determine the exact monthly contribution needed for your target.",
     cta: "Calculate",
     href: "/sipcalucator",

@@ -145,6 +145,7 @@ exports.Prisma.UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   password: 'password',
   image: 'image',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -256,6 +257,11 @@ exports.AppointmentStatus = exports.$Enums.AppointmentStatus = {
   CONFIRMED: 'CONFIRMED',
   CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED'
+};
+
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
 };
 
 exports.WebinarStatus = exports.$Enums.WebinarStatus = {

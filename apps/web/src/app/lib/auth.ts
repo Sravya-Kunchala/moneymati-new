@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import { betterAuth } from "better-auth";
+import { z } from "zod";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { PrismaClient } from "@repo/db";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -46,6 +47,21 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "USER",
+        input: true,
+        output: true,
+        validator: { input: z.enum(["USER", "ADMIN"]) },
+      },
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,

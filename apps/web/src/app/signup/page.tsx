@@ -32,6 +32,7 @@ export default function SignupPage() {
         name: fullName,
         email,
         password,
+        role: "USER",
         callbackURL: "/",
       });
       if (res.error) {

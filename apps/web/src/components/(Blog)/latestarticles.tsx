@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Image from "next/image";
 import { blogArticles } from "@/data/blogs";
@@ -11,59 +11,80 @@ const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"
 const tags = ["Mutual Funds", "Family", "Risk Migration", "Retirement", "NPS", "MoneyMati", "SmartWomenInvest", "Budgeting"];
 
 /* ── Desktop card ── */
-const DesktopArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = ({ article }) => (
-  <a
-    href={article.href}
-    style={{
-      textDecoration: "none",
-      display: "flex",
-      flexDirection: "column",
-      backgroundColor: "#ffffff",
-      borderRadius: "12px",
-      overflow: "hidden",
-      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-      transition: "box-shadow 0.2s ease, transform 0.2s ease",
-      cursor: "pointer",
-      position: "relative",
-      zIndex: 1,
-      isolation: "isolate",
-      color: "inherit",
-    }}
-    onMouseEnter={(e) => {
-      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.10)";
-      (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
-    }}
-    onMouseLeave={(e) => {
-      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
-      (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-    }}
-  >
-    <div style={{ position: "relative", width: "100%", height: "180px", backgroundColor: "#e2e8f0" }}>
-      <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }}
-        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-      <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "rgba(255,255,255,0.92)", borderRadius: "6px", padding: "4px 10px" }}>
-        <span style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px", color: "#1a1a1a", textTransform: "uppercase" }}>Read More</span>
-      </div>
-    </div>
-    <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-      <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>{article.title}</h3>
-      <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.excerpt}</p>
-      <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #f1f5f9" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <div style={{ backgroundColor: "#11D4621A", borderRadius: "4px", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4.66667 4.66667C4.025 4.66667 3.47569 4.43819 3.01875 3.98125C2.56181 3.52431 2.33333 2.975 2.33333 2.33333C2.33333 1.69167 2.56181 1.14236 3.01875 0.685417C3.47569 0.228472 4.025 0 4.66667 0C5.30833 0 5.85764 0.228472 6.31458 0.685417C6.77153 1.14236 7 1.69167 7 2.33333C7 2.975 6.77153 3.52431 6.31458 3.98125C5.85764 4.43819 5.30833 4.66667 4.66667 4.66667ZM0 9.33333V7.7C0 7.36944 0.0850694 7.06563 0.255208 6.78854C0.425347 6.51146 0.651389 6.3 0.933333 6.15417C1.53611 5.85278 2.14861 5.62674 2.77083 5.47604C3.39306 5.32535 4.025 5.25 4.66667 5.25C5.30833 5.25 5.94028 5.32535 6.5625 5.47604C7.18472 5.62674 7.79722 5.85278 8.4 6.15417C8.68194 6.3 8.90799 6.51146 9.07812 6.78854C9.24826 7.06563 9.33333 7.36944 9.33333 7.7V9.33333H0ZM1.16667 8.16667H8.16667V7.7C8.16667 7.59306 8.13993 7.49583 8.08646 7.40833C8.03299 7.32083 7.9625 7.25278 7.875 7.20417C7.35 6.94167 6.82014 6.74479 6.28542 6.61354C5.75069 6.48229 5.21111 6.41667 4.66667 6.41667C4.12222 6.41667 3.58264 6.48229 3.04792 6.61354C2.51319 6.74479 1.98333 6.94167 1.45833 7.20417C1.37083 7.25278 1.30035 7.32083 1.24688 7.40833C1.1934 7.49583 1.16667 7.59306 1.16667 7.7V8.16667ZM4.66667 3.5C4.9875 3.5 5.26215 3.38576 5.49062 3.15729C5.7191 2.92882 5.83333 2.65417 5.83333 2.33333C5.83333 2.0125 5.7191 1.73785 5.49062 1.50937C5.26215 1.2809 4.9875 1.16667 4.66667 1.16667C4.34583 1.16667 4.07118 1.2809 3.84271 1.50937C3.61424 1.73785 3.5 2.0125 3.5 2.33333C3.5 2.65417 3.61424 2.92882 3.84271 3.15729C4.07118 3.38576 4.34583 3.5 4.66667 3.5Z" fill="#11D462"/></svg>
-          </div>
-          <span style={{ fontSize: "13px", color: "#475569", fontWeight: 500, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.author}</span>
+const DesktopArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = ({ article }) => {
+  const imgSrc = article.image && article.image.trim() !== "" ? article.image : "/placeholder.svg";
+  return (
+    <a
+      href={article.href}
+      style={{
+        textDecoration: "none",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        overflow: "hidden",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+        transition: "box-shadow 0.2s ease, transform 0.2s ease",
+        cursor: "pointer",
+        position: "relative",
+        zIndex: 1,
+        isolation: "isolate",
+        color: "inherit",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.10)";
+        (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+        (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
+      }}
+    >
+      <div style={{ position: "relative", width: "100%", height: "180px", backgroundColor: "#e2e8f0" }}>
+        {imgSrc ? (
+          <Image
+            src={imgSrc}
+            alt={article.title || "Blog cover"}
+            fill
+            style={{ objectFit: "cover" }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        ) : null}
+        <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "rgba(255,255,255,0.92)", borderRadius: "6px", padding: "4px 10px" }}>
+          <span style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px", color: "#1a1a1a", textTransform: "uppercase" }}>Read More</span>
         </div>
-        <span style={{ fontSize: "12px", color: "#94a3b8", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
       </div>
-    </div>
-  </a>
-);
+      <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+        <h3 style={{ margin: 0, fontSize: "18px", lineHeight: "24px", fontWeight: 700, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>{article.title}</h3>
+        <p style={{ margin: 0, fontSize: "13px", lineHeight: "20px", color: "#64748b", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.excerpt}</p>
+        <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #f1f5f9" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ backgroundColor: "#11D4621A", borderRadius: "4px", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4.66667 4.66667C4.025 4.66667 3.47569 4.43819 3.01875 3.98125C2.56181 3.52431 2.33333 2.975 2.33333 2.33333C2.33333 1.69167 2.56181 1.14236 3.01875 0.685417C3.47569 0.228472 4.025 0 4.66667 0C5.30833 0 5.85764 0.228472 6.31458 0.685417C6.77153 1.14236 7 1.69167 7 2.33333C7 2.975 6.77153 3.52431 6.31458 3.98125C5.85764 4.43819 5.30833 4.66667 4.66667 4.66667ZM0 9.33333V7.7C0 7.36944 0.0850694 7.06563 0.255208 6.78854C0.425347 6.51146 0.651389 6.3 0.933333 6.15417C1.53611 5.85278 2.14861 5.62674 2.77083 5.47604C3.39306 5.32535 4.025 5.25 4.66667 5.25C5.30833 5.25 5.94028 5.32535 6.5625 5.47604C7.18472 5.62674 7.79722 5.85278 8.4 6.15417C8.68194 6.3 8.90799 6.51146 9.07812 6.78854C9.24826 7.06563 9.33333 7.36944 9.33333 7.7V9.33333H0ZM1.16667 8.16667H8.16667V7.7C8.16667 7.59306 8.13993 7.49583 8.08646 7.40833C8.03299 7.32083 7.9625 7.25278 7.875 7.20417C7.35 6.94167 6.82014 6.74479 6.28542 6.61354C5.75069 6.48229 5.21111 6.41667 4.66667 6.41667C4.12222 6.41667 3.58264 6.48229 3.04792 6.61354C2.51319 6.74479 1.98333 6.94167 1.45833 7.20417C1.37083 7.25278 1.30035 7.32083 1.24688 7.40833C1.1934 7.49583 1.16667 7.59306 1.16667 7.7V8.16667ZM4.66667 3.5C4.9875 3.5 5.26215 3.38576 5.49062 3.15729C5.7191 2.92882 5.83333 2.65417 5.83333 2.33333C5.83333 2.0125 5.7191 1.73785 5.49062 1.50937C5.26215 1.2809 4.9875 1.16667 4.66667 1.16667C4.34583 1.16667 4.07118 1.2809 3.84271 1.50937C3.61424 1.73785 3.5 2.0125 3.5 2.33333C3.5 2.65417 3.61424 2.92882 3.84271 3.15729C4.07118 3.38576 4.34583 3.5 4.66667 3.5Z" fill="#11D462"/></svg>
+            </div>
+            <span style={{ fontSize: "13px", color: "#475569", fontWeight: 500, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.author}</span>
+          </div>
+          <span style={{ fontSize: "12px", color: "#94a3b8", fontWeight: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
+        </div>
+      </div>
+    </a>
+  );
+};
 
 /* ── Mobile card ── */
 const MobileArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = ({ article }) => {
-  const initials = article.author.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = (article.author || "Blog")
+    .split(" ")
+    .map((w) => w[0] || "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "B";
+  const primaryTag = Array.isArray(article.tags)
+    ? article.tags[0]
+    : typeof article.tags === "string"
+      ? article.tags.split(",")[0]
+      : "Blog";
+  const imgSrc = article.image && article.image.trim() !== "" ? article.image : "/placeholder.svg";
   return (
     <a
       href={article.href}
@@ -79,8 +100,15 @@ const MobileArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = 
       }}
     >
       <div style={{ position: "relative", width: "100%", height: "200px", backgroundColor: "#e2e8f0" }}>
-        <Image src={article.image} alt={article.title} fill style={{ objectFit: "cover" }}
-          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+        {imgSrc ? (
+          <Image
+            src={imgSrc}
+            alt={article.title || "Blog cover"}
+            fill
+            style={{ objectFit: "cover" }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        ) : null}
       </div>
 
       <div style={{ padding: "16px 16px 20px", display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -96,7 +124,7 @@ const MobileArticleCard: React.FC<{ article: (typeof blogArticles)[number] }> = 
               backgroundColor: "rgba(17,212,98,0.10)",
               padding: "3px 10px",
               borderRadius: "20px",
-            }}>{article.tags.split(",")[0]}</span>
+            }}>{primaryTag}</span>
           )}
           <span style={{ fontSize: "12px", color: "#94a3b8", fontFamily: "var(--font-dm-sans), sans-serif" }}>{article.readTime}</span>
         </div>
@@ -189,6 +217,42 @@ const Pagination: React.FC<{ current: number; total: number; onChange: (p: numbe
 
 export default function LatestArticles() {
   const [page, setPage] = useState(1);
+  const [articles, setArticles] = useState(blogArticles);
+  const PAGE_SIZE = 4;
+
+  // Fetch all published blogs; show all of them
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/blog?published=true")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        const incoming = Array.isArray(data?.data) ? data.data : [];
+        const published = incoming.filter((p) => p.published !== false);
+        // Merge DB published posts with static seeds to keep previous blogs visible
+        const merged = [...published, ...blogArticles].reduce((acc, item) => {
+          const key = (item.slug ?? item.id ?? item.title ?? "").toString();
+          if (!key) return acc;
+          if (!acc.some((x) => (x.slug ?? x.id ?? x.title ?? "").toString() === key)) {
+            acc.push(item);
+          }
+          return acc;
+        }, [] as typeof blogArticles);
+        setArticles(merged.length ? merged : blogArticles);
+      })
+      .catch(() => setArticles(blogArticles));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Reset to first page when article list changes
+  useEffect(() => {
+    setPage(1);
+  }, [articles.length]);
+
+  const totalPages = Math.max(1, Math.ceil(articles.length / PAGE_SIZE));
+  const visibleArticles = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <section
@@ -240,14 +304,14 @@ export default function LatestArticles() {
             </div>
 
             <div className="desktop-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-              {blogArticles.map((article) => (
-                <DesktopArticleCard key={article.id} article={article} />
+              {visibleArticles.map((article) => (
+                <DesktopArticleCard key={article.id ?? article.title} article={article} />
               ))}
             </div>
 
             <div className="mobile-cards-list" style={{ display: "none" }}>
-              {blogArticles.map((article) => (
-                <MobileArticleCard key={article.id} article={article} />
+              {visibleArticles.map((article) => (
+                <MobileArticleCard key={article.id ?? article.title} article={article} />
               ))}
             </div>
           </div>
@@ -258,7 +322,7 @@ export default function LatestArticles() {
           </div>
         </div>
 
-        <Pagination current={page} total={3} onChange={setPage} />
+        <Pagination current={page} total={totalPages} onChange={setPage} />
       </div>
     </section>
   );
