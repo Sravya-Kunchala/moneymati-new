@@ -53,6 +53,11 @@ export type Webinar = $Result.DefaultSelection<Prisma.$WebinarPayload>
  * 
  */
 export type Ebook = $Result.DefaultSelection<Prisma.$EbookPayload>
+/**
+ * Model Subscriber
+ * 
+ */
+export type Subscriber = $Result.DefaultSelection<Prisma.$SubscriberPayload>
 
 /**
  * Enums
@@ -298,6 +303,16 @@ export class PrismaClient<
     * ```
     */
   get ebook(): Prisma.EbookDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.subscriber`: Exposes CRUD operations for the **Subscriber** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Subscribers
+    * const subscribers = await prisma.subscriber.findMany()
+    * ```
+    */
+  get subscriber(): Prisma.SubscriberDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -739,7 +754,8 @@ export namespace Prisma {
     Verification: 'Verification',
     BlogPost: 'BlogPost',
     Webinar: 'Webinar',
-    Ebook: 'Ebook'
+    Ebook: 'Ebook',
+    Subscriber: 'Subscriber'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -755,7 +771,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "appointment" | "user" | "session" | "account" | "verification" | "blogPost" | "webinar" | "ebook"
+      modelProps: "appointment" | "user" | "session" | "account" | "verification" | "blogPost" | "webinar" | "ebook" | "subscriber"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1351,6 +1367,80 @@ export namespace Prisma {
           }
         }
       }
+      Subscriber: {
+        payload: Prisma.$SubscriberPayload<ExtArgs>
+        fields: Prisma.SubscriberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SubscriberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SubscriberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          findFirst: {
+            args: Prisma.SubscriberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SubscriberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          findMany: {
+            args: Prisma.SubscriberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>[]
+          }
+          create: {
+            args: Prisma.SubscriberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          createMany: {
+            args: Prisma.SubscriberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SubscriberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>[]
+          }
+          delete: {
+            args: Prisma.SubscriberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          update: {
+            args: Prisma.SubscriberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          deleteMany: {
+            args: Prisma.SubscriberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SubscriberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SubscriberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>[]
+          }
+          upsert: {
+            args: Prisma.SubscriberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriberPayload>
+          }
+          aggregate: {
+            args: Prisma.SubscriberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSubscriber>
+          }
+          groupBy: {
+            args: Prisma.SubscriberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SubscriberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SubscriberCountArgs<ExtArgs>
+            result: $Utils.Optional<SubscriberCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1467,6 +1557,7 @@ export namespace Prisma {
     blogPost?: BlogPostOmit
     webinar?: WebinarOmit
     ebook?: EbookOmit
+    subscriber?: SubscriberOmit
   }
 
   /* Types for Logging */
@@ -8313,6 +8404,7 @@ export namespace Prisma {
     scheduledAt: Date | null
     status: $Enums.WebinarStatus | null
     thumbType: string | null
+    link: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8324,6 +8416,7 @@ export namespace Prisma {
     scheduledAt: Date | null
     status: $Enums.WebinarStatus | null
     thumbType: string | null
+    link: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8335,6 +8428,7 @@ export namespace Prisma {
     scheduledAt: number
     status: number
     thumbType: number
+    link: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8348,6 +8442,7 @@ export namespace Prisma {
     scheduledAt?: true
     status?: true
     thumbType?: true
+    link?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8359,6 +8454,7 @@ export namespace Prisma {
     scheduledAt?: true
     status?: true
     thumbType?: true
+    link?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8370,6 +8466,7 @@ export namespace Prisma {
     scheduledAt?: true
     status?: true
     thumbType?: true
+    link?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8454,6 +8551,7 @@ export namespace Prisma {
     scheduledAt: Date
     status: $Enums.WebinarStatus
     thumbType: string | null
+    link: string | null
     createdAt: Date
     updatedAt: Date
     _count: WebinarCountAggregateOutputType | null
@@ -8482,6 +8580,7 @@ export namespace Prisma {
     scheduledAt?: boolean
     status?: boolean
     thumbType?: boolean
+    link?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["webinar"]>
@@ -8493,6 +8592,7 @@ export namespace Prisma {
     scheduledAt?: boolean
     status?: boolean
     thumbType?: boolean
+    link?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["webinar"]>
@@ -8504,6 +8604,7 @@ export namespace Prisma {
     scheduledAt?: boolean
     status?: boolean
     thumbType?: boolean
+    link?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["webinar"]>
@@ -8515,11 +8616,12 @@ export namespace Prisma {
     scheduledAt?: boolean
     status?: boolean
     thumbType?: boolean
+    link?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WebinarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "host" | "scheduledAt" | "status" | "thumbType" | "createdAt" | "updatedAt", ExtArgs["result"]["webinar"]>
+  export type WebinarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "host" | "scheduledAt" | "status" | "thumbType" | "link" | "createdAt" | "updatedAt", ExtArgs["result"]["webinar"]>
 
   export type $WebinarPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Webinar"
@@ -8531,6 +8633,7 @@ export namespace Prisma {
       scheduledAt: Date
       status: $Enums.WebinarStatus
       thumbType: string | null
+      link: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["webinar"]>
@@ -8962,6 +9065,7 @@ export namespace Prisma {
     readonly scheduledAt: FieldRef<"Webinar", 'DateTime'>
     readonly status: FieldRef<"Webinar", 'WebinarStatus'>
     readonly thumbType: FieldRef<"Webinar", 'String'>
+    readonly link: FieldRef<"Webinar", 'String'>
     readonly createdAt: FieldRef<"Webinar", 'DateTime'>
     readonly updatedAt: FieldRef<"Webinar", 'DateTime'>
   }
@@ -10435,6 +10539,1006 @@ export namespace Prisma {
 
 
   /**
+   * Model Subscriber
+   */
+
+  export type AggregateSubscriber = {
+    _count: SubscriberCountAggregateOutputType | null
+    _min: SubscriberMinAggregateOutputType | null
+    _max: SubscriberMaxAggregateOutputType | null
+  }
+
+  export type SubscriberMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    createdAt: Date | null
+  }
+
+  export type SubscriberMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    createdAt: Date | null
+  }
+
+  export type SubscriberCountAggregateOutputType = {
+    id: number
+    name: number
+    email: number
+    phone: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SubscriberMinAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    createdAt?: true
+  }
+
+  export type SubscriberMaxAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    createdAt?: true
+  }
+
+  export type SubscriberCountAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    phone?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SubscriberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Subscriber to aggregate.
+     */
+    where?: SubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscribers to fetch.
+     */
+    orderBy?: SubscriberOrderByWithRelationInput | SubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Subscribers
+    **/
+    _count?: true | SubscriberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SubscriberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SubscriberMaxAggregateInputType
+  }
+
+  export type GetSubscriberAggregateType<T extends SubscriberAggregateArgs> = {
+        [P in keyof T & keyof AggregateSubscriber]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSubscriber[P]>
+      : GetScalarType<T[P], AggregateSubscriber[P]>
+  }
+
+
+
+
+  export type SubscriberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubscriberWhereInput
+    orderBy?: SubscriberOrderByWithAggregationInput | SubscriberOrderByWithAggregationInput[]
+    by: SubscriberScalarFieldEnum[] | SubscriberScalarFieldEnum
+    having?: SubscriberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SubscriberCountAggregateInputType | true
+    _min?: SubscriberMinAggregateInputType
+    _max?: SubscriberMaxAggregateInputType
+  }
+
+  export type SubscriberGroupByOutputType = {
+    id: string
+    name: string
+    email: string
+    phone: string | null
+    createdAt: Date
+    _count: SubscriberCountAggregateOutputType | null
+    _min: SubscriberMinAggregateOutputType | null
+    _max: SubscriberMaxAggregateOutputType | null
+  }
+
+  type GetSubscriberGroupByPayload<T extends SubscriberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SubscriberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SubscriberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SubscriberGroupByOutputType[P]>
+            : GetScalarType<T[P], SubscriberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SubscriberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["subscriber"]>
+
+  export type SubscriberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["subscriber"]>
+
+  export type SubscriberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["subscriber"]>
+
+  export type SubscriberSelectScalar = {
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    createdAt?: boolean
+  }
+
+  export type SubscriberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "createdAt", ExtArgs["result"]["subscriber"]>
+
+  export type $SubscriberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Subscriber"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      email: string
+      phone: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["subscriber"]>
+    composites: {}
+  }
+
+  type SubscriberGetPayload<S extends boolean | null | undefined | SubscriberDefaultArgs> = $Result.GetResult<Prisma.$SubscriberPayload, S>
+
+  type SubscriberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SubscriberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SubscriberCountAggregateInputType | true
+    }
+
+  export interface SubscriberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Subscriber'], meta: { name: 'Subscriber' } }
+    /**
+     * Find zero or one Subscriber that matches the filter.
+     * @param {SubscriberFindUniqueArgs} args - Arguments to find a Subscriber
+     * @example
+     * // Get one Subscriber
+     * const subscriber = await prisma.subscriber.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SubscriberFindUniqueArgs>(args: SelectSubset<T, SubscriberFindUniqueArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Subscriber that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SubscriberFindUniqueOrThrowArgs} args - Arguments to find a Subscriber
+     * @example
+     * // Get one Subscriber
+     * const subscriber = await prisma.subscriber.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SubscriberFindUniqueOrThrowArgs>(args: SelectSubset<T, SubscriberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Subscriber that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberFindFirstArgs} args - Arguments to find a Subscriber
+     * @example
+     * // Get one Subscriber
+     * const subscriber = await prisma.subscriber.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SubscriberFindFirstArgs>(args?: SelectSubset<T, SubscriberFindFirstArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Subscriber that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberFindFirstOrThrowArgs} args - Arguments to find a Subscriber
+     * @example
+     * // Get one Subscriber
+     * const subscriber = await prisma.subscriber.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SubscriberFindFirstOrThrowArgs>(args?: SelectSubset<T, SubscriberFindFirstOrThrowArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Subscribers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Subscribers
+     * const subscribers = await prisma.subscriber.findMany()
+     * 
+     * // Get first 10 Subscribers
+     * const subscribers = await prisma.subscriber.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const subscriberWithIdOnly = await prisma.subscriber.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SubscriberFindManyArgs>(args?: SelectSubset<T, SubscriberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Subscriber.
+     * @param {SubscriberCreateArgs} args - Arguments to create a Subscriber.
+     * @example
+     * // Create one Subscriber
+     * const Subscriber = await prisma.subscriber.create({
+     *   data: {
+     *     // ... data to create a Subscriber
+     *   }
+     * })
+     * 
+     */
+    create<T extends SubscriberCreateArgs>(args: SelectSubset<T, SubscriberCreateArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Subscribers.
+     * @param {SubscriberCreateManyArgs} args - Arguments to create many Subscribers.
+     * @example
+     * // Create many Subscribers
+     * const subscriber = await prisma.subscriber.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SubscriberCreateManyArgs>(args?: SelectSubset<T, SubscriberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Subscribers and returns the data saved in the database.
+     * @param {SubscriberCreateManyAndReturnArgs} args - Arguments to create many Subscribers.
+     * @example
+     * // Create many Subscribers
+     * const subscriber = await prisma.subscriber.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Subscribers and only return the `id`
+     * const subscriberWithIdOnly = await prisma.subscriber.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SubscriberCreateManyAndReturnArgs>(args?: SelectSubset<T, SubscriberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Subscriber.
+     * @param {SubscriberDeleteArgs} args - Arguments to delete one Subscriber.
+     * @example
+     * // Delete one Subscriber
+     * const Subscriber = await prisma.subscriber.delete({
+     *   where: {
+     *     // ... filter to delete one Subscriber
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SubscriberDeleteArgs>(args: SelectSubset<T, SubscriberDeleteArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Subscriber.
+     * @param {SubscriberUpdateArgs} args - Arguments to update one Subscriber.
+     * @example
+     * // Update one Subscriber
+     * const subscriber = await prisma.subscriber.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SubscriberUpdateArgs>(args: SelectSubset<T, SubscriberUpdateArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Subscribers.
+     * @param {SubscriberDeleteManyArgs} args - Arguments to filter Subscribers to delete.
+     * @example
+     * // Delete a few Subscribers
+     * const { count } = await prisma.subscriber.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SubscriberDeleteManyArgs>(args?: SelectSubset<T, SubscriberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Subscribers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Subscribers
+     * const subscriber = await prisma.subscriber.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SubscriberUpdateManyArgs>(args: SelectSubset<T, SubscriberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Subscribers and returns the data updated in the database.
+     * @param {SubscriberUpdateManyAndReturnArgs} args - Arguments to update many Subscribers.
+     * @example
+     * // Update many Subscribers
+     * const subscriber = await prisma.subscriber.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Subscribers and only return the `id`
+     * const subscriberWithIdOnly = await prisma.subscriber.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SubscriberUpdateManyAndReturnArgs>(args: SelectSubset<T, SubscriberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Subscriber.
+     * @param {SubscriberUpsertArgs} args - Arguments to update or create a Subscriber.
+     * @example
+     * // Update or create a Subscriber
+     * const subscriber = await prisma.subscriber.upsert({
+     *   create: {
+     *     // ... data to create a Subscriber
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Subscriber we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SubscriberUpsertArgs>(args: SelectSubset<T, SubscriberUpsertArgs<ExtArgs>>): Prisma__SubscriberClient<$Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Subscribers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberCountArgs} args - Arguments to filter Subscribers to count.
+     * @example
+     * // Count the number of Subscribers
+     * const count = await prisma.subscriber.count({
+     *   where: {
+     *     // ... the filter for the Subscribers we want to count
+     *   }
+     * })
+    **/
+    count<T extends SubscriberCountArgs>(
+      args?: Subset<T, SubscriberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SubscriberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Subscriber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SubscriberAggregateArgs>(args: Subset<T, SubscriberAggregateArgs>): Prisma.PrismaPromise<GetSubscriberAggregateType<T>>
+
+    /**
+     * Group by Subscriber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SubscriberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SubscriberGroupByArgs['orderBy'] }
+        : { orderBy?: SubscriberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SubscriberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSubscriberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Subscriber model
+   */
+  readonly fields: SubscriberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Subscriber.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SubscriberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Subscriber model
+   */
+  interface SubscriberFieldRefs {
+    readonly id: FieldRef<"Subscriber", 'String'>
+    readonly name: FieldRef<"Subscriber", 'String'>
+    readonly email: FieldRef<"Subscriber", 'String'>
+    readonly phone: FieldRef<"Subscriber", 'String'>
+    readonly createdAt: FieldRef<"Subscriber", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Subscriber findUnique
+   */
+  export type SubscriberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter, which Subscriber to fetch.
+     */
+    where: SubscriberWhereUniqueInput
+  }
+
+  /**
+   * Subscriber findUniqueOrThrow
+   */
+  export type SubscriberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter, which Subscriber to fetch.
+     */
+    where: SubscriberWhereUniqueInput
+  }
+
+  /**
+   * Subscriber findFirst
+   */
+  export type SubscriberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter, which Subscriber to fetch.
+     */
+    where?: SubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscribers to fetch.
+     */
+    orderBy?: SubscriberOrderByWithRelationInput | SubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Subscribers.
+     */
+    cursor?: SubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Subscribers.
+     */
+    distinct?: SubscriberScalarFieldEnum | SubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * Subscriber findFirstOrThrow
+   */
+  export type SubscriberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter, which Subscriber to fetch.
+     */
+    where?: SubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscribers to fetch.
+     */
+    orderBy?: SubscriberOrderByWithRelationInput | SubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Subscribers.
+     */
+    cursor?: SubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Subscribers.
+     */
+    distinct?: SubscriberScalarFieldEnum | SubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * Subscriber findMany
+   */
+  export type SubscriberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter, which Subscribers to fetch.
+     */
+    where?: SubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscribers to fetch.
+     */
+    orderBy?: SubscriberOrderByWithRelationInput | SubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Subscribers.
+     */
+    cursor?: SubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Subscribers.
+     */
+    distinct?: SubscriberScalarFieldEnum | SubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * Subscriber create
+   */
+  export type SubscriberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Subscriber.
+     */
+    data: XOR<SubscriberCreateInput, SubscriberUncheckedCreateInput>
+  }
+
+  /**
+   * Subscriber createMany
+   */
+  export type SubscriberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Subscribers.
+     */
+    data: SubscriberCreateManyInput | SubscriberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Subscriber createManyAndReturn
+   */
+  export type SubscriberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * The data used to create many Subscribers.
+     */
+    data: SubscriberCreateManyInput | SubscriberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Subscriber update
+   */
+  export type SubscriberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Subscriber.
+     */
+    data: XOR<SubscriberUpdateInput, SubscriberUncheckedUpdateInput>
+    /**
+     * Choose, which Subscriber to update.
+     */
+    where: SubscriberWhereUniqueInput
+  }
+
+  /**
+   * Subscriber updateMany
+   */
+  export type SubscriberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Subscribers.
+     */
+    data: XOR<SubscriberUpdateManyMutationInput, SubscriberUncheckedUpdateManyInput>
+    /**
+     * Filter which Subscribers to update
+     */
+    where?: SubscriberWhereInput
+    /**
+     * Limit how many Subscribers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Subscriber updateManyAndReturn
+   */
+  export type SubscriberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * The data used to update Subscribers.
+     */
+    data: XOR<SubscriberUpdateManyMutationInput, SubscriberUncheckedUpdateManyInput>
+    /**
+     * Filter which Subscribers to update
+     */
+    where?: SubscriberWhereInput
+    /**
+     * Limit how many Subscribers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Subscriber upsert
+   */
+  export type SubscriberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Subscriber to update in case it exists.
+     */
+    where: SubscriberWhereUniqueInput
+    /**
+     * In case the Subscriber found by the `where` argument doesn't exist, create a new Subscriber with this data.
+     */
+    create: XOR<SubscriberCreateInput, SubscriberUncheckedCreateInput>
+    /**
+     * In case the Subscriber was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SubscriberUpdateInput, SubscriberUncheckedUpdateInput>
+  }
+
+  /**
+   * Subscriber delete
+   */
+  export type SubscriberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+    /**
+     * Filter which Subscriber to delete.
+     */
+    where: SubscriberWhereUniqueInput
+  }
+
+  /**
+   * Subscriber deleteMany
+   */
+  export type SubscriberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Subscribers to delete
+     */
+    where?: SubscriberWhereInput
+    /**
+     * Limit how many Subscribers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Subscriber without action
+   */
+  export type SubscriberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscriber
+     */
+    select?: SubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscriber
+     */
+    omit?: SubscriberOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -10556,6 +11660,7 @@ export namespace Prisma {
     scheduledAt: 'scheduledAt',
     status: 'status',
     thumbType: 'thumbType',
+    link: 'link',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -10577,6 +11682,17 @@ export namespace Prisma {
   };
 
   export type EbookScalarFieldEnum = (typeof EbookScalarFieldEnum)[keyof typeof EbookScalarFieldEnum]
+
+
+  export const SubscriberScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    createdAt: 'createdAt'
+  };
+
+  export type SubscriberScalarFieldEnum = (typeof SubscriberScalarFieldEnum)[keyof typeof SubscriberScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -11258,6 +12374,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFilter<"Webinar"> | Date | string
     status?: EnumWebinarStatusFilter<"Webinar"> | $Enums.WebinarStatus
     thumbType?: StringNullableFilter<"Webinar"> | string | null
+    link?: StringNullableFilter<"Webinar"> | string | null
     createdAt?: DateTimeFilter<"Webinar"> | Date | string
     updatedAt?: DateTimeFilter<"Webinar"> | Date | string
   }
@@ -11269,6 +12386,7 @@ export namespace Prisma {
     scheduledAt?: SortOrder
     status?: SortOrder
     thumbType?: SortOrderInput | SortOrder
+    link?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11283,6 +12401,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFilter<"Webinar"> | Date | string
     status?: EnumWebinarStatusFilter<"Webinar"> | $Enums.WebinarStatus
     thumbType?: StringNullableFilter<"Webinar"> | string | null
+    link?: StringNullableFilter<"Webinar"> | string | null
     createdAt?: DateTimeFilter<"Webinar"> | Date | string
     updatedAt?: DateTimeFilter<"Webinar"> | Date | string
   }, "id">
@@ -11294,6 +12413,7 @@ export namespace Prisma {
     scheduledAt?: SortOrder
     status?: SortOrder
     thumbType?: SortOrderInput | SortOrder
+    link?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WebinarCountOrderByAggregateInput
@@ -11311,6 +12431,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeWithAggregatesFilter<"Webinar"> | Date | string
     status?: EnumWebinarStatusWithAggregatesFilter<"Webinar"> | $Enums.WebinarStatus
     thumbType?: StringNullableWithAggregatesFilter<"Webinar"> | string | null
+    link?: StringNullableWithAggregatesFilter<"Webinar"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Webinar"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Webinar"> | Date | string
   }
@@ -11392,6 +12513,58 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"Ebook"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
+  }
+
+  export type SubscriberWhereInput = {
+    AND?: SubscriberWhereInput | SubscriberWhereInput[]
+    OR?: SubscriberWhereInput[]
+    NOT?: SubscriberWhereInput | SubscriberWhereInput[]
+    id?: StringFilter<"Subscriber"> | string
+    name?: StringFilter<"Subscriber"> | string
+    email?: StringFilter<"Subscriber"> | string
+    phone?: StringNullableFilter<"Subscriber"> | string | null
+    createdAt?: DateTimeFilter<"Subscriber"> | Date | string
+  }
+
+  export type SubscriberOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SubscriberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    AND?: SubscriberWhereInput | SubscriberWhereInput[]
+    OR?: SubscriberWhereInput[]
+    NOT?: SubscriberWhereInput | SubscriberWhereInput[]
+    name?: StringFilter<"Subscriber"> | string
+    phone?: StringNullableFilter<"Subscriber"> | string | null
+    createdAt?: DateTimeFilter<"Subscriber"> | Date | string
+  }, "id" | "email">
+
+  export type SubscriberOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SubscriberCountOrderByAggregateInput
+    _max?: SubscriberMaxOrderByAggregateInput
+    _min?: SubscriberMinOrderByAggregateInput
+  }
+
+  export type SubscriberScalarWhereWithAggregatesInput = {
+    AND?: SubscriberScalarWhereWithAggregatesInput | SubscriberScalarWhereWithAggregatesInput[]
+    OR?: SubscriberScalarWhereWithAggregatesInput[]
+    NOT?: SubscriberScalarWhereWithAggregatesInput | SubscriberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Subscriber"> | string
+    name?: StringWithAggregatesFilter<"Subscriber"> | string
+    email?: StringWithAggregatesFilter<"Subscriber"> | string
+    phone?: StringNullableWithAggregatesFilter<"Subscriber"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Subscriber"> | Date | string
   }
 
   export type AppointmentCreateInput = {
@@ -11988,6 +13161,7 @@ export namespace Prisma {
     scheduledAt: Date | string
     status?: $Enums.WebinarStatus
     thumbType?: string | null
+    link?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11999,6 +13173,7 @@ export namespace Prisma {
     scheduledAt: Date | string
     status?: $Enums.WebinarStatus
     thumbType?: string | null
+    link?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12010,6 +13185,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumWebinarStatusFieldUpdateOperationsInput | $Enums.WebinarStatus
     thumbType?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12021,6 +13197,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumWebinarStatusFieldUpdateOperationsInput | $Enums.WebinarStatus
     thumbType?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12032,6 +13209,7 @@ export namespace Prisma {
     scheduledAt: Date | string
     status?: $Enums.WebinarStatus
     thumbType?: string | null
+    link?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12043,6 +13221,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumWebinarStatusFieldUpdateOperationsInput | $Enums.WebinarStatus
     thumbType?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12054,6 +13233,7 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumWebinarStatusFieldUpdateOperationsInput | $Enums.WebinarStatus
     thumbType?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12147,6 +13327,62 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriberCreateInput = {
+    id?: string
+    name: string
+    email: string
+    phone?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriberUncheckedCreateInput = {
+    id?: string
+    name: string
+    email: string
+    phone?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriberCreateManyInput = {
+    id?: string
+    name: string
+    email: string
+    phone?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -12693,6 +13929,7 @@ export namespace Prisma {
     scheduledAt?: SortOrder
     status?: SortOrder
     thumbType?: SortOrder
+    link?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12704,6 +13941,7 @@ export namespace Prisma {
     scheduledAt?: SortOrder
     status?: SortOrder
     thumbType?: SortOrder
+    link?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12715,6 +13953,7 @@ export namespace Prisma {
     scheduledAt?: SortOrder
     status?: SortOrder
     thumbType?: SortOrder
+    link?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12801,6 +14040,30 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type SubscriberCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SubscriberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SubscriberMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

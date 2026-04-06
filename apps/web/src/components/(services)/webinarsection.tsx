@@ -154,10 +154,11 @@ export default function WebinarCategories() {
         }
 
         .wc-mobile-wrapper {
-          display: none;
+          display: block;
+          width: 100%;
         }
 
-        /* ── MOBILE ── */
+        /* MOBILE */
         @media (max-width: 768px) {
           .wc-mobile-wrapper {
             display: block;

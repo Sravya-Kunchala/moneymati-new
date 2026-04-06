@@ -51,6 +51,7 @@ export async function POST(req: Request) {
       (body.status as string | undefined)?.toUpperCase() ?? "UPCOMING";
     const thumbType = body.thumbType ?? "crypto";
     const now = new Date();
+    const link = body.link ? String(body.link) : null;
 
     if (!title) {
       return NextResponse.json(
@@ -67,6 +68,7 @@ export async function POST(req: Request) {
         scheduledAt,
         status: status as any,
         thumbType,
+        link,
         createdAt: now,
         updatedAt: now,
       },

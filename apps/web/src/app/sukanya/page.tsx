@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Inter } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PersonalizeModal from "@/components/confrimation";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
@@ -13,6 +14,7 @@ export default function SukanyaSamriddhiCalculatorPage() {
   const [interestRate] = useState(8.2); // Fixed government rate
   const [tenure, setTenure] = useState("15");
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   // Parse to numbers for calculations
   const _amountInvested = parseFloat(amountInvested) || 0;
@@ -310,7 +312,15 @@ export default function SukanyaSamriddhiCalculatorPage() {
               </div>
             </div>
 
-            <button className="submit-btn" onClick={() => setSubmitted(true)}>Submit</button>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                setSubmitted(true);
+                setShowConfirm(true);
+              }}
+            >
+              Submit
+            </button>
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
@@ -442,6 +452,7 @@ export default function SukanyaSamriddhiCalculatorPage() {
 
       </div>
       <Footer />
+      {showConfirm && <PersonalizeModal onClose={() => setShowConfirm(false)} />}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import FeaturedWebinar from "@/components/(services)/featuredwebinar";
 import HeroSection from "@/components/(services)/herosection";
 import Testimonials from "@/components/testimonials";
+import UpcomingWebinars from "@/components/(services)/featuredwebinar";
 
 
 export default function Home() {
@@ -54,7 +55,7 @@ export default function Home() {
       </div>
 
       <div className="anim-featured">
-        <FeaturedWebinar />
+        <UpcomingWebinars />
       </div>
 
       <div className="anim-trust">

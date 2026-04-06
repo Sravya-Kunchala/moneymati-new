@@ -21,6 +21,7 @@ interface Webinar {
   thumbBg?: string;
   thumbType: ThumbType;
   scheduledAt: string;
+  link?: string;
 }
 
 type ApiWebinar = {
@@ -30,16 +31,15 @@ type ApiWebinar = {
   scheduledAt: string;
   status: "UPCOMING" | "LIVE" | "COMPLETED";
   thumbType: ThumbType | null;
+  link?: string | null;
 };
 
 const thumbTypes: ThumbType[] = ["crypto", "wealth", "reits", "tax", "markets"];
 
-const WEBINARS: Webinar[] = [
-  { id: "1", title: "Advanced Crypto Trading Strategies 2026", host: "James Carter", date: "Apr 24, 2026", time: "02:00 PM IST", status: "upcoming", thumbBg: "#dbeeff", thumbType: "crypto", scheduledAt: "2026-04-24T08:30:00.000Z" },
-  { id: "2", title: "Wealth Preservation in Volatile Markets", host: "Priya Menon", date: "Apr 24, 2026", time: "02:00 PM IST", status: "completed", thumbBg: "#1e1e1e", thumbType: "wealth", scheduledAt: "2026-04-24T08:30:00.000Z" },
-  { id: "3", title: "Mastering Real Estate REITs", host: "Arjun Shah", date: "Apr 24, 2026", time: "02:00 PM IST", status: "completed", thumbBg: "#111", thumbType: "reits", scheduledAt: "2026-04-24T08:30:00.000Z" },
-  { id: "4", title: "Tax Strategies for High Net Worth Individuals", host: "Sunita Rao", date: "Apr 28, 2026", time: "11:00 AM IST", status: "upcoming", thumbBg: "#dceeff", thumbType: "tax", scheduledAt: "2026-04-28T05:30:00.000Z" },
-  { id: "5", title: "Global Macro Investing in 2026", host: "Vikram Nair", date: "May 2, 2026", time: "03:00 PM IST", status: "live", thumbBg: "#1a2a1a", thumbType: "markets", scheduledAt: "2026-05-02T09:30:00.000Z" },
+const STATIC_WEBINARS: Webinar[] = [
+  { id: "static-1", title: "Shubharambh – Make Your Financial Plan", host: "MoneyMati Team", date: "Mar 15, 2026", time: "05:00 PM IST", status: "completed", thumbBg: "#dbeeff", thumbType: "wealth", scheduledAt: "2026-03-15T11:30:00.000Z" },
+  { id: "static-2", title: "Nipuna – Equity Investing", host: "MoneyMati Team", date: "Mar 22, 2026", time: "05:00 PM IST", status: "completed", thumbBg: "#1e1e1e", thumbType: "markets", scheduledAt: "2026-03-22T11:30:00.000Z" },
+  { id: "static-3", title: "Nivritti – Retirement Planning", host: "MoneyMati Team", date: "Apr 5, 2026", time: "05:00 PM IST", status: "completed", thumbBg: "#111", thumbType: "reits", scheduledAt: "2026-04-05T11:30:00.000Z" },
 ];
 
 const formatDateIST = (iso: string) =>
@@ -59,7 +59,7 @@ const mapApiToWebinar = (w: ApiWebinar): Webinar => {
     id: w.id, title: w.title, host: w.host,
     date: formatDateIST(iso), time: formatTimeIST(iso),
     status: w.status.toLowerCase() as Status,
-    thumbType, thumbBg: "#dbeeff", scheduledAt: iso,
+    thumbType, thumbBg: "#dbeeff", scheduledAt: iso, link: w.link ?? "",
   };
 };
 
@@ -222,12 +222,12 @@ function EditWebinarPage({ webinar, onCancel, onSave }: { webinar: Webinar; onCa
     } catch {}
     return "";
   });
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState(webinar.link ?? "");
   const [dragOver, setDragOver] = useState(false);
 
   const handleSave = async () => {
     const iso = date && time ? new Date(`${date}T${time}`).toISOString() : webinar.scheduledAt || new Date().toISOString();
-    await onSave({ ...webinar, title, host, status, date: formatDateIST(iso), time: formatTimeIST(iso), scheduledAt: iso });
+    await onSave({ ...webinar, title, host, status, date: formatDateIST(iso), time: formatTimeIST(iso), scheduledAt: iso, link });
   };
 
   return (
@@ -337,7 +337,7 @@ function EditWebinarPage({ webinar, onCancel, onSave }: { webinar: Webinar; onCa
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function WebinarManager() {
-  const [webinars, setWebinars] = useState<Webinar[]>(WEBINARS);
+  const [webinars, setWebinars] = useState<Webinar[]>(STATIC_WEBINARS);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState<"all" | Status>("all");
   const [showModal, setShowModal] = useState(false);
@@ -381,11 +381,15 @@ export default function WebinarManager() {
       if (res.ok) {
         const data = await res.json();
         const items = (data.items ?? []) as ApiWebinar[];
-        if (items.length > 0) {
-          setWebinars(items.map(mapApiToWebinar));
-        } else {
-          setWebinars(WEBINARS);
-        }
+        const mappedApi = items.map(mapApiToWebinar);
+        // merge static with api, preferring api entries
+        const merged = [...mappedApi, ...STATIC_WEBINARS].reduce((acc: Webinar[], item) => {
+          const key = item.id || item.title;
+          if (!key) return acc;
+          if (!acc.find((x) => (x.id || x.title) === key)) acc.push(item);
+          return acc;
+        }, []);
+        setWebinars(merged);
         setLoadError(null);
       } else {
         const message = `Failed to load webinars (HTTP ${res.status})`;
@@ -394,7 +398,7 @@ export default function WebinarManager() {
       }
     } catch (error) {
       console.error("Failed to load webinars", error);
-      setWebinars(WEBINARS);
+      setWebinars(STATIC_WEBINARS);
       setLoadError(error instanceof Error ? error.message : "Unable to load webinars from the server.");
     }
   };
@@ -426,7 +430,7 @@ export default function WebinarManager() {
         body: JSON.stringify({
           title: updated.title, host: updated.host,
           status: updated.status.toUpperCase(),
-          scheduledAt: updated.scheduledAt, thumbType: updated.thumbType,
+          scheduledAt: updated.scheduledAt, thumbType: updated.thumbType, link: updated.link,
         }),
       });
       if (!res.ok) throw new Error("Update failed");
@@ -454,6 +458,7 @@ export default function WebinarManager() {
       scheduledAt: scheduledAt.toISOString(),
       status: newStatus === "draft" ? "UPCOMING" : newStatus.toUpperCase(),
       thumbType: thumbTypes[Math.floor(Math.random() * thumbTypes.length)],
+      link: newLink,
     };
     try {
       const res = await fetch("/api/admin/webinars", {

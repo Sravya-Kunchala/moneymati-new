@@ -210,6 +210,7 @@ exports.Prisma.WebinarScalarFieldEnum = {
   scheduledAt: 'scheduledAt',
   status: 'status',
   thumbType: 'thumbType',
+  link: 'link',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -225,6 +226,14 @@ exports.Prisma.EbookScalarFieldEnum = {
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubscriberScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -278,7 +287,8 @@ exports.Prisma.ModelName = {
   Verification: 'Verification',
   BlogPost: 'BlogPost',
   Webinar: 'Webinar',
-  Ebook: 'Ebook'
+  Ebook: 'Ebook',
+  Subscriber: 'Subscriber'
 };
 
 /**

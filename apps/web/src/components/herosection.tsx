@@ -52,7 +52,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
     return newErrors;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -60,8 +60,45 @@ function BookingModal({ onClose }: { onClose: () => void }) {
       return;
     }
     setErrors({});
-    setBookedDetails({ fullName, email, phone, datetime });
-    setShowSuccess(true);
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, phone, datetime }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const msg = data?.error || "Booking failed. Please try again.";
+        setErrors({ form: msg });
+        return;
+      }
+      const created = await res.json();
+      setBookedDetails(created);
+      setShowSuccess(true);
+
+      // Persist booking locally so it shows up in Profile > My Bookings
+      if (typeof window !== "undefined") {
+        const storageKey = "bookings";
+        const bookingRecord = {
+          id: created?.id ?? Date.now(),
+          title: "Financial Consultation",
+          datetime,
+          displayTime: formatDatetime(datetime),
+          status: "Scheduled",
+        };
+        try {
+          const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          const cleaned = Array.isArray(existing) ? existing.filter((b: any) => b && b.id !== bookingRecord.id) : [];
+          localStorage.setItem(storageKey, JSON.stringify([bookingRecord, ...cleaned]));
+          // notify other tabs/profile page
+          window.dispatchEvent(new StorageEvent("storage", { key: storageKey, newValue: JSON.stringify([bookingRecord, ...cleaned]) }));
+        } catch {
+          // ignore storage errors
+        }
+      }
+    } catch {
+      setErrors({ form: "Network error. Please retry." });
+    }
   }
 
   const inputStyle: React.CSSProperties = {
@@ -218,6 +255,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
+          {errors.form && <p style={{ ...errorStyle, paddingLeft: 0 }}>{errors.form}</p>}
           {/* Full Name */}
           <div>
             <label style={labelStyle}>Full Name</label>

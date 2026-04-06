@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import * as ReactDOM from "react-dom";
 import { Eye, EyeOff, CheckCircle2, Circle, ShieldCheck } from 'lucide-react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -411,7 +412,7 @@ export default function ProfilePage() {
   const { data: sessionData, isPending } = authClient.useSession();
   const sessionUser =
     (sessionData as any)?.user ?? (sessionData as any)?.data?.user ?? null;
-  const user = !isPending && sessionUser
+  const baseUser = !isPending && sessionUser
     ? {
         name: sessionUser.name || sessionUser.email || "User",
         email: sessionUser.email || "username@gmail.com",
@@ -419,10 +420,234 @@ export default function ProfilePage() {
         avatarSrc: sessionUser.image || sessionUser.avatar || "",
       }
     : { name: "User Name", email: "username@gmail.com", phone: "+91 98765 43210", avatarSrc: "" };
+
+  const [profile, setProfile] = useState(baseUser);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [rescheduleTarget, setRescheduleTarget] = useState<number | null>(null);
+  const [savedResources, setSavedResources] = useState<Array<{ id: number; title: string; file: string; filename: string; badge: string; badgeColor: string }>>([]);
+  const [bookings, setBookings] = useState<Array<{ id: number; title: string; displayTime: string; status: string; datetime?: string }>>([]);
 
   const memberSince = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
+  useEffect(() => {
+    setProfile((prev) => prev || baseUser);
+  }, [baseUser.name, baseUser.email, baseUser.phone, baseUser.avatarSrc]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const profileKey = "profileInfo";
+    const stored = localStorage.getItem(profileKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") setProfile(parsed);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storageKey = "savedResources";
+    const load = () => {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        if (Array.isArray(parsed)) setSavedResources(parsed);
+      } catch {
+        setSavedResources([]);
+      }
+    };
+    load();
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === storageKey) load();
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storageKey = "bookings";
+    const load = () => {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        if (Array.isArray(parsed)) setBookings(parsed);
+      } catch {
+        setBookings([]);
+      }
+    };
+    load();
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === storageKey) load();
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const handleResourceDownload = (file: string, filename?: string) => {
+    const link = document.createElement("a");
+    link.href = file;
+    link.download = filename || file.split("/").pop() || "resource";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const bookingsStorageKey = "bookings";
+
+  const saveBookings = (next: typeof bookings) => {
+    setBookings(next);
+    try {
+      localStorage.setItem(bookingsStorageKey, JSON.stringify(next));
+      window.dispatchEvent(new StorageEvent("storage", { key: bookingsStorageKey, newValue: JSON.stringify(next) }));
+    } catch {
+      // swallow
+    }
+  };
+
+  const saveProfile = (next: typeof profile) => {
+    setProfile(next);
+    try {
+      localStorage.setItem("profileInfo", JSON.stringify(next));
+      window.dispatchEvent(new StorageEvent("storage", { key: "profileInfo", newValue: JSON.stringify(next) }));
+    } catch {
+      // ignore storage errors
+    }
+  };
+
+  const handleCancelBooking = (id: number) => {
+    saveBookings(bookings.filter((b) => b.id !== id));
+  };
+
+  const formatDatetime = (value: string) => {
+    if (!value) return "";
+    const date = new Date(value);
+    return date.toLocaleString("en-IN", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const handleRescheduleBooking = (id: number) => {
+    setRescheduleTarget(id);
+    setShowRescheduleModal(true);
+  };
+
+  const EditProfileModal = ({ onClose }: { onClose: () => void }) => {
+    const [name, setName] = useState(profile.name);
+    const [email, setEmail] = useState(profile.email);
+    const [phone, setPhone] = useState(profile.phone);
+
+    useEffect(() => {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }, []);
+
+    const handleSave = () => {
+      const trimmed = { name: name.trim() || profile.name, email: email.trim() || profile.email, phone: phone.trim() || profile.phone, avatarSrc: profile.avatarSrc };
+      saveProfile(trimmed);
+      onClose();
+    };
+
+    if (typeof document === "undefined") return null;
+
+    return ReactDOM.createPortal(
+      <div style={{ position: "fixed", inset: 0, zIndex: 1200, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+        <style>{`
+          @keyframes slideUpProfile { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        `}</style>
+        <div style={{ width: "100%", maxWidth: 480, background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 24px 70px rgba(0,0,0,0.14)", animation: "slideUpProfile 0.22s ease both", fontFamily: "'Inter', sans-serif" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: "#111" }}>Edit Profile</h3>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#666" }}>×</button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#6b7280", marginBottom: 4 }}>Full Name</label>
+              <input value={name} onChange={(e) => setName(e.target.value)} style={{ width: "100%", borderRadius: 12, border: "1px solid #e5e7eb", padding: "12px 14px", fontSize: 14 }} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#6b7280", marginBottom: 4 }}>Email</label>
+              <input value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", borderRadius: 12, border: "1px solid #e5e7eb", padding: "12px 14px", fontSize: 14 }} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#6b7280", marginBottom: 4 }}>Phone</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: "100%", borderRadius: 12, border: "1px solid #e5e7eb", padding: "12px 14px", fontSize: 14 }} />
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18 }}>
+            <button onClick={onClose} style={{ background: "transparent", border: "none", color: "#6b7280", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+            <button onClick={handleSave} style={{ background: "#0EAF50", color: "#fff", border: "none", borderRadius: 12, padding: "10px 16px", fontWeight: 700, cursor: "pointer" }}>Save</button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
+  const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
+    const booking = bookings.find((b) => b.id === rescheduleTarget);
+    const [value, setValue] = useState(booking?.datetime || "");
+
+    useEffect(() => {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }, []);
+
+    const save = () => {
+      if (!value) return;
+      const updated = bookings.map((b) =>
+        b.id === rescheduleTarget
+          ? { ...b, datetime: value, displayTime: formatDatetime(value) || value, status: "Rescheduled" }
+          : b
+      );
+      saveBookings(updated);
+      setShowRescheduleModal(false);
+      setRescheduleTarget(null);
+    };
+
+    if (typeof document === "undefined") return null;
+    return ReactDOM.createPortal(
+      <div style={{ position: "fixed", inset: 0, zIndex: 1200, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+        <style>{`
+          @keyframes slideUpResched { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        `}</style>
+        <div style={{ width: "100%", maxWidth: 420, background: "#fff", borderRadius: 18, padding: 22, boxShadow: "0 24px 70px rgba(0,0,0,0.14)", animation: "slideUpResched 0.22s ease both", fontFamily: "'Inter', sans-serif" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: "#111" }}>Reschedule Booking</h3>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#666" }}>×</button>
+          </div>
+          <p style={{ marginTop: 0, marginBottom: 12, fontSize: 13, color: "#555" }}>
+            Pick a new date & time for <strong>{booking?.title || "your booking"}</strong>.
+          </p>
+          <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#6b7280", marginBottom: 6 }}>
+            Date & Time
+          </label>
+          <input
+            type="datetime-local"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            style={{ width: "100%", borderRadius: 12, border: "1px solid #e5e7eb", padding: "12px 14px", fontSize: 14 }}
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18 }}>
+            <button onClick={onClose} style={{ background: "transparent", border: "none", color: "#6b7280", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+            <button onClick={save} style={{ background: "#0EAF50", color: "#fff", border: "none", borderRadius: 12, padding: "10px 16px", fontWeight: 700, cursor: value ? "pointer" : "not-allowed", opacity: value ? 1 : 0.6 }} disabled={!value}>
+              Save
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
 
   return (
     <>
@@ -430,6 +655,8 @@ export default function ProfilePage() {
 
       {showNotifModal && <NotificationModal onClose={() => setShowNotifModal(false)} />}
       {showUpdateModal && <UpdateCredentialsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} />}
+      {showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
+      {showRescheduleModal && <RescheduleModal onClose={() => { setShowRescheduleModal(false); setRescheduleTarget(null); }} />}
 
       <div style={{ minHeight: "100vh", background: "#f0f5f0", fontFamily: "'Inter', sans-serif", padding: "40px 0 60px" }}>
         <style>{`
@@ -619,9 +846,9 @@ export default function ProfilePage() {
             <div className="profile-card-inner" style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <div style={{ width: 80, height: 80, borderRadius: "50%", border: "3px solid #c9a84c", overflow: "hidden", background: "#c9a84c", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {user.avatarSrc
-                    ? <img src={user.avatarSrc} alt={user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    : <span style={{ fontWeight: 800, fontSize: 28, color: "#1B3226" }}>{user.name.charAt(0).toUpperCase()}</span>
+                  {profile.avatarSrc
+                    ? <img src={profile.avatarSrc} alt={profile.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    : <span style={{ fontWeight: 800, fontSize: 28, color: "#1B3226" }}>{profile.name.charAt(0).toUpperCase()}</span>
                   }
                 </div>
                 <div style={{ position: "absolute", bottom: 2, right: 2, width: 20, height: 20, borderRadius: "50%", background: "#0EAF50", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -629,15 +856,15 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-                <h1 className="profile-name" style={{ fontWeight: 800, fontSize: 28, color: "#102218", letterSpacing: "-0.75px", lineHeight: "34px", margin: 0 }}>{user.name}</h1>
+                <h1 className="profile-name" style={{ fontWeight: 800, fontSize: 28, color: "#102218", letterSpacing: "-0.75px", lineHeight: "34px", margin: 0 }}>{profile.name}</h1>
                 <p style={{ margin: "0 0 6px", fontSize: 13, color: "#888" }}>Member since {memberSince}</p>
                 <div className="profile-meta-row" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  <span style={{ fontSize: 13, color: "#555" }}>{user.email}</span>
+                  <span style={{ fontSize: 13, color: "#555" }}>{profile.email}</span>
                 </div>
                 <div className="profile-meta-row" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span style={{ fontSize: 13, color: "#555" }}>{user.phone}</span>
+                  <span style={{ fontSize: 13, color: "#555" }}>{profile.phone}</span>
                 </div>
               </div>
               <button
@@ -645,6 +872,7 @@ export default function ProfilePage() {
                 style={{ background: "#FFDBCF", border: "1px solid rgba(255,160,127,0.30)", borderRadius: 9999, padding: "10px 24px", fontSize: 13, fontWeight: 600, color: "#c0522a", cursor: "pointer", fontFamily: "'Inter', sans-serif", transition: "background 0.2s", height: 42, flexShrink: 0, alignSelf: "flex-start" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#ffc9b0")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "#FFDBCF")}
+                onClick={() => setShowEditModal(true)}
               >
                 Edit Profile
               </button>
@@ -695,74 +923,74 @@ export default function ProfilePage() {
             <div className="section-header">
               <span className="section-title">My Bookings</span>
             </div>
-            <div className="booking-card">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "#fff0eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.31254 20.3886V3.31254C3.31254 3.31254 3.31254 3.76431 3.31254 4.66784C3.31254 5.57137 3.31254 6.72739 3.31254 8.1359V15.6006C3.31254 17.0091 3.31254 18.1592 3.31254 19.051C3.31254 19.9427 3.31254 20.3886 3.31254 20.3886ZM3.31254 23.7011C2.38952 23.7011 1.60668 23.3798 0.964006 22.7371C0.321335 22.0945 0 21.3116 0 20.3886V3.31254C0 2.38952 0.321335 1.60668 0.964006 0.964006C1.60668 0.321335 2.38952 0 3.31254 0H20.3886C21.3116 0 22.0945 0.321335 22.7371 0.964006C23.3798 1.60668 23.7011 2.38952 23.7011 3.31254V6.22557H20.3886V3.31254H3.31254V20.3886H20.3886V17.4756H23.7011V20.3886C23.7011 21.3116 23.3798 22.0945 22.7371 22.7371C22.0945 23.3798 21.3116 23.7011 20.3886 23.7011H3.31254ZM13.1359 18.1006C12.4387 18.1006 11.8418 17.8587 11.3453 17.375C10.8488 16.8913 10.6006 16.2999 10.6006 15.6006V8.1359C10.6006 7.43869 10.8488 6.84183 11.3453 6.34533C11.8418 5.84883 12.4387 5.60057 13.1359 5.60057H22.4335C23.1328 5.60057 23.7272 5.84883 24.2168 6.34533C24.7064 6.84183 24.9511 7.43869 24.9511 8.1359V15.6094C24.9511 16.2945 24.7064 16.8809 24.2168 17.3688C23.7272 17.8566 23.1328 18.1006 22.4335 18.1006H13.1359ZM22.4688 15.6006V8.10057H13.1006V15.6006H22.4688ZM16.8506 13.7256C17.3714 13.7256 17.8141 13.5433 18.1787 13.1787C18.5433 12.8141 18.7256 12.3714 18.7256 11.8506C18.7256 11.3297 18.5433 10.887 18.1787 10.5224C17.8141 10.1579 17.3714 9.97557 16.8506 9.97557C16.3297 9.97557 15.887 10.1579 15.5224 10.5224C15.1579 10.887 14.9756 11.3297 14.9756 11.8506C14.9756 12.3714 15.1579 12.8141 15.5224 13.1787C15.887 13.5433 16.3297 13.7256 16.8506 13.7256Z" fill="#93492F"/></svg>
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ fontWeight: 700, fontSize: 15, color: "#111", margin: "0 0 5px" }}>Financial Consultation</h3>
-                <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2">
-                      <rect x="3" y="4" width="18" height="18" rx="2"/>
-                      <line x1="16" y1="2" x2="16" y2="6"/>
-                      <line x1="8" y1="2" x2="8" y2="6"/>
-                      <line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                    <span style={{ fontSize: 12, color: "#888" }}>March 20, 10:00 AM</span>
+            {bookings.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#666", margin: 0 }}>
+                No bookings yet. Tap “Book a Free Appointment” on the home hero to schedule.
+              </p>
+            ) : (
+              bookings.map((booking) => (
+                <div key={booking.id} className="booking-card">
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: "#fff0eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.31254 20.3886V3.31254C3.31254 3.31254 3.31254 3.76431 3.31254 4.66784C3.31254 5.57137 3.31254 6.72739 3.31254 8.1359V15.6006C3.31254 17.0091 3.31254 18.1592 3.31254 19.051C3.31254 19.9427 3.31254 20.3886 3.31254 20.3886ZM3.31254 23.7011C2.38952 23.7011 1.60668 23.3798 0.964006 22.7371C0.321335 22.0945 0 21.3116 0 20.3886V3.31254C0 2.38952 0.321335 1.60668 0.964006 0.964006C1.60668 0.321335 2.38952 0 3.31254 0H20.3886C21.3116 0 22.0945 0.321335 22.7371 0.964006C23.3798 1.60668 23.7011 2.38952 23.7011 3.31254V6.22557H20.3886V3.31254H3.31254V20.3886H20.3886V17.4756H23.7011V20.3886C23.7011 21.3116 23.3798 22.0945 22.7371 22.7371C22.0945 23.3798 21.3116 23.7011 20.3886 23.7011H3.31254ZM13.1359 18.1006C12.4387 18.1006 11.8418 17.8587 11.3453 17.375C10.8488 16.8913 10.6006 16.2999 10.6006 15.6006V8.1359C10.6006 7.43869 10.8488 6.84183 11.3453 6.34533C11.8418 5.84883 12.4387 5.60057 13.1359 5.60057H22.4335C23.1328 5.60057 23.7272 5.84883 24.2168 6.34533C24.7064 6.84183 24.9511 7.43869 24.9511 8.1359V15.6094C24.9511 16.2945 24.7064 16.8809 24.2168 17.3688C23.7272 17.8566 23.1328 18.1006 22.4335 18.1006H13.1359ZM22.4688 15.6006V8.10057H13.1006V15.6006H22.4688ZM16.8506 13.7256C17.3714 13.7256 17.8141 13.5433 18.1787 13.1787C18.5433 12.8141 18.7256 12.3714 18.7256 11.8506C18.7256 11.3297 18.5433 10.887 18.1787 10.5224C17.8141 10.1579 17.3714 9.97557 16.8506 9.97557C16.3297 9.97557 15.887 10.1579 15.5224 10.5224C15.1579 10.887 14.9756 11.3297 14.9756 11.8506C14.9756 12.3714 15.1579 12.8141 15.5224 13.1787C15.887 13.5433 16.3297 13.7256 16.8506 13.7256Z" fill="#93492F"/></svg>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span style={{ fontSize: 12, color: "#0EAF50", fontWeight: 600 }}>Status: Scheduled</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{ fontWeight: 700, fontSize: 15, color: "#111", margin: "0 0 5px" }}>{booking.title}</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        <span style={{ fontSize: 12, color: "#888" }}>{booking.displayTime || "Scheduled"}</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2.5">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        <span style={{ fontSize: 12, color: "#0EAF50", fontWeight: 600 }}>Status: {booking.status || "Scheduled"}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="booking-actions" style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <button className="cancel-btn" onClick={() => handleCancelBooking(booking.id)}>Cancel</button>
+                    <button className="reschedule-btn" onClick={() => handleRescheduleBooking(booking.id)}>Reschedule</button>
                   </div>
                 </div>
-              </div>
-              <div className="booking-actions" style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                <button className="cancel-btn">Cancel</button>
-                <button className="reschedule-btn">Reschedule</button>
-              </div>
-            </div>
+              ))
+            )}
           </div>
 
           {/* Saved Resources */}
-          <div className="anim-4" style={{ marginTop: 28 }}>
+          <div className="anim-4" id="saved-resources" style={{ marginTop: 28 }}>
             <div className="section-header">
               <span className="section-title">Saved Resources</span>
             </div>
             <div className="resource-grid">
-              <div className="resource-card">
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: "#e8f7ef", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.4381 6.33807V4.63807C13.9881 4.40473 14.5506 4.22973 15.1256 4.11307C15.7006 3.9964 16.3047 3.93807 16.9381 3.93807C17.3714 3.93807 17.7964 3.9714 18.2131 4.03807C18.6297 4.10473 19.0381 4.18807 19.4381 4.28807V5.88807C19.0381 5.73807 18.6339 5.62557 18.2256 5.55057C17.8172 5.47557 17.3881 5.43807 16.9381 5.43807C16.3047 5.43807 15.6964 5.51723 15.1131 5.67557C14.5297 5.8339 13.9714 6.05473 13.4381 6.33807ZM13.4381 11.8381V10.1381C13.9881 9.90473 14.5506 9.72973 15.1256 9.61307C15.7006 9.4964 16.3047 9.43807 16.9381 9.43807C17.3714 9.43807 17.7964 9.4714 18.2131 9.53807C18.6297 9.60473 19.0381 9.68807 19.4381 9.78807V11.3881C19.0381 11.2381 18.6339 11.1256 18.2256 11.0506C17.8172 10.9756 17.3881 10.9381 16.9381 10.9381C16.3047 10.9381 15.6964 11.0131 15.1131 11.1631C14.5297 11.3131 13.9714 11.5381 13.4381 11.8381ZM13.4381 9.08807V7.38807C13.9881 7.15473 14.5506 6.97973 15.1256 6.86307C15.7006 6.7464 16.3047 6.68807 16.9381 6.68807C17.3714 6.68807 17.7964 6.7214 18.2131 6.78807C18.6297 6.85473 19.0381 6.93807 19.4381 7.03807V8.63807C19.0381 8.48807 18.6339 8.37557 18.2256 8.30057C17.8172 8.22557 17.3881 8.18807 16.9381 8.18807C16.3047 8.18807 15.6964 8.26723 15.1131 8.42557C14.5297 8.5839 13.9714 8.80473 13.4381 9.08807ZM5.93807 12.4381C6.7214 12.4381 7.4839 12.5256 8.22557 12.7006C8.96723 12.8756 9.70473 13.1381 10.4381 13.4881V3.63807C9.75473 3.23807 9.02973 2.93807 8.26307 2.73807C7.4964 2.53807 6.7214 2.43807 5.93807 2.43807C5.33807 2.43807 4.74223 2.4964 4.15057 2.61307C3.5589 2.72973 2.98807 2.90473 2.43807 3.13807V13.0381C3.0214 12.8381 3.60057 12.6881 4.17557 12.5881C4.75057 12.4881 5.33807 12.4381 5.93807 12.4381ZM12.4381 13.4881C13.1714 13.1381 13.9089 12.8756 14.6506 12.7006C15.3922 12.5256 16.1547 12.4381 16.9381 12.4381C17.5381 12.4381 18.1256 12.4881 18.7006 12.5881C19.2756 12.6881 19.8547 12.8381 20.4381 13.0381V3.13807C19.8881 2.90473 19.3172 2.72973 18.7256 2.61307C18.1339 2.4964 17.5381 2.43807 16.9381 2.43807C16.1547 2.43807 15.3797 2.53807 14.6131 2.73807C13.8464 2.93807 13.1214 3.23807 12.4381 3.63807V13.4881ZM11.4805 16.9609C10.671 16.337 9.79966 15.8312 8.86633 15.4435C7.93299 15.0558 6.95691 14.862 5.93807 14.862C5.27023 14.862 4.61433 14.956 3.97035 15.1441C3.32637 15.3321 2.70547 15.5834 2.10764 15.8979C1.62575 16.1471 1.154 16.1357 0.692402 15.8635C0.230801 15.5914 0 15.1945 0 14.6729V2.63698C0 2.32176 0.0717405 2.02806 0.215221 1.75588C0.358702 1.4837 0.573924 1.27957 0.860886 1.14348C1.64639 0.752896 2.46053 0.464672 3.30328 0.278802C4.14603 0.0929342 5.00965 0 5.89413 0C6.88067 0 7.84115 0.125 8.77557 0.375C9.70999 0.625 10.5975 1.01413 11.4381 1.54239C12.2881 1.02355 13.1779 0.636776 14.1076 0.382065C15.0373 0.127355 15.9955 0 16.982 0C17.8665 0 18.7301 0.0929342 19.5729 0.278802C20.4156 0.464672 21.2297 0.752896 22.0152 1.14348C22.3022 1.27957 22.5174 1.4837 22.6609 1.75588C22.8044 2.02806 22.8761 2.32176 22.8761 2.63698V14.8848C22.8761 15.3718 22.6477 15.727 22.1908 15.9506C21.7339 16.1741 21.2598 16.1566 20.7685 15.8979C20.1707 15.5834 19.5498 15.3321 18.9058 15.1441C18.2618 14.956 17.6059 14.862 16.9381 14.862C15.9381 14.862 14.9785 15.0582 14.0593 15.4506C13.1401 15.843 12.2805 16.3464 11.4805 16.9609Z" fill="#005321"/></svg>
+              {savedResources.length === 0 ? (
+                <p style={{ gridColumn: "1 / -1", fontSize: 13, color: "#666", margin: 0 }}>
+                  Nothing saved yet. Tap the heart on an ebook to add it here.
+                </p>
+              ) : (
+                savedResources.map((res) => (
+                  <div key={res.id} className="resource-card">
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: "#e8f7ef", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0EAF50" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                      <div>
+                        <p style={{ fontSize: 10, fontWeight: 700, color: res.badgeColor || "#0EAF50", letterSpacing: "0.8px", textTransform: "uppercase", margin: "0 0 2px" }}>{res.badge || "Resource"}</p>
+                        <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", margin: 0 }}>{res.title}</h4>
+                      </div>
+                    </div>
+                    <div className="resource-btn-row" style={{ display: "flex", gap: 8 }}>
+                      <button className="download-btn" onClick={() => handleResourceDownload(res.file, res.filename)}>Download</button>
+                      <button className="view-btn" onClick={() => window.open(res.file, "_blank")}>View</button>
+                    </div>
                   </div>
-                  <div>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "#0EAF50", letterSpacing: "0.8px", textTransform: "uppercase", margin: "0 0 2px" }}>E-Book</p>
-                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", margin: 0 }}>Start Early, Be Wealthy!</h4>
-                  </div>
-                </div>
-                <div className="resource-btn-row" style={{ display: "flex", gap: 8 }}>
-                  <button className="download-btn">Download</button>
-                  <button className="view-btn">View</button>
-                </div>
-              </div>
-
-              <div className="resource-card">
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: "#fff0eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.56525 14.3957H11.5652V12.3957H4.56525V14.3957ZM4.56525 10.4805H14.3957V8.48046H4.56525V10.4805ZM4.56525 6.56525H14.3957V4.56525H4.56525V6.56525ZM2.65003 18.9609C1.91162 18.9609 1.28534 18.7039 0.771205 18.1897C0.257068 17.6756 0 17.0493 0 16.3109V2.65003C0 1.91162 0.257068 1.28534 0.771205 0.771205C1.28534 0.257068 1.91162 0 2.65003 0H16.3109C17.0493 0 17.6756 0.257068 18.1897 0.771205C18.7039 1.28534 18.9609 1.91162 18.9609 2.65003V16.3109C18.9609 17.0493 18.7039 17.6756 18.1897 18.1897C17.6756 18.7039 17.0493 18.9609 16.3109 18.9609H2.65003ZM2.65003 16.3109H16.3109V2.65003H2.65003V16.3109ZM2.65003 2.65003V16.3109V2.65003Z" fill="#76331A"/></svg>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "#e8714a", letterSpacing: "0.8px", textTransform: "uppercase", margin: "0 0 2px" }}>Blog</p>
-                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", margin: 0 }}>NPS Game Changer</h4>
-                  </div>
-                </div>
-                <div className="resource-btn-row" style={{ display: "flex", gap: 8 }}>
-                  <button className="download-btn">Download</button>
-                  <button className="view-btn">View</button>
-                </div>
-              </div>
+                ))
+              )}
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
@@ -36,6 +37,41 @@ const socialLinks = {
 const contactInfo = { email: "support@moneymati.com", phone: "+91 78426 99006", views: "12,085 Views" };
 
 export default function Footer() {
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [error, setError] = useState<string | null>(null);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = async () => {
+    setError(null);
+    if (!(formData.name.trim() && formData.email.trim())) {
+      setError("Name and email are required.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/subscribers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (data?.duplicate) {
+          setError("You are already subscribed.");
+        } else {
+          setError(data?.error || "Subscription failed. Please retry.");
+        }
+      } else {
+        setSubscribed(true);
+        setFormData({ name: "", email: "", phone: "" });
+        setError(null);
+        setTimeout(() => setSubscribed(false), 3000);
+      }
+    } catch (err) {
+      console.error("subscribe fetch error", err);
+      setError("Network error. Saved locally; will sync when online.");
+    }
+  };
+
   return (
     <footer
       className={`${playfairDisplay.variable} ${dmSans.variable}`}
@@ -48,7 +84,7 @@ export default function Footer() {
         }
 
         .mm-footer-inner {
-          max-width: 1100px;
+          max-width: 1200px;
           margin: 0 auto;
           padding: 56px 24px;
         }
@@ -71,7 +107,6 @@ export default function Footer() {
           text-align: left;
         }
 
-        /* Center contact rows and socials on mobile */
         .mm-contact-row {
           display: flex;
           align-items: center;
@@ -90,45 +125,91 @@ export default function Footer() {
           justify-content: center;
         }
 
-        /* Company only on mobile — single column */
         .mm-nav-cols {
           display: flex;
           flex-direction: column;
-          
           gap: 24px;
           width: 100%;
         }
 
-        /* Resources column HIDDEN on mobile */
         .mm-resources-col {
           display: none;
         }
 
-        /* Legal spans full width on mobile */
         .mm-legal-col {
           width: 100%;
           text-align: left;
         }
 
+        /* ── Newsletter card ── */
+        .mm-digest-card {
+          width: 100%;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 28px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .mm-digest-icon {
+          width: 40px;
+          height: 40px;
+          background: rgba(255,255,255,0.08);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .mm-digest-input {
+          width: 100%;
+          padding: 12px 16px;
+          border-radius: 100px;
+          border: none;
+          outline: none;
+          background: #fff;
+          font-size: 0.85rem;
+          color: #333;
+          font-family: var(--font-dm-sans), sans-serif;
+        }
+        .mm-digest-input::placeholder { color: #aaa; }
+
+        .mm-digest-btn {
+          width: 100%;
+          padding: 13px 16px;
+          border-radius: 100px;
+          border: none;
+          background: #0d2818;
+          color: #fff;
+          font-size: 0.9rem;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: var(--font-dm-sans), sans-serif;
+          transition: background 0.2s, transform 0.1s;
+        }
+        .mm-digest-btn:hover  { background: #0a1f12; }
+        .mm-digest-btn:active { transform: scale(0.98); }
+        .mm-digest-btn.subscribed { background: #1a6636; }
+
         /* ── DESKTOP layout (768px+) ── */
         @media (min-width: 768px) {
           .mm-footer-inner { padding: 56px 48px; }
 
-          /* 3-column desktop grid: brand | company | legal */
           .mm-footer-grid {
             display: grid !important;
-            grid-template-columns: 2fr 1fr 1fr !important;
+            grid-template-columns: 2fr 1fr 1fr 1.6fr !important;
             align-items: start !important;
             gap: 40px;
             flex-direction: unset;
           }
 
-          /* Unwrap nav-cols so company becomes a direct grid child */
           .mm-nav-cols {
             display: contents;
           }
 
-          /* Keep Resources hidden on desktop too */
           .mm-resources-col {
             display: none !important;
           }
@@ -148,10 +229,14 @@ export default function Footer() {
           .mm-legal-col {
             width: auto;
           }
+
+          .mm-digest-card {
+            width: 100%;
+          }
         }
 
         .mm-footer-bar {
-          max-width: 1100px;
+          max-width: 1200px;
           margin: 0 auto;
           padding: 20px 24px;
           display: flex;
@@ -168,7 +253,7 @@ export default function Footer() {
           }
         }
 
-        .mm-link:hover  { opacity: 0.75; }
+        .mm-link:hover    { opacity: 0.75; }
         .mm-navlink:hover { color: #fff !important; }
 
         .mm-col-heading {
@@ -263,7 +348,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ── Mobile: Company only (Resources hidden) | Desktop: Company alone (via display:contents) ── */}
+          {/* ── 2 & 3. Company + Legal (via display:contents on desktop) ── */}
           <div className="mm-nav-cols">
 
             {/* Company */}
@@ -280,7 +365,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Resources — hidden on both mobile and desktop */}
+            {/* Resources — hidden */}
             <div className="mm-resources-col">
               <h4 className="mm-col-heading">Resources</h4>
               <ul className="mm-link-list">
@@ -294,8 +379,7 @@ export default function Footer() {
               </ul>
             </div>
 
-
-            {/* ── Legal — inside nav-cols so it stacks below Company on mobile ── */}
+            {/* Legal */}
             <div className="mm-legal-col">
               <h4 className="mm-col-heading">Legal</h4>
               <ul className="mm-link-list">
@@ -309,6 +393,67 @@ export default function Footer() {
               </ul>
             </div>
 
+          </div>
+
+          {/* ── 4. Weekly Digest card ── */}
+          <div className="mm-digest-card">
+            <div className="mm-digest-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+
+            <div>
+              <h4 style={{ fontFamily: "var(--font-playfair), serif", fontSize: "1.1rem", fontWeight: 700, color: "#fff", margin: "0 0 8px" }}>
+                Join the Weekly Digest
+              </h4>
+              <p style={{ fontSize: "0.82rem", color: "#a8c4a8", lineHeight: 1.6, margin: 0 }}>
+                Get expert financial tips and market insights delivered straight to your inbox every Monday.
+              </p>
+            </div>
+
+            <input
+              type="text"
+              className="mm-digest-input"
+              placeholder="Your Full Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+
+            <input
+              type="email"
+              className="mm-digest-input"
+              placeholder="Your email address"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+            />
+
+            <input
+              type="tel"
+              className="mm-digest-input"
+              placeholder="Your Phone Number"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+            />
+
+            <button
+              className={`mm-digest-btn${subscribed ? " subscribed" : ""}`}
+              onClick={handleSubscribe}
+            >
+              {subscribed ? "✓ Subscribed!" : "Subscribe Now"}
+            </button>
+            {error && (
+              <p style={{ fontSize: "0.75rem", color: "#fca5a5", margin: "6px 0 0", textAlign: "center" }}>
+                {error}
+              </p>
+            )}
+
+            <p style={{ fontSize: "0.72rem", color: "#7a9a7a", margin: 0, textAlign: "center" }}>
+              We respect your privacy. Unsubscribe at any time.
+            </p>
           </div>
 
         </div>

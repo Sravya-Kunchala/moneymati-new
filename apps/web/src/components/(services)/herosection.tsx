@@ -1,3 +1,6 @@
+// Enable client-side interactivity for buttons/scroll behavior
+"use client";
+
 import { Playfair_Display, Dancing_Script, Inter } from "next/font/google";
 import Image from "next/image";
 
@@ -240,9 +243,14 @@ export default function HeroSection() {
 
           {/* Buttons */}
           <div className="hero-buttons">
-            <button className={`${inter.className} btn-primary`}>
-              Browse Upcoming Webinars →
-            </button>
+            <button
+  className={`${inter.className} btn-primary`}
+  onClick={() => {
+    document.getElementById("featured-webinars")?.scrollIntoView({ behavior: "smooth" });
+  }}
+>
+  Browse Upcoming Webinars →
+</button>
             <button className={`${inter.className} btn-secondary`}>
               Register for Next Session
             </button>

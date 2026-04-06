@@ -122,6 +122,7 @@ model Webinar {
   scheduledAt DateTime
   status      WebinarStatus @default(UPCOMING)
   thumbType   String?
+  link        String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -137,4 +138,12 @@ model Ebook {
   status      String   @default("Published")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now())
 }

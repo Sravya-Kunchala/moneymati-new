@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Inter } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PersonalizeModal from "@/components/confrimation";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
@@ -17,6 +18,7 @@ export default function RetirementCalculatorPage() {
   const [pfAccumulated, setPfAccumulated] = useState("12");
   const [monthlyPfContribution, setMonthlyPfContribution] = useState("12");
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const _monthlyExpenditure = parseFloat(monthlyExpenditure) || 0;
   const _yearsToRetirement = parseFloat(yearsToRetirement) || 0;
@@ -342,7 +344,15 @@ export default function RetirementCalculatorPage() {
               </div>
             </div>
 
-            <button className="submit-btn" onClick={() => setSubmitted(true)}>Submit</button>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                setSubmitted(true);
+                setShowConfirm(true);
+              }}
+            >
+              Submit
+            </button>
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
@@ -482,6 +492,7 @@ export default function RetirementCalculatorPage() {
 
       </div>
       <Footer />
+      {showConfirm && <PersonalizeModal onClose={() => setShowConfirm(false)} />}
     </div>
   );
 }

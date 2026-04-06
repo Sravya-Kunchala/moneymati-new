@@ -9,6 +9,52 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["800"], variabl
 const dancing = Dancing_Script({ subsets: ["latin"], weight: ["700"], variable: "--font-dancing" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
+// ── Real social links (same as footer) ──────────────────────────────────────
+const socialLinks = [
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/company/moneymati/",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="4" fill="#0d2818"/>
+        <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" fill="white"/>
+        <path d="M6 9H2V21H6V9Z" fill="white"/>
+        <circle cx="4" cy="4" r="2" fill="white"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/moneymati2022/",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="1" y="1" width="22" height="22" rx="6" stroke="#0d2818" strokeWidth="2"/>
+        <circle cx="12" cy="12" r="4" stroke="#0d2818" strokeWidth="2"/>
+        <circle cx="17.5" cy="6.5" r="1.5" fill="#0d2818"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/MoneymatiOfficial/",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="11" fill="#0d2818"/>
+        <path d="M15.5 8H13C12.4477 8 12 8.44772 12 9V11H15.5L15 14H12V22H9V14H7V11H9V9C9 7.34315 10.3431 6 12 6H15.5V8Z" fill="white"/>
+      </svg>
+    ),
+  },
+  {
+    name: "X (Twitter)",
+    href: "https://x.com/imoneymati",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="#0d2818"/>
+      </svg>
+    ),
+  },
+];
+
 export default function ContactSection() {
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", subject: "", message: "",
@@ -76,6 +122,22 @@ export default function ContactSection() {
         .anim-right-card   { animation: slideInRight 0.7s ease 0.5s both; }
         .anim-footer       { animation: fadeIn      0.6s ease 0.6s both; }
         .anim-popup        { animation: popIn       0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+        .contact-social-link {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          text-decoration: none;
+          transition: transform 0.18s ease, opacity 0.18s ease;
+          cursor: pointer;
+        }
+        .contact-social-link:hover {
+          transform: scale(1.12);
+          opacity: 0.8;
+        }
 
         @media (max-width: 768px) {
           .contact-section {
@@ -191,21 +253,22 @@ export default function ContactSection() {
                 </div>
               ))}
 
+              {/* ── Connect With Us – real linked icons ── */}
               <div style={{ marginTop: 32 }}>
                 <p style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600, fontSize: 10, letterSpacing: "0.8px", textTransform: "uppercase", color: "rgba(6,78,59,0.5)", margin: "0 0 12px" }}>Connect With Us</p>
                 <div style={{ display: "flex", gap: 12 }}>
-                  <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#0d2818"/><path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" fill="white"/><path d="M6 9H2V21H6V9Z" fill="white"/><circle cx="4" cy="4" r="2" fill="white"/></svg>
-                  </div>
-                  <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" rx="6" stroke="#0d2818" strokeWidth="2"/><circle cx="12" cy="12" r="4" stroke="#0d2818" strokeWidth="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="#0d2818"/></svg>
-                  </div>
-                  <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#0d2818"/><path d="M15.5 8H13C12.4477 8 12 8.44772 12 9V11H15.5L15 14H12V22H9V14H7V11H9V9C9 7.34315 10.3431 6 12 6H15.5V8Z" fill="white"/></svg>
-                  </div>
-                  <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="#0d2818"/></svg>
-                  </div>
+                  {socialLinks.map((s) => (
+                    <a
+                      key={s.name}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={s.name}
+                      className="contact-social-link"
+                    >
+                      {s.icon}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
@@ -294,19 +357,11 @@ export default function ContactSection() {
                 boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
               }}
             >
-              <h2 style={{
-                fontFamily: "var(--font-inter), sans-serif", fontWeight: 700,
-                fontSize: 22, lineHeight: "30px", color: "#0F172A",
-                marginBottom: 12, letterSpacing: 0,
-              }}>
+              <h2 style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: 22, lineHeight: "30px", color: "#0F172A", marginBottom: 12, letterSpacing: 0 }}>
                 Confirmation: Your Consultation is Booked!
               </h2>
 
-              <p style={{
-                fontFamily: "var(--font-inter), sans-serif", fontWeight: 400,
-                fontSize: 14, lineHeight: "22px", color: "#0F172A",
-                marginBottom: 24, letterSpacing: 0,
-              }}>
+              <p style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 400, fontSize: 14, lineHeight: "22px", color: "#0F172A", marginBottom: 24, letterSpacing: 0 }}>
                 Hi{" "}
                 <span style={{ fontWeight: 600, fontSize: 14 }}>
                   {form.firstName} {form.lastName}
@@ -323,19 +378,15 @@ export default function ContactSection() {
                     </svg>
                   </div>
                   <div>
-                    <p style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", color: "rgba(6,78,59,0.5)", margin: 0 }}>
-                      CONSULTATION DETAILS
-                    </p>
-                    <p style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600, fontSize: 16, lineHeight: "24px", color: "#0F172A", margin: 0 }}>
-                      Your expert guidance is ready
-                    </p>
+                    <p style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", color: "rgba(6,78,59,0.5)", margin: 0 }}>CONSULTATION DETAILS</p>
+                    <p style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600, fontSize: 16, lineHeight: "24px", color: "#0F172A", margin: 0 }}>Your expert guidance is ready</p>
                   </div>
                 </div>
 
                 {[
                   { label: "Expert", value: "Swathi Sharma ✅" },
-                  { label: "Date", value: "March 10, 2026" },
-                  { label: "Time", value: "10:00 AM (PST)" },
+                  { label: "Date",   value: "March 10, 2026" },
+                  { label: "Time",   value: "10:00 AM (PST)" },
                 ].map((item) => (
                   <div key={item.label} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderTop: "1px solid #f0f0f0" }}>
                     <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: 13, color: "#888" }}>{item.label}</span>

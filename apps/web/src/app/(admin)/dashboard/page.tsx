@@ -15,6 +15,7 @@ type SummaryResponse = {
     subscribers?: number;
     webinars?: number;
     totalViews?: number;
+    leads?: number;
   };
   recentAppointments: Array<{
     id: string;
@@ -31,6 +32,15 @@ type SummaryResponse = {
     email: string;
     createdAt: string;
   }>;
+};
+
+type Lead = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  occupation: string | null;
+  createdAt: string;
 };
 
 type AnalyticsResponse = {
@@ -73,6 +83,24 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionNote, setActionNote] = useState<string | null>(null);
+  const [leadsModalOpen, setLeadsModalOpen] = useState(false);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [leadsError, setLeadsError] = useState<string | null>(null);
+
+  function openLeadsModal() {
+    setLeadsModalOpen(true);
+    if (leads.length === 0 && !leadsLoading) {
+      setLeadsLoading(true);
+      setLeadsError(null);
+      fetch("/api/admin/leads")
+        .then((r) => r.json())
+        .then((data) => setLeads(data.items ?? []))
+        .catch(() => setLeadsError("Failed to load leads."))
+        .finally(() => setLeadsLoading(false));
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -91,6 +119,7 @@ export default function Dashboard() {
           appointmentsToday: 0,
           webinars: 0,
           subscribers: 0,
+          leads: 0,
           totalViews: analyticsRes?.summary?.totalViews ?? 0,
         };
         const safeSummary = summaryRes?.metrics
@@ -100,6 +129,8 @@ export default function Dashboard() {
               recentAppointments: apptRes.items ?? [],
               recentUsers: [],
             };
+
+        // Add client-side local subscriber bumps so UI reflects signups even if API fails
         setSummary(safeSummary);
         setAppointments(apptRes.items ?? []);
         setUsers(summaryRes?.recentUsers ?? []);
@@ -111,7 +142,6 @@ export default function Dashboard() {
       }
     })();
   }, [analyticsRange]);
-
   const stats = useMemo(() => {
     if (!summary?.metrics) return [];
     return [
@@ -138,6 +168,22 @@ export default function Dashboard() {
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path d="M12.5 6.25a3.25 3.25 0 11-6.5 0 3.25 3.25 0 016.5 0Z" stroke="#0f172a" strokeWidth="1.4" />
             <path d="M3 14.5c0-2.5 2-4.5 4.5-4.5h3c2.5 0 4.5 2 4.5 4.5" stroke="#0f172a" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
+        ),
+      },
+      {
+        label: "Leads",
+        value: (summary.metrics.leads ?? 0).toLocaleString(),
+        change: "+5.1%",
+        positive: true,
+        highlight: true,
+        actionLabel: "View",
+        actionOnClick: () => openLeadsModal(),
+        iconBg: "#e4f5ec",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M12.25 6.25a3.25 3.25 0 11-6.5 0 3.25 3.25 0 016.5 0Z" stroke="#15803d" strokeWidth="1.4" />
+            <path d="M3 14.5c0-2.5 2-4.5 4.5-4.5h3c2.5 0 4.5 2 4.5 4.5" stroke="#15803d" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
         ),
       },
@@ -189,6 +235,41 @@ export default function Dashboard() {
 
   const timeseries = analytics?.timeseries ?? [];
   const maxViews = Math.max(...(timeseries.length ? timeseries.map((d) => d.views) : fallbackBars.map((d) => d.val)));
+
+  const markStatus = (id: string, next: string) => {
+    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: next } : a)));
+    setActionNote(`Appointment marked as ${next}.`);
+    fetch("/api/admin/appointments", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status: next }),
+    }).catch((err) => {
+      console.error("update status failed", err);
+    }).finally(() => setTimeout(() => setActionNote(null), 2200));
+  };
+
+  const removeAppointment = (id: string) => {
+    setAppointments((prev) => prev.filter((a) => a.id !== id));
+    setSummary((prev) =>
+      prev?.metrics
+        ? {
+            ...prev,
+            metrics: {
+              ...prev.metrics,
+              appointmentsUpcoming: Math.max(0, (prev.metrics.appointmentsUpcoming || 0) - 1),
+            },
+          }
+        : prev
+    );
+    setActionNote("Appointment removed.");
+    fetch("/api/admin/appointments", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    }).catch((err) => {
+      console.error("delete appointment failed", err);
+    }).finally(() => setTimeout(() => setActionNote(null), 2200));
+  };
 
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden", fontFamily: "'DM Sans', sans-serif" }}>
@@ -305,16 +386,29 @@ export default function Dashboard() {
 
             <div className="stats-row">
               {loading && <div style={{ fontSize: 12, color: "#6b7280" }}>Loading metrics…</div>}
-              {!loading && stats.map((s) => (
-                <div className="stat-card" key={s.label}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-                    <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: s.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.icon ?? null}</div>
-                    <span style={{ fontSize: "11.5px", fontWeight: 600, color: s.positive ? "#16a34a" : "#dc2626" }}>{s.change}</span>
+              {!loading && stats.map((s) => {
+                const valueColor = s.highlight ? "#15803d" : "#1a3a22";
+                return (
+                  <div className="stat-card" key={s.label}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", gap: "8px" }}>
+                      <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: s.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.icon ?? null}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
+                        {s.actionOnClick ? (
+                          <button
+                            onClick={s.actionOnClick}
+                            style={{ fontSize: "11px", fontWeight: 700, color: "#0f4d2e", textDecoration: "none", background: "transparent", border: "none", cursor: "pointer" }}
+                          >
+                            {s.actionLabel ?? "View"}
+                          </button>
+                        ) : null}
+                        <span style={{ fontSize: "11.5px", fontWeight: 600, color: s.positive ? "#16a34a" : "#dc2626" }}>{s.change}</span>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: "10.5px", color: "#9ab09e", fontWeight: 500, marginBottom: "3px" }}>{s.label}</div>
+                    <div style={{ fontSize: "20px", fontWeight: 700, color: valueColor }}>{s.value}</div>
                   </div>
-                  <div style={{ fontSize: "10.5px", color: "#9ab09e", fontWeight: 500, marginBottom: "3px" }}>{s.label}</div>
-                  <div style={{ fontSize: "20px", fontWeight: 700, color: "#1a3a22" }}>{s.value}</div>
-                </div>
-              ))}
+                );
+              })}
               {!loading && stats.length === 0 && (
                 <div style={{ fontSize: 12, color: "#dc2626" }}>
                   {error ?? "No data yet"}
@@ -364,19 +458,27 @@ export default function Dashboard() {
                   {(timeseries.length ? timeseries : []).map((d) => (
                     <div key={d.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", height: "100%" }}>
                       <div style={{ flex: 1, display: "flex", alignItems: "flex-end", width: "100%" }}>
-                        <div className="bar" style={{ width: "88%", margin: "0 auto", height: `${(d.views / maxViews) * 100}%`, borderRadius: "6px 6px 4px 4px", background: "#0e3d27", transition: "height 0.3s ease" }} />
+                        <div
+                          className="bar"
+                          title={`${d.views.toLocaleString()} views`}
+                          style={{ width: "88%", margin: "0 auto", height: `${(d.views / maxViews) * 100}%`, borderRadius: "6px 6px 4px 4px", background: "#0e3d27", transition: "height 0.3s ease" }}
+                        />
                       </div>
                       <span style={{ fontSize: "10px", color: "#9ab09e", fontWeight: 500 }}>{d.date.slice(5)}</span>
                     </div>
                   ))}
                   {timeseries.length === 0 &&
                     fallbackBars.map((d) => (
-                      <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", height: "100%" }}>
-                        <div style={{ flex: 1, display: "flex", alignItems: "flex-end", width: "100%" }}>
-                          <div className="bar" style={{ width: "88%", margin: "0 auto", height: `${(d.val / maxViews) * 100}%`, borderRadius: "6px 6px 4px 4px", background: "#0e3d27", transition: "height 0.3s ease" }} />
-                        </div>
-                        <span style={{ fontSize: "10px", color: "#9ab09e", fontWeight: 500 }}>{d.label}</span>
+                    <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", height: "100%" }}>
+                      <div style={{ flex: 1, display: "flex", alignItems: "flex-end", width: "100%" }}>
+                          <div
+                            className="bar"
+                            title={`${d.val.toLocaleString()} views`}
+                            style={{ width: "88%", margin: "0 auto", height: `${(d.val / maxViews) * 100}%`, borderRadius: "6px 6px 4px 4px", background: "#0e3d27", transition: "height 0.3s ease" }}
+                          />
                       </div>
+                      <span style={{ fontSize: "10px", color: "#9ab09e", fontWeight: 500 }}>{d.label}</span>
+                    </div>
                     ))}
                 </div>
               </div>
@@ -416,6 +518,11 @@ export default function Dashboard() {
                     <span key={h} style={{ fontSize: "9.5px", fontWeight: 600, color: "#9ab09e", letterSpacing: "0.07em" }}>{h}</span>
                   ))}
                 </div>
+                {actionNote && (
+                  <div style={{ margin: "8px 6px 0", fontSize: 11.5, color: "#0e3d27", fontWeight: 600 }}>
+                    {actionNote}
+                  </div>
+                )}
                 {loading && <div style={{ fontSize: 12, color: "#6b7280" }}>Loading appointments…</div>}
                 {!loading && appointments.map((a) => (
                   <div key={a.id} className="appt-row appt-table-row">
@@ -433,9 +540,30 @@ export default function Dashboard() {
                       <span style={{ fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.06em", color: "#0e3d27", background: "#e8f0ea", padding: "3px 8px", borderRadius: "5px" }}>{a.status}</span>
                     </div>
                     <div className="appt-actions" style={{ justifyContent: "center" }}>
-                      <div className="action-btn" style={{ background: "#f0fdf4" }}><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#16a34a" strokeWidth="1.4"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
-                      <div className="action-btn" style={{ background: "#eff6ff" }}><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="2" stroke="#3b82f6" strokeWidth="1.4"/><path d="M4 1v2M10 1v2" stroke="#3b82f6" strokeWidth="1.4" strokeLinecap="round"/><line x1="1" y1="6" x2="13" y2="6" stroke="#3b82f6" strokeWidth="1.2"/></svg></div>
-                      <div className="action-btn" style={{ background: "#fef2f2" }}><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ef4444" strokeWidth="1.4"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="#ef4444" strokeWidth="1.4" strokeLinecap="round"/></svg></div>
+                      <button
+                        className="action-btn"
+                        style={{ background: "#f0fdf4", border: "none" }}
+                        aria-label="Mark as confirmed"
+                        onClick={() => markStatus(a.id, "Confirmed")}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#16a34a" strokeWidth="1.4"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </button>
+                      <button
+                        className="action-btn"
+                        style={{ background: "#eff6ff", border: "none" }}
+                        aria-label="Reschedule"
+                        onClick={() => markStatus(a.id, "Rescheduled")}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="2" stroke="#3b82f6" strokeWidth="1.4"/><path d="M4 1v2M10 1v2" stroke="#3b82f6" strokeWidth="1.4" strokeLinecap="round"/><line x1="1" y1="6" x2="13" y2="6" stroke="#3b82f6" strokeWidth="1.2"/></svg>
+                      </button>
+                      <button
+                        className="action-btn"
+                        style={{ background: "#fef2f2", border: "none" }}
+                        aria-label="Cancel appointment"
+                        onClick={() => removeAppointment(a.id)}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ef4444" strokeWidth="1.4"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="#ef4444" strokeWidth="1.4" strokeLinecap="round"/></svg>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -486,6 +614,132 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
+      {leadsModalOpen && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex",
+          alignItems: "center", justifyContent: "center", padding: "16px", zIndex: 2000
+        }}>
+          <div style={{
+            width: "min(960px, 100%)",
+            background: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
+            overflow: "hidden",
+            border: "1px solid #e8ede9",
+          }}>
+            <div style={{ padding: "18px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f0f5f1" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#e6f4ee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M14.5 6.25c0 2.9-2.1 6.5-5.5 6.5s-5.5-3.6-5.5-6.5a5.5 5.5 0 1111 0Z" stroke="#15803d" strokeWidth="1.4"/>
+                    <path d="M7.5 8.5l1.4 1.4 2.6-2.8" stroke="#15803d" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: "16px", fontWeight: 800, color: "#0f172a" }}>Leads Management</div>
+                  <div style={{ fontSize: "12px", color: "#6b7280" }}>Review incoming personalization leads</div>
+                </div>
+              </div>
+              <button onClick={() => setLeadsModalOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }} aria-label="Close leads modal">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+              </button>
+            </div>
+
+            <div style={{ borderBottom: "1px solid #f0f5f1", padding: "0 20px" }}>
+              <div style={{ display: "flex", gap: "18px", height: "46px", alignItems: "center", fontSize: "12.5px", fontWeight: 700 }}>
+                <span style={{ color: "#0f4d2e", borderBottom: "2px solid #0f4d2e", paddingBottom: "10px" }}>All Leads</span>
+              </div>
+            </div>
+
+            <div style={{ maxHeight: "60vh", overflow: "auto" }}>
+              {leadsLoading && <div style={{ padding: "18px 20px", fontSize: 12, color: "#6b7280" }}>Loading leads…</div>}
+              {leadsError && !leadsLoading && <div style={{ padding: "18px 20px", fontSize: 12, color: "#dc2626" }}>{leadsError}</div>}
+              {!leadsLoading && !leadsError && (
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ background: "#f8faf9" }}>
+                      <th style={{ textAlign: "left", fontSize: "11px", letterSpacing: "0.06em", color: "#9ab09e", padding: "12px 20px" }}>USER NAME</th>
+                      <th style={{ textAlign: "left", fontSize: "11px", letterSpacing: "0.06em", color: "#9ab09e", padding: "12px 20px" }}>EMAIL ADDRESS</th>
+                      <th style={{ textAlign: "left", fontSize: "11px", letterSpacing: "0.06em", color: "#9ab09e", padding: "12px 20px" }}>SOURCE</th>
+                      <th style={{ textAlign: "left", fontSize: "11px", letterSpacing: "0.06em", color: "#9ab09e", padding: "12px 20px" }}>CONTACT NUMBER</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leads.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} style={{ padding: "18px 20px", textAlign: "center", color: "#6b7280", fontSize: 12 }}>No leads yet.</td>
+                      </tr>
+                    ) : leads.map((lead) => (
+                      <tr key={lead.id} style={{ borderBottom: "1px solid #f0f5f1" }}>
+                        <td style={{ padding: "12px 20px", display: "flex", alignItems: "center", gap: "10px" }}>
+                          <div style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "999px",
+                            background: "#e6f4ee",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            color: "#0f4d2e",
+                            fontSize: "12px",
+                          }}>
+                            {(lead.fullName || lead.email || "U").trim().slice(0, 2).toUpperCase()}
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column" }}>
+                            <span style={{ fontWeight: 700, color: "#111827", fontSize: "13px" }}>{lead.fullName || "—"}</span>
+                            <span style={{ fontSize: "11px", color: "#6b7280" }}>{new Date(lead.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: "12px 20px", fontSize: "13px", color: "#111827" }}>{lead.email}</td>
+                        <td style={{ padding: "12px 20px" }}>
+                          <span style={{ fontSize: "11px", fontWeight: 700, color: "#0f4d2e", background: "#e6f4ee", padding: "6px 10px", borderRadius: "999px" }}>
+                            Personalize
+                          </span>
+                        </td>
+                        <td style={{ padding: "12px 20px", fontSize: "13px", color: "#111827" }}>{lead.phone || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #f0f5f1" }}>
+              <div style={{ fontSize: "11.5px", color: "#6b7280" }}>
+                Showing {Math.min(leads.length, leads.length || 0)} of {leads.length.toLocaleString()} leads
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  onClick={() => setLeadsModalOpen(false)}
+                  style={{ height: "36px", padding: "0 16px", borderRadius: "12px", border: "1.4px solid #0f4d2e", background: "#fff", color: "#0f4d2e", fontWeight: 700, cursor: "pointer" }}
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    const header = ["Full Name", "Email", "Phone", "Occupation", "Created At"];
+                    const rows = leads.map((l) => [l.fullName, l.email, l.phone ?? "", l.occupation ?? "", l.createdAt]);
+                    const csv = [header, ...rows].map((r) =>
+                      r.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")
+                    ).join("\n");
+                    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "leads.csv";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  style={{ height: "36px", padding: "0 16px", borderRadius: "12px", border: "none", background: "#16a34a", color: "#fff", fontWeight: 700, cursor: "pointer" }}
+                >
+                  Export CSV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ export async function PUT(
     const scheduledAt = body.scheduledAt
       ? new Date(body.scheduledAt)
       : undefined;
+    const link = body.link ?? undefined;
 
     const webinar = await prisma.webinar.update({
       where: { id },
@@ -26,6 +27,7 @@ export async function PUT(
         ...(status ? { status: status as any } : {}),
         ...(scheduledAt ? { scheduledAt } : {}),
         ...(thumbType !== undefined ? { thumbType } : {}),
+        ...(link !== undefined ? { link } : {}),
       },
     });
 

@@ -51,9 +51,11 @@ export default function ResourcesSection() {
             <br />
             Your Knowledge
           </h2>
-          <button className="border border-white text-white text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1a3a2a] transition-colors mt-2">
-            View All Resources
-          </button>
+         <a href="/Blog">
+  <button className="border border-white text-white text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1a3a2a] transition-colors mt-2">
+    View All Resources
+  </button>
+</a>
         </div>
 
         {/* Cards */}

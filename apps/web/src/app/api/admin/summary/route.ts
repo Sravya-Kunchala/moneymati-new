@@ -12,6 +12,8 @@ export async function GET() {
       publishedBlogCount,
       apptUpcoming,
       apptToday,
+      subscriberCountRaw,
+      leadCountRaw,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.session.count(),
@@ -28,6 +30,8 @@ export async function GET() {
           },
         },
       }),
+      prisma.$queryRaw<{ count: bigint }[]>`select count(*)::bigint as count from "subscribers";`,
+      prisma.$queryRaw<{ count: bigint }[]>`select count(*)::bigint as count from "personalize_submissions";`,
     ]);
 
     // Handle webinar count separately so a missing table doesn't break the endpoint
@@ -73,6 +77,8 @@ export async function GET() {
         webinars: webinarCount,
         appointmentsUpcoming: apptUpcoming,
         appointmentsToday: apptToday,
+        subscribers: Number(subscriberCountRaw?.[0]?.count ?? 0),
+        leads: Number(leadCountRaw?.[0]?.count ?? 0),
       },
       recentAppointments,
       recentUsers,

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Header from "@/components/header";
 import HeroSection from "@/components/herosection";
 import AboutSection from "@/components/about";
@@ -11,20 +10,12 @@ import WebinarsSection from "@/components/webiersection";
 import Testimonials from "@/components/testimonials";
 import CTASection from "@/components/cta";
 import Footer from "@/components/footer";
-import MoneyMatiLaunch from "@/app/lauch/page"; // 👈 your launch screen component
+import FinancialCommunity from "@/components/socialmedia";
+import TopEbooks from "@/components/tope-books";
 
 export default function Home() {
-  const [showLaunch, setShowLaunch] = useState(true);
-
   return (
-    <>
-      {/* Launch screen — sits on top, hidden after button click */}
-      {showLaunch && (
-        <MoneyMatiLaunch onEnter={() => setShowLaunch(false)} />
-      )}
-
-      {/* Home page — always rendered underneath */}
-      <main style={{ visibility: showLaunch ? "hidden" : "visible" }}>
+    <main>
         <style>{`
           @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -48,11 +39,14 @@ export default function Home() {
         <div className="fade-in-up-4"><ServicesSection /></div>
         <div className="fade-in-up-5"><FourSteps /></div>
         <div className="fade-in-up-6"><ResourcesSection /></div>
+        <div className="fade-in-up-8"><TopEbooks /></div>
+
         <div className="fade-in-up-7"><WebinarsSection /></div>
+                        <div className="fade-in-up-8"><FinancialCommunity /></div>
+
         <div className="fade-in-up-8"><Testimonials /></div>
         <div className="fade-in-up-9"><CTASection /></div>
         <div className="fade-in-up-10"><Footer /></div>
-      </main>
-    </>
+    </main>
   );
 }

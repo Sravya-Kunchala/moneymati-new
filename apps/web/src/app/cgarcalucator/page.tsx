@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Inter } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PersonalizeModal from "@/components/confrimation";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
@@ -20,6 +21,7 @@ export default function CAGRCalculatorPage() {
   const [ulipYearsAtMaturity, setUlipYearsAtMaturity] = useState("12");
 
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const n = (v: string) => parseFloat(v) || 0;
 
@@ -348,7 +350,15 @@ export default function CAGRCalculatorPage() {
               </div>
             </div>
 
-            <button className="submit-btn" onClick={() => setSubmitted(true)}>Submit</button>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                setSubmitted(true);
+                setShowConfirm(true);
+              }}
+            >
+              Submit
+            </button>
 
             {submitted && (
               <div style={{ marginTop: 24, padding: "20px", background: "#f0faf4", borderRadius: 12, border: "1px solid #c3e6d0" }}>
@@ -438,6 +448,7 @@ export default function CAGRCalculatorPage() {
 
       </div>
       <Footer />
+      {showConfirm && <PersonalizeModal onClose={() => setShowConfirm(false)} />}
     </div>
   );
 }
