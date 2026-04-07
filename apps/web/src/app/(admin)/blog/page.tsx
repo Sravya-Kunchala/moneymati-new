@@ -4,14 +4,22 @@ import React, { useState } from "react";
 import SideNav from "@/components/sidenav";
 import TopNav from "@/components/topnav";
 
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+
 export default function NewBlogPost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDesc, setMetaDesc] = useState("");
-  const [slug, setSlug] = useState("investment-guide");
-  const [category, setCategory] = useState("Investment 101");
+  const [slug, setSlug] = useState("");
+  const [category, setCategory] = useState("Investment");
   const [status, setStatus] = useState("Draft");
   const [isDragging, setIsDragging] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -323,9 +331,10 @@ export default function NewBlogPost() {
             <span style={sectionLabel}>CATEGORY</span>
           </div>
           <select className="input-base" value={category} onChange={(e) => setCategory(e.target.value)} style={{ marginBottom: "10px" }}>
-            <option>Investment 101</option>
+            <option>Investment</option>
             <option>Tax Planning</option>
-            <option>Financial News</option>
+            <option>Insurance</option>
+            <option>Retirement</option>
           </select>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
             <span className="tag">INVESTMENT <span className="tag-remove">×</span></span>
@@ -351,7 +360,7 @@ export default function NewBlogPost() {
                 <input
                   type="text"
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  readOnly
                   style={{ flex: 1, border: "none", outline: "none", padding: "9px 10px", fontSize: "12px", color: "#1a3a22", fontFamily: "'DM Sans', sans-serif", background: "#ffffff" }}
                 />
               </div>
@@ -460,7 +469,11 @@ export default function NewBlogPost() {
                 className="input-base"
                 placeholder="How to start your investment journey..."
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setTitle(next);
+                  setSlug(slugify(next));
+                }}
                 style={{
                   fontSize: "20px", fontWeight: 600, border: "none",
                   borderBottom: "1.5px solid #e2e8f0", borderRadius: 0,
@@ -577,9 +590,10 @@ export default function NewBlogPost() {
                 <span style={sectionLabel}>CATEGORY</span>
               </div>
               <select className="input-base" value={category} onChange={(e) => setCategory(e.target.value)} style={{ marginBottom: "10px" }}>
-                <option>Investment 101</option>
+                <option>Investment</option>
                 <option>Tax Planning</option>
-                <option>Financial News</option>
+                <option>Insurance</option>
+                <option>Retirement</option>
               </select>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                 <span className="tag">INVESTMENT <span className="tag-remove">×</span></span>
@@ -602,12 +616,12 @@ export default function NewBlogPost() {
                   <label style={{ fontSize: "11.5px", color: "#64748b", fontWeight: 500, display: "block", marginBottom: "5px" }}>URL Slug</label>
                   <div style={{ display: "flex", alignItems: "center", border: "1px solid #e2e8f0", borderRadius: "8px", overflow: "hidden" }}>
                     <span style={{ padding: "9px 10px", background: "#f8fafc", fontSize: "11px", color: "#94a3b8", borderRight: "1px solid #e2e8f0", whiteSpace: "nowrap", flexShrink: 0 }}>moneymati.com/blog/</span>
-                    <input
-                      type="text"
-                      value={slug}
-                      onChange={(e) => setSlug(e.target.value)}
-                      style={{ flex: 1, border: "none", outline: "none", padding: "9px 10px", fontSize: "12px", color: "#1a3a22", fontFamily: "'DM Sans', sans-serif", background: "#ffffff" }}
-                    />
+                <input
+                  type="text"
+                  value={slug}
+                  readOnly
+                  style={{ flex: 1, border: "none", outline: "none", padding: "9px 10px", fontSize: "12px", color: "#1a3a22", fontFamily: "'DM Sans', sans-serif", background: "#ffffff" }}
+                />
                   </div>
                 </div>
               </div>

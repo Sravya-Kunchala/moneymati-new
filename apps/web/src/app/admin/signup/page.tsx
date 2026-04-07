@@ -36,7 +36,6 @@ export default function AdminSignupPage() {
         name: fullName,
         email,
         password,
-        role: "ADMIN",
         callbackURL: "/dashboard",
       });
 
@@ -50,7 +49,7 @@ export default function AdminSignupPage() {
         return;
       }
 
-      if (role !== "ADMIN") {
+      if (role && role !== "ADMIN") {
         await clearSession();
         setError("Signup succeeded but the account is not marked admin.");
         return;
@@ -135,7 +134,7 @@ export default function AdminSignupPage() {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Alex Admin"
+              placeholder="Enter your full name"
               style={{
                 marginTop: 8,
                 width: "100%",
@@ -156,7 +155,7 @@ export default function AdminSignupPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@company.com"
+              placeholder="Enter your work email"
               style={{
                 marginTop: 8,
                 width: "100%",
@@ -188,7 +187,7 @@ export default function AdminSignupPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 style={{
                   flex: 1,
                   border: "none",

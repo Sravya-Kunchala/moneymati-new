@@ -15,8 +15,17 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) ??
     [];
   const email = (session as any)?.user?.email?.toLowerCase();
+  const role =
+    (session as any)?.user?.role ??
+    (session as any)?.user?.additionalFields?.role ??
+    (session as any)?.role;
 
-  if (!session || !email || !adminEmails.includes(email)) {
+  // Require both ADMIN role and allow‑list email so regular user sessions
+  // on the public site don't automatically grant admin access.
+  const isAllowedEmail = adminEmails.length === 0 ? true : adminEmails.includes(email || "");
+  const isAdminRole = role === "ADMIN";
+
+  if (!session || !email || !isAdminRole || !isAllowedEmail) {
     redirect("/admin/signin");
   }
 

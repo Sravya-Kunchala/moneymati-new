@@ -392,12 +392,8 @@ export default function Header() {
           )}
         </div>
 
-        {/* Mobile: search + avatar + hamburger */}
+        {/* Mobile: avatar (if logged in) + hamburger */}
         <div className="flex md:hidden" style={{ alignItems: "center", gap: "10px", justifyContent: "flex-end" }}>
-          <button type="button" aria-label="Search"
-            style={{ width: 34, height: 34, borderRadius: "9999px", border: "1.5px solid #c9a84c", display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", color: "#c9a84c", cursor: "pointer" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.5" y2="16.5"/></svg>
-          </button>
           {authUser && (
             <button ref={mobileUserBtnRef} type="button" aria-label="User menu" onClick={(e) => handleUserMenuClick(e, mobileUserBtnRef)}
               style={{ width: 34, height: 34, borderRadius: "9999px", border: "2px solid #c9a84c", overflow: "hidden", background: "#c9a84c", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, padding: 0 }}>

@@ -195,6 +195,20 @@ export default function SideNav() {
           E-Books Management
         </div>
 
+        {/* Review Management */}
+        <div
+          className={`nav-item ${isActive("/review") ? "active" : ""}`}
+          onClick={() => router.push("/review")}
+        >
+          <span className="icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 2.5h11v11h-11z" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M5 9l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          Review Management
+        </div>
+
       </div>
 
       {/* Settings

@@ -40,6 +40,7 @@ export default function Footer() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [error, setError] = useState<string | null>(null);
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
     setError(null);
@@ -47,11 +48,17 @@ export default function Footer() {
       setError("Name and email are required.");
       return;
     }
+    setLoading(true);
     try {
-      const res = await fetch("/api/subscribers", {
+      const res = await fetch("/api/personalize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          fullName: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          occupation: "subscriber",
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -69,6 +76,8 @@ export default function Footer() {
     } catch (err) {
       console.error("subscribe fetch error", err);
       setError("Network error. Saved locally; will sync when online.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,18 +102,32 @@ export default function Footer() {
         .mm-footer-grid {
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
           gap: 32px;
           width: 100%;
         }
 
+        /* Brand col: centered on mobile */
         .mm-brand-col {
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
           gap: 14px;
           width: 100%;
-          text-align: left;
+          text-align: center;
+        }
+
+        .mm-brand-desc {
+          font-size: 0.85rem;
+          line-height: 1.7;
+          color: #a8c4a8;
+          max-width: 220px;
+          margin: 0;
+          /* Force 2 lines on mobile */
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .mm-contact-row {
@@ -125,9 +148,10 @@ export default function Footer() {
           justify-content: center;
         }
 
+        /* Company + Legal side by side on mobile */
         .mm-nav-cols {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           gap: 24px;
           width: 100%;
         }
@@ -206,16 +230,24 @@ export default function Footer() {
             flex-direction: unset;
           }
 
+          /* Brand col: left-aligned on desktop */
+          .mm-brand-col {
+            align-items: flex-start;
+            text-align: left;
+          }
+
+          .mm-brand-desc {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+            display: block;
+          }
+
           .mm-nav-cols {
             display: contents;
           }
 
           .mm-resources-col {
             display: none !important;
-          }
-
-          .mm-brand-col {
-            text-align: left;
           }
 
           .mm-contact-row {
@@ -281,15 +313,15 @@ export default function Footer() {
 
           {/* ── 1. Brand ── */}
           <div className="mm-brand-col">
-            <div style={{ width: 100, height: 100, overflow: "hidden", backgroundColor: "#fff" }}>
+            <a href="/" style={{ display: "block", width: 100, height: 100, overflow: "hidden", backgroundColor: "#fff", flexShrink: 0 }}>
               <img
                 src="/best new moneymati logo.svg"
                 alt="MoneyMati"
                 style={{ width: "100%", height: "100%", objectFit: "contain" }}
               />
-            </div>
+            </a>
 
-            <p style={{ fontSize: "0.85rem", lineHeight: 1.7, color: "#a8c4a8", maxWidth: 220, margin: 0 }}>
+            <p className="mm-brand-desc">
               Empowering women to build wealth with confidence, clarity, and community.
             </p>
 
@@ -348,7 +380,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ── 2 & 3. Company + Legal (via display:contents on desktop) ── */}
+          {/* ── 2 & 3. Company + Legal ── */}
           <div className="mm-nav-cols">
 
             {/* Company */}
@@ -442,8 +474,10 @@ export default function Footer() {
             <button
               className={`mm-digest-btn${subscribed ? " subscribed" : ""}`}
               onClick={handleSubscribe}
+              disabled={loading}
+              style={{ opacity: loading ? 0.85 : 1, cursor: loading ? "wait" : "pointer" }}
             >
-              {subscribed ? "✓ Subscribed!" : "Subscribe Now"}
+              {loading ? "Submitting..." : subscribed ? "✓ Subscribed!" : "Subscribe Now"}
             </button>
             {error && (
               <p style={{ fontSize: "0.75rem", color: "#fca5a5", margin: "6px 0 0", textAlign: "center" }}>

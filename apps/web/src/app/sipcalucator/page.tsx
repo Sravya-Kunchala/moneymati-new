@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { Inter } from "next/font/google";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import PersonalizeModal from "@/components/confrimation";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
@@ -16,7 +15,7 @@ export default function SIPCalculatorPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [graphProgress, setGraphProgress] = useState(0);
-  const [showConfirm, setShowConfirm] = useState(false);
+  // Confirmation modal removed
   const btnRef = useRef<HTMLButtonElement>(null);
   const animFrameRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -80,7 +79,7 @@ export default function SIPCalculatorPage() {
       setDone(true);
       setSubmitted(true);
       setTimeout(() => setDone(false), 2800);
-      setShowConfirm(true);
+      // confirmation removed
     });
   };
 
@@ -515,7 +514,6 @@ export default function SIPCalculatorPage() {
 
       </div>
       <Footer />
-      {showConfirm && <PersonalizeModal onClose={() => setShowConfirm(false)} />}
     </div>
   );
 }

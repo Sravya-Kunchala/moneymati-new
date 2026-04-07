@@ -201,6 +201,7 @@ export default function AboutHero() {
 
           <div data-animate>
             <button
+              onClick={() => { window.location.href = "/services"; }}
               className="px-7 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
               style={{
                 backgroundColor: "#d4a82a",

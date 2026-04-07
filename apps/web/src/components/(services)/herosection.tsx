@@ -251,9 +251,7 @@ export default function HeroSection() {
 >
   Browse Upcoming Webinars →
 </button>
-            <button className={`${inter.className} btn-secondary`}>
-              Register for Next Session
-            </button>
+            
           </div>
         </div>
 

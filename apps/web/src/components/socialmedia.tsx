@@ -1,46 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { SOCIAL_POSTS } from "@/data/socialPosts";
 
-type InstaPost = {
+type SocialPost = {
   id: string;
   image: string;
   caption: string;
   permalink?: string;
   timestamp?: string;
   username?: string;
+  source?: string;
 };
 
-const FALLBACK_POSTS: InstaPost[] = [
-  {
-    id: "fallback-1",
-    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=900&q=80&auto=format&fit=crop",
-    caption: "See the latest from @moneymati2022 on Instagram.",
-    permalink: "https://www.instagram.com/moneymati2022/",
-    username: "moneymati2022",
-  },
-  {
-    id: "fallback-2",
-    image: "https://images.unsplash.com/photo-1508387024700-9fe5c0b38f91?w=900&q=80&auto=format&fit=crop",
-    caption: "Follow our journey empowering wealth creation for women.",
-    permalink: "https://www.instagram.com/moneymati2022/",
-    username: "moneymati2022",
-  },
-  {
-    id: "fallback-3",
-    image: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=900&q=80&auto=format&fit=crop",
-    caption: "Workshops, events, and community wins - live on Instagram.",
-    permalink: "https://www.instagram.com/moneymati2022/",
-    username: "moneymati2022",
-  },
-  {
-    id: "fallback-4",
-    image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=900&q=80&auto=format&fit=crop",
-    caption: "Tap to view the real-time feed once Instagram is connected.",
-    permalink: "https://www.instagram.com/moneymati2022/",
-    username: "moneymati2022",
-  },
-];
+const PLATFORM_POSTS: SocialPost[] = SOCIAL_POSTS;
 
 const socialLinks = [
   {
@@ -83,10 +56,16 @@ const socialLinks = [
 ];
 
 const formatDate = (timestamp?: string) => {
-  if (!timestamp) return "Instagram";
+  if (!timestamp) return "Today";
   const d = new Date(timestamp);
-  if (Number.isNaN(d.getTime())) return "Instagram";
+  if (Number.isNaN(d.getTime())) return "Today";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
+
+const proxySrc = (url: string | undefined) => {
+  if (!url) return "";
+  if (url.startsWith("/")) return url;
+  return `/api/social/proxy?url=${encodeURIComponent(url)}`;
 };
 
 function SkeletonCard() {
@@ -114,14 +93,101 @@ function SkeletonCard() {
 }
 
 export default function FinancialCommunity() {
-  // Instagram API removed; show static preview posts only.
-  const [posts] = useState<InstaPost[]>(FALLBACK_POSTS);
+  // Show one post per platform using footer links; replaced by API when available.
+  const [posts, setPosts] = useState<SocialPost[]>(PLATFORM_POSTS);
   const [hovered, setHovered] = useState<string | null>(null);
-  const [error] = useState<string | null>(null);
-  const loading = false;
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [isFallback, setIsFallback] = useState(true);
 
-  const displayedPosts = useMemo(() => posts, [posts]);
-  const isFallback = true;
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/social/latest");
+        if (!res.ok) throw new Error("Failed to load feed");
+        const data = await res.json();
+        if (cancelled) return;
+
+        const items = Array.isArray(data?.items) ? data.items : [];
+        if (items.length) {
+          setPosts(items as SocialPost[]);
+          setIsFallback(data?.source === "fallback");
+          setError(null);
+        } else {
+          setPosts(PLATFORM_POSTS);
+          setIsFallback(true);
+          setError("No posts returned; showing preview tiles.");
+        }
+      } catch (err) {
+        if (cancelled) return;
+        setPosts(PLATFORM_POSTS);
+        setIsFallback(true);
+        setError("Could not load live social posts; showing preview tiles.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    const poll = setInterval(load, 5 * 60 * 1000); // refresh every 5 minutes
+    return () => {
+      cancelled = true;
+      clearInterval(poll);
+    };
+  }, []);
+
+  const displayedPosts = useMemo(() => {
+    const priority: Record<string, number> = { linkedin: 0, instagram: 1, twitter: 2, facebook: 3 };
+
+    const detectSource = (post: SocialPost) => post.source ?? detectSourceFromLink(post.permalink) ?? "other";
+
+    // Sort all posts by platform priority, then newest first
+    const sorted = [...posts].sort((a, b) => {
+      const sa = detectSource(a);
+      const sb = detectSource(b);
+      const pa = priority[sa] ?? 99;
+      const pb = priority[sb] ?? 99;
+      if (pa !== pb) return pa - pb;
+
+      const ta = a.timestamp ? new Date(a.timestamp).getTime() : -Infinity;
+      const tb = b.timestamp ? new Date(b.timestamp).getTime() : -Infinity;
+      if (!Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb) return tb - ta;
+      return 0;
+    });
+
+    // Keep only one post per platform (LinkedIn, Instagram, Twitter, Facebook)
+    const seen = new Set<string>();
+    const unique: SocialPost[] = [];
+    for (const post of sorted) {
+      const src = detectSource(post);
+      if (seen.has(src)) continue;
+      seen.add(src);
+      unique.push(post);
+      if (seen.has("linkedin") && seen.has("instagram") && seen.has("twitter") && seen.has("facebook")) break;
+    }
+
+    return unique;
+  }, [posts]);
+
+  const detectSourceFromLink = (url?: string) => {
+    if (!url) return undefined;
+    if (url.includes("instagram.com")) return "Instagram";
+    if (url.includes("linkedin.com")) return "LinkedIn";
+    if (url.includes("twitter.com") || url.includes("x.com")) return "Twitter";
+    if (url.includes("facebook.com") || url.includes("fb.com")) return "Facebook";
+    return undefined;
+  };
+
+  const displayName = (post: SocialPost) => {
+    if (post.source === "instagram") return "Instagram";
+    if (post.source === "linkedin") return "LinkedIn";
+    if (post.source === "twitter") return "Twitter";
+    if (post.source === "facebook") return "Facebook";
+    const byLink = detectSourceFromLink(post.permalink);
+    if (byLink) return byLink;
+    return post.username ?? "moneymati2022";
+  };
 
   return (
     <section
@@ -160,7 +226,7 @@ export default function FinancialCommunity() {
           </a>{" "}
           - refreshed every few minutes.
         </p>
-        {error && posts.length === 0 && (
+        {error && (
           <div style={{ color: "#ef4444", fontSize: "0.9rem", marginBottom: "8px" }}>
             {error} Showing a preview grid instead.
           </div>
@@ -210,13 +276,16 @@ export default function FinancialCommunity() {
           margin: "0 auto",
         }}
       >
-        {loading
+        {loading && displayedPosts.length === 0
           ? Array.from({ length: 4 }).map((_, idx) => <SkeletonCard key={`skeleton-${idx}`} />)
           : displayedPosts.map((post) => (
               <div
                 key={post.id}
                 onMouseEnter={() => setHovered(post.id)}
                 onMouseLeave={() => setHovered(null)}
+                onClick={() => {
+                  if (post.permalink) window.open(post.permalink, "_blank", "noopener,noreferrer");
+                }}
                 style={{
                   borderRadius: "12px",
                   border: "1px solid #e2e8f0",
@@ -225,7 +294,7 @@ export default function FinancialCommunity() {
                   boxShadow: hovered === post.id ? "0 6px 24px rgba(15,23,42,0.10)" : "none",
                   transform: hovered === post.id ? "translateY(-3px)" : "translateY(0)",
                   transition: "box-shadow 0.22s, transform 0.22s",
-                  cursor: "pointer",
+                  cursor: post.permalink ? "pointer" : "default",
                   position: "relative",
                   minHeight: 320,
                 }}
@@ -258,7 +327,7 @@ export default function FinancialCommunity() {
                       M
                     </div>
                     <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#1e293b" }}>
-                      @{post.username ?? "moneymati2022"}
+                      @{displayName(post)}
                     </span>
                   </div>
                   <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#94a3b8" }}>
@@ -268,7 +337,7 @@ export default function FinancialCommunity() {
 
                 <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>
                   <img
-                    src={post.image}
+                    src={proxySrc(post.image)}
                     alt={post.caption}
                     style={{
                       width: "100%",
@@ -279,6 +348,7 @@ export default function FinancialCommunity() {
                       transition: "transform 0.4s ease",
                     }}
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                   />
                   {post.permalink && (
                     <a
@@ -299,9 +369,9 @@ export default function FinancialCommunity() {
                         fontWeight: 700,
                         letterSpacing: "0.02em",
                       }}
-                      aria-label="View on Instagram"
+                      aria-label={`View on ${displayName(post)}`}
                     >
-                      View on Instagram
+                      View on {displayName(post)}
                     </a>
                   )}
                 </div>
@@ -314,6 +384,10 @@ export default function FinancialCommunity() {
                       lineHeight: 1.55,
                       margin: "0 0 10px",
                       minHeight: "52px",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}
                   >
                     {post.caption?.trim().length ? post.caption : "Tap to view this post on Instagram."}
@@ -331,7 +405,7 @@ export default function FinancialCommunity() {
                     <span style={{ fontSize: "0.78rem", color: "#94a3b8", fontWeight: 600 }}>
                       {isFallback ? "Preview" : "Live"}
                     </span>
-                    {post.permalink && (
+                    {post.permalink ? (
                       <a
                         href={post.permalink}
                         target="_blank"
@@ -345,12 +419,15 @@ export default function FinancialCommunity() {
                           alignItems: "center",
                           gap: "6px",
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         Open
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M7 17L17 7M8 7h9v9" />
                         </svg>
                       </a>
+                    ) : (
+                      <span style={{ fontSize: "0.82rem", color: "#cbd5e1", fontWeight: 700 }}>No Link</span>
                     )}
                   </div>
                 </div>

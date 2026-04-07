@@ -7,7 +7,15 @@ const dancingScript = Dancing_Script({ subsets: ["latin"], variable: "--font-dan
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
-const testimonials = [
+export type TestimonialItem = {
+  stars: number;
+  quote: string;
+  name: string;
+  role: string;
+  avatar: string;
+};
+
+export const testimonialsData: TestimonialItem[] = [
   {
     stars: 5,
     quote: "A wonderful session that taught me to be more confident to manage my investments through diverse mutual funds. I wish to learn more about equities, and how to plan my taxes.",
@@ -20,7 +28,7 @@ const testimonials = [
     quote: "You are an inspiration in this field. Wishing you continued success and may the knowledge that you share result in better financial outcomes for those who are not very much into it.",
     name: "Prashantha Sawhney",
     role: "Scaleup CEOs",
-    avatar: "/Sarah Johnson.svg",
+    avatar: "/ps.jpeg",
   },
   {
     stars: 5,
@@ -38,7 +46,7 @@ const testimonials = [
   },
 ];
 
-const CARDS_VISIBLE = 3;
+const GAP = 16;
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -55,28 +63,78 @@ function StarRating({ count }: { count: number }) {
 export default function Testimonials() {
   const [startIndex, setStartIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [cardWidth, setCardWidth] = useState(0);
+  const [stepWidth, setStepWidth] = useState(0);
+  const [dbReviews, setDbReviews] = useState<TestimonialItem[]>([]);
 
-  const totalPages = testimonials.length - CARDS_VISIBLE + 1;
-  const canPrev = startIndex > 0;
-  const canNext = startIndex + CARDS_VISIBLE < testimonials.length;
+  const fetchReviews = () => {
+    fetch("/api/reviews")
+      .then((res) => res.json())
+      .then((data) => {
+        const items = Array.isArray(data?.items) ? data.items : [];
+        const mapped: TestimonialItem[] = items.map((r: any) => ({
+          stars: r.rating || 5,
+          quote: r.testimonial,
+          name: r.name,
+          role: r.role || "—",
+          avatar: r.avatar || "",
+        }));
+        setDbReviews(mapped);
+      })
+      .catch(() => setDbReviews([]));
+  };
 
   useEffect(() => {
-    const updateCardWidth = () => {
-      if (trackRef.current?.children[0]) {
+    fetchReviews();
+    const handler = () => fetchReviews();
+    window.addEventListener("admin-reviews-updated", handler as EventListener);
+    const poll = setInterval(fetchReviews, 15000);
+    return () => {
+      window.removeEventListener("admin-reviews-updated", handler as EventListener);
+      clearInterval(poll);
+    };
+  }, []);
+
+  const mergedTestimonials = [...dbReviews, ...testimonialsData];
+
+  const cardsVisible = isMobile ? 1 : 3;
+  const totalPages = mergedTestimonials.length - cardsVisible + 1;
+  const canPrev = startIndex > 0;
+  const canNext = startIndex + cardsVisible < mergedTestimonials.length;
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const maxIndex = mergedTestimonials.length - cardsVisible;
+    if (startIndex > maxIndex) setStartIndex(Math.max(0, maxIndex));
+  }, [cardsVisible, startIndex, mergedTestimonials.length]);
+
+  // On mobile: step = full viewport width (so next card fills screen completely)
+  // On desktop: step = card width + gap
+  useEffect(() => {
+    const updateStep = () => {
+      if (isMobile && viewportRef.current) {
+        setStepWidth(viewportRef.current.offsetWidth + GAP);
+      } else if (!isMobile && trackRef.current?.children[0]) {
         const card = trackRef.current.children[0] as HTMLElement;
-        setCardWidth(card.offsetWidth + 20); // card width + gap
+        setStepWidth(card.offsetWidth + GAP);
       }
     };
-    updateCardWidth();
-    window.addEventListener("resize", updateCardWidth);
-    return () => window.removeEventListener("resize", updateCardWidth);
-  }, []);
+    updateStep();
+    window.addEventListener("resize", updateStep);
+    return () => window.removeEventListener("resize", updateStep);
+  }, [isMobile]);
 
   const goTo = (index: number) => {
     if (isAnimating) return;
-    const clamped = Math.max(0, Math.min(index, testimonials.length - CARDS_VISIBLE));
+    const clamped = Math.max(0, Math.min(index, mergedTestimonials.length - cardsVisible));
     setIsAnimating(true);
     setStartIndex(clamped);
     setTimeout(() => setIsAnimating(false), 480);
@@ -84,6 +142,11 @@ export default function Testimonials() {
 
   const handlePrev = () => { if (canPrev) goTo(startIndex - 1); };
   const handleNext = () => { if (canNext) goTo(startIndex + 1); };
+
+  // Desktop: 3 equal cards with gaps; Mobile: full width card
+  const cardFlexBasis = isMobile
+    ? "100%"
+    : `calc(${100 / 3}% - ${(GAP * 2) / 3}px)`;
 
   return (
     <>
@@ -98,10 +161,9 @@ export default function Testimonials() {
           transition: background 0.3s, transform 0.3s;
         }
         @media (max-width: 768px) {
-          .tm-section { padding: 40px 20px 40px !important; }
+          .tm-section { padding: 40px 16px 40px !important; }
           .tm-heading { margin-bottom: 28px !important; }
           .tm-heading h2 { font-size: 28px !important; }
-          .tm-card { flex: 0 0 85vw !important; }
         }
       `}</style>
 
@@ -134,22 +196,24 @@ export default function Testimonials() {
         </div>
 
         {/* Viewport */}
-        <div style={{ overflow: "hidden", maxWidth: "1060px", margin: "0 auto 40px" }}>
+        <div
+          ref={viewportRef}
+          style={{ overflow: "hidden", maxWidth: "1060px", margin: "0 auto 40px" }}
+        >
           <div
             ref={trackRef}
             className="tm-track"
             style={{
               display: "flex",
-              gap: "20px",
-              transform: `translateX(-${startIndex * cardWidth}px)`,
+              gap: `${GAP}px`,
+              transform: `translateX(-${startIndex * stepWidth}px)`,
             }}
           >
-            {testimonials.map((t, i) => (
+            {mergedTestimonials.map((t, i) => (
               <div
                 key={i}
-                className="tm-card"
                 style={{
-                  flex: `0 0 calc(${100 / CARDS_VISIBLE}% - ${(20 * (CARDS_VISIBLE - 1)) / CARDS_VISIBLE}px)`,
+                  flex: `0 0 ${cardFlexBasis}`,
                   backgroundColor: "#ffffff",
                   borderRadius: "16px",
                   padding: "28px 24px 24px",
@@ -165,7 +229,29 @@ export default function Testimonials() {
                 </p>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ width: "44px", height: "44px", borderRadius: "50%", overflow: "hidden", flexShrink: 0, backgroundColor: "#d0cfc8" }}>
-                    <img src={t.avatar} alt={t.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                    {t.avatar ? (
+                      <img
+                        src={t.avatar}
+                        alt={t.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: "100%",
+                        height: "100%",
+                        background: "#e2e8f0",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#475569",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        fontFamily: "var(--font-dm-sans), sans-serif",
+                      }}>
+                        {t.name?.slice(0, 2).toUpperCase() || "MM"}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <p style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 700, fontSize: "0.88rem", color: "#1a2e1a", marginBottom: "2px" }}>{t.name}</p>
@@ -198,7 +284,6 @@ export default function Testimonials() {
             </svg>
           </button>
 
-          {/* Dot indicators */}
           <div style={{ display: "flex", gap: "6px" }}>
             {Array.from({ length: totalPages }).map((_, i) => (
               <button

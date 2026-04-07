@@ -693,9 +693,23 @@ export default function Dashboard() {
                         </td>
                         <td style={{ padding: "12px 20px", fontSize: "13px", color: "#111827" }}>{lead.email}</td>
                         <td style={{ padding: "12px 20px" }}>
-                          <span style={{ fontSize: "11px", fontWeight: 700, color: "#0f4d2e", background: "#e6f4ee", padding: "6px 10px", borderRadius: "999px" }}>
-                            Personalize
-                          </span>
+                          {(() => {
+                            const occ = lead.occupation?.toLowerCase() || "";
+                            const isSubscriber = occ.startsWith("sub");
+                            return (
+                              <span style={{
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                color: isSubscriber ? "#166534" : "#0f4d2e",
+                                background: isSubscriber ? "#dcfce7" : "#e6f4ee",
+                                padding: "6px 10px",
+                                borderRadius: "999px",
+                                textTransform: "capitalize",
+                              }}>
+                                {isSubscriber ? "Subscriber" : "Personalize"}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td style={{ padding: "12px 20px", fontSize: "13px", color: "#111827" }}>{lead.phone || "—"}</td>
                       </tr>

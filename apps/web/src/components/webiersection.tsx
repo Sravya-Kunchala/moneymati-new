@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 import { useEffect, useState } from "react";
-import PersonalizeModal from "@/components/confrimation";
 
 const playfair = Playfair_Display({ subsets: ["latin"] });
 
@@ -110,10 +109,7 @@ function StatusButton({
 }
 
 export default function WebinarsSection() {
-  const STORAGE_KEY = "personalize_submitted";
-  const [showConfirm, setShowConfirm] = useState(false);
   const [webinars, setWebinars] = useState<PublicWebinar[]>(staticWebinars);
-  const [pendingLink, setPendingLink] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -205,15 +201,9 @@ export default function WebinarsSection() {
             status={status}
             link={link}
             onRegister={(destination?: string) => {
-              if (typeof window !== "undefined") {
-                const done = window.localStorage.getItem(STORAGE_KEY) === "1";
-                if (done && destination) {
-                  window.open(destination, "_blank", "noopener,noreferrer");
-                  return;
-                }
+              if (destination) {
+                window.open(destination, "_blank", "noopener,noreferrer");
               }
-              setPendingLink(destination);
-              setShowConfirm(true);
             }}
           />
         </div>
@@ -222,29 +212,6 @@ export default function WebinarsSection() {
   })}
         </div>
       </div>
-      {showConfirm && (
-        <PersonalizeModal
-          onClose={() => {
-            setShowConfirm(false);
-            // If already submitted earlier, still allow redirect on close
-            if (pendingLink && typeof window !== "undefined") {
-              const done = window.localStorage.getItem(STORAGE_KEY) === "1";
-              if (done) {
-                window.open(pendingLink, "_blank", "noopener,noreferrer");
-                setPendingLink(undefined);
-              }
-            }
-          }}
-          onSuccess={() => {
-            // Immediately redirect after successful submit
-            if (pendingLink) {
-              window.open(pendingLink, "_blank", "noopener,noreferrer");
-              setPendingLink(undefined);
-            }
-            setShowConfirm(false);
-          }}
-        />
-      )}
     </section>
   );
 }

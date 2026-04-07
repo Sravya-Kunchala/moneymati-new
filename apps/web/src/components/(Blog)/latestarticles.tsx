@@ -254,23 +254,25 @@ const WeeklyDigest: React.FC = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/subscribers", {
+      const res = await fetch("/api/personalize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({
+          fullName: name.trim(),
+          email: email.trim(),
+          phone: "",
+          occupation: "subscriber",
+        }),
       });
       const data = await res.json().catch(() => ({}));
-      if (data?.duplicate) {
-        setStatus({ type: "info", message: "You are already subscribed." });
-        if (typeof window !== "undefined") {
-          window.alert("You are already subscribed to the newsletter.");
-        }
-      } else if (data?.ok) {
+      if (res.status === 201 || data?.ok) {
         setStatus({ type: "success", message: "Subscribed successfully!" });
         setName("");
         setEmail("");
+      } else if (res.status === 409 || data?.duplicate) {
+        setStatus({ type: "info", message: "You are already subscribed." });
       } else {
-        setStatus({ type: "error", message: data?.error || "Subscription failed. Please retry." });
+        setStatus({ type: "error", message: data?.message || data?.error || "Subscription failed. Please retry." });
       }
     } catch (err) {
       setStatus({ type: "error", message: "Network error. Please retry." });
@@ -421,14 +423,6 @@ export default function LatestArticles() {
           <div className="latest-articles-col" style={{ gridColumn: "1 / 3", display: "flex", flexDirection: "column", gap: "20px", position: "relative", zIndex: 1, isolation: "isolate", backgroundColor: "#f5f0e8" }}>
             <div className="latest-articles-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 900, color: "#1a1a1a", fontFamily: "var(--font-playfair), serif" }}>Latest Insights</h2>
-              <a href="#" style={{ fontSize: "14px", fontWeight: 600, color: "#475569", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-dm-sans), sans-serif" }}>
-                View All
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <polyline points="15 3 21 3 21 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </a>
             </div>
 
             <div className="desktop-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>

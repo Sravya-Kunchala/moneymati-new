@@ -55,7 +55,6 @@ export async function POST(request: Request) {
     published,
     publishedAt,
     tags,
-    slug,
   } = body ?? {};
 
   if (!title || !content) {
@@ -68,12 +67,13 @@ export async function POST(request: Request) {
   try {
     if (!(prisma as any)?.blogPost?.create) {
       return NextResponse.json(
-        { warning: "Blog model missing; not persisted. Configure DB and run prisma migrate.", data: { title, content, excerpt, slug } },
+        { warning: "Blog model missing; not persisted. Configure DB and run prisma migrate.", data: { title, content, excerpt, slug: slugify(title) } },
         { status: 503 },
       );
     }
 
-    const baseSlug = slugify(slug || title);
+    // Force slug to mirror title; ignore any incoming slug field
+    const baseSlug = slugify(title);
     const uniqueSlug = await ensureUniqueSlug(baseSlug);
 
     const post = await prisma.blogPost.create({

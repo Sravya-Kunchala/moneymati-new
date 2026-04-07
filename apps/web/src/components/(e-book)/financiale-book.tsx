@@ -36,12 +36,15 @@ const ArrowRight = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#047857" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
 );
 
-const CATEGORIES = [
-  { icon: <InvestmentIcon />, label: "Investment", count: 24, active: true },
-  { icon: <TaxIcon />, label: "Tax Planning", count: 12 },
-  { icon: <InsuranceIcon />, label: "Insurance", count: 8 },
-  { icon: <RetirementIcon />, label: "Retirement", count: 15 },
-];
+// Map category labels to an icon
+const categoryIcon = (label: string) => {
+  const key = label.toLowerCase();
+  if (key.includes("invest")) return <InvestmentIcon />;
+  if (key.includes("tax")) return <TaxIcon />;
+  if (key.includes("insurance") || key.includes("protect")) return <InsuranceIcon />;
+  if (key.includes("retire") || key.includes("plan")) return <RetirementIcon />;
+  return <EyeIcon />;
+};
 
 const TAGS = ["Equity", "SIP", "Money Mati", "Money", "Budget Planning", "Invest"];
 
@@ -98,18 +101,18 @@ function PublicationCard({ pub }: { pub: { id: number; category: string; categor
   );
 }
 
-function Sidebar() {
+function Sidebar({ categories }: { categories: { label: string; count: number }[] }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Categories */}
       <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)" }}>
         <p style={{ margin: "0 0 16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>Categories</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          {CATEGORIES.map((cat) => (
-            <div key={cat.label} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", backgroundColor: cat.active ? "#f0fdf4" : "transparent", cursor: "pointer" }}>
-              <span style={{ flexShrink: 0 }}>{cat.icon}</span>
-              <span style={{ flex: 1, fontFamily: "var(--font-inter), sans-serif", fontSize: "14px", fontWeight: cat.active ? 700 : 500, color: cat.active ? "#1e293b" : "#475569" }}>{cat.label}</span>
-              <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: cat.active ? "#047857" : "#94a3b8", minWidth: "24px", textAlign: "right" }}>{String(cat.count).padStart(2, "0")}</span>
+          {categories.map((cat, idx) => (
+            <div key={cat.label} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", backgroundColor: idx === 0 ? "#f0fdf4" : "transparent", cursor: "pointer" }}>
+              <span style={{ flexShrink: 0 }}>{categoryIcon(cat.label)}</span>
+              <span style={{ flex: 1, fontFamily: "var(--font-inter), sans-serif", fontSize: "14px", fontWeight: idx === 0 ? 700 : 500, color: idx === 0 ? "#1e293b" : "#475569" }}>{cat.label}</span>
+              <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: idx === 0 ? "#047857" : "#94a3b8", minWidth: "24px", textAlign: "right" }}>{String(cat.count).padStart(2, "0")}</span>
             </div>
           ))}
         </div>
@@ -138,6 +141,53 @@ export default function FinancialResources() {
   const router = useRouter();
   const publications = PUBLICATIONS_LIST;
   const featured = publications[0];
+  const openFlipBook = () => {
+    if (typeof window !== "undefined") {
+      window.open("/FLIP-BOOK.pdf", "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const [categories, setCategories] = React.useState<
+    { label: string; count: number }[]
+  >([
+    { label: "Investment", count: 24 },
+    { label: "Tax Planning", count: 12 },
+    { label: "Insurance", count: 8 },
+    { label: "Retirement", count: 15 },
+  ]);
+
+  React.useEffect(() => {
+    const loadCounts = async () => {
+      try {
+        const res = await fetch("/api/admin/ebooks");
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        const data = await res.json();
+        const items: { category?: string }[] = data?.items ?? [];
+        if (!items.length) return;
+        const map: Record<string, number> = {};
+        items.forEach((it) => {
+          const cat = (it.category ?? "Uncategorized").trim();
+          map[cat] = (map[cat] || 0) + 1;
+        });
+        const sorted = Object.entries(map)
+          .map(([label, count]) => ({ label, count }))
+          .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+        setCategories(sorted);
+      } catch {
+        // keep fallback counts on error
+      }
+    };
+    loadCounts();
+  }, []);
+
+  const categoryIcon = (label: string) => {
+    const key = label.toLowerCase();
+    if (key.includes("invest")) return <InvestmentIcon />;
+    if (key.includes("tax")) return <TaxIcon />;
+    if (key.includes("insurance") || key.includes("protect")) return <InsuranceIcon />;
+    if (key.includes("retire") || key.includes("plan")) return <RetirementIcon />;
+    return <EyeIcon />;
+  };
 
   return (
     <>
@@ -189,7 +239,7 @@ export default function FinancialResources() {
               {/* ── Desktop featured card ── */}
               <div
                 className="fr-featured-desktop"
-                onClick={() => router.push("/sepe-book/4")}
+                onClick={openFlipBook}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "56px 40px", gap: "32px", alignItems: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", minHeight: "260px", cursor: "pointer" }}
               >
                 {/* Book cover image */}
@@ -204,14 +254,15 @@ export default function FinancialResources() {
                   <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
 
-                    {/* ✅ Download button — triggers PDF download, stops card navigation */}
+                    {/* ✅ Download button — opens PDF and stops card navigation */}
                     <a
                       href="/FLIP-BOOK.pdf"
-                      download
-                      onClick={e => e.stopPropagation()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => { e.stopPropagation(); }}
                       style={downloadBtnStyle}
                     >
-                      <DownloadIcon />Download Now
+                      <DownloadIcon />Open Flip Book
                     </a>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -225,7 +276,7 @@ export default function FinancialResources() {
               {/* ── Mobile featured card ── */}
               <div
                 className="fr-featured-mobile"
-                onClick={() => router.push("/sepe-book/4")}
+                onClick={openFlipBook}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", cursor: "pointer" }}
               >
                 <div style={{ width: "100%", height: "220px", position: "relative", overflow: "hidden" }}>
@@ -237,14 +288,15 @@ export default function FinancialResources() {
                   <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
 
-                    {/* ✅ Download button — triggers PDF download, stops card navigation */}
+                    {/* ✅ Download button — opens PDF and stops card navigation */}
                     <a
                       href="/FLIP-BOOK.pdf"
-                      download
-                      onClick={e => e.stopPropagation()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => { e.stopPropagation(); }}
                       style={downloadBtnStyle}
                     >
-                      <DownloadIcon />Download Now
+                      <DownloadIcon />Open Flip Book
                     </a>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -258,7 +310,7 @@ export default function FinancialResources() {
 
             {/* Mobile sidebar */}
             <div className="fr-mobile-sidebar" style={{ marginBottom: "28px" }}>
-              <Sidebar />
+              <Sidebar categories={categories} />
             </div>
 
             {/* Latest Publications */}
@@ -279,7 +331,7 @@ export default function FinancialResources() {
 
           {/* Desktop sidebar */}
           <div className="fr-desktop-sidebar" style={{ position: "sticky", top: "24px" }}>
-            <Sidebar />
+            <Sidebar categories={categories} />
           </div>
         </div>
       </div>

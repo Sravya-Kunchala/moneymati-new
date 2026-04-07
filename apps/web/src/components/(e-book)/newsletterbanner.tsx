@@ -12,10 +12,44 @@ const inter = Inter({
 export default function NewsletterBanner() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = () => {
-    if (fullName.trim() && email.trim()) {
-      console.log("Subscribing:", { fullName, email });
+  const handleSubscribe = async () => {
+    setStatus(null);
+    const name = fullName.trim();
+    const mail = email.trim();
+    if (!name || !mail) {
+      setStatus({ type: "error", message: "Please enter full name and email." });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/personalize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: name,
+          email: mail,
+          phone: "",
+          occupation: "subscriber", // lead source flag
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (res.status === 201 || body?.ok) {
+        setStatus({ type: "success", message: "Subscribed! We’ve added you to our list." });
+        setFullName("");
+        setEmail("");
+      } else if (res.status === 409 || body?.duplicate) {
+        setStatus({ type: "info", message: "You are already subscribed." });
+      } else {
+        setStatus({ type: "error", message: body?.message || "Subscription failed. Please try again." });
+      }
+    } catch (err) {
+      setStatus({ type: "error", message: "Network error. Please retry." });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -167,14 +201,28 @@ export default function NewsletterBanner() {
             </div>
 
             {/* Subscribe button */}
-            <button onClick={handleSubscribe} className="nl-btn">
-              Subscribe Now
+            <button onClick={handleSubscribe} className="nl-btn" disabled={loading} style={{ opacity: loading ? 0.85 : 1, cursor: loading ? "wait" : "pointer" }}>
+              {loading ? "Submitting..." : "Subscribe Now"}
             </button>
 
             {/* Privacy note */}
             <p className="nl-privacy">
               We respect your privacy. Unsubscribe at any time.
             </p>
+            {status && (
+              <p
+                className="nl-privacy"
+                style={{
+                  color: status.type === "success" ? "#34d399" : status.type === "info" ? "#93c5fd" : "#fca5a5",
+                  background: "rgba(255,255,255,0.05)",
+                  padding: "8px 10px",
+                  borderRadius: "10px",
+                  marginTop: "4px",
+                }}
+              >
+                {status.message}
+              </p>
+            )}
           </div>
         </section>
       </div>
