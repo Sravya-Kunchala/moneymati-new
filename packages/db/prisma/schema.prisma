@@ -134,6 +134,7 @@ model Ebook {
   format      String   @default("PDF")
   href        String?
   status      String   @default("Published")
+  featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

@@ -9468,6 +9468,7 @@ export namespace Prisma {
     format: string | null
     href: string | null
     status: string | null
+    featured: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9481,6 +9482,7 @@ export namespace Prisma {
     format: string | null
     href: string | null
     status: string | null
+    featured: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9494,6 +9496,7 @@ export namespace Prisma {
     format: number
     href: number
     status: number
+    featured: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -9517,6 +9520,7 @@ export namespace Prisma {
     format?: true
     href?: true
     status?: true
+    featured?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9530,6 +9534,7 @@ export namespace Prisma {
     format?: true
     href?: true
     status?: true
+    featured?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9543,6 +9548,7 @@ export namespace Prisma {
     format?: true
     href?: true
     status?: true
+    featured?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9643,6 +9649,7 @@ export namespace Prisma {
     format: string
     href: string | null
     status: string
+    featured: boolean
     createdAt: Date
     updatedAt: Date
     _count: EbookCountAggregateOutputType | null
@@ -9675,6 +9682,7 @@ export namespace Prisma {
     format?: boolean
     href?: boolean
     status?: boolean
+    featured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["ebook"]>
@@ -9688,6 +9696,7 @@ export namespace Prisma {
     format?: boolean
     href?: boolean
     status?: boolean
+    featured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["ebook"]>
@@ -9701,6 +9710,7 @@ export namespace Prisma {
     format?: boolean
     href?: boolean
     status?: boolean
+    featured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["ebook"]>
@@ -9714,11 +9724,12 @@ export namespace Prisma {
     format?: boolean
     href?: boolean
     status?: boolean
+    featured?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EbookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "category" | "pages" | "format" | "href" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["ebook"]>
+  export type EbookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "category" | "pages" | "format" | "href" | "status" | "featured" | "createdAt" | "updatedAt", ExtArgs["result"]["ebook"]>
 
   export type $EbookPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Ebook"
@@ -9732,6 +9743,7 @@ export namespace Prisma {
       format: string
       href: string | null
       status: string
+      featured: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["ebook"]>
@@ -10165,6 +10177,7 @@ export namespace Prisma {
     readonly format: FieldRef<"Ebook", 'String'>
     readonly href: FieldRef<"Ebook", 'String'>
     readonly status: FieldRef<"Ebook", 'String'>
+    readonly featured: FieldRef<"Ebook", 'Boolean'>
     readonly createdAt: FieldRef<"Ebook", 'DateTime'>
     readonly updatedAt: FieldRef<"Ebook", 'DateTime'>
   }
@@ -11677,6 +11690,7 @@ export namespace Prisma {
     format: 'format',
     href: 'href',
     status: 'status',
+    featured: 'featured',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12448,6 +12462,7 @@ export namespace Prisma {
     format?: StringFilter<"Ebook"> | string
     href?: StringNullableFilter<"Ebook"> | string | null
     status?: StringFilter<"Ebook"> | string
+    featured?: BoolFilter<"Ebook"> | boolean
     createdAt?: DateTimeFilter<"Ebook"> | Date | string
     updatedAt?: DateTimeFilter<"Ebook"> | Date | string
   }
@@ -12461,6 +12476,7 @@ export namespace Prisma {
     format?: SortOrder
     href?: SortOrderInput | SortOrder
     status?: SortOrder
+    featured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12477,6 +12493,7 @@ export namespace Prisma {
     format?: StringFilter<"Ebook"> | string
     href?: StringNullableFilter<"Ebook"> | string | null
     status?: StringFilter<"Ebook"> | string
+    featured?: BoolFilter<"Ebook"> | boolean
     createdAt?: DateTimeFilter<"Ebook"> | Date | string
     updatedAt?: DateTimeFilter<"Ebook"> | Date | string
   }, "id">
@@ -12490,6 +12507,7 @@ export namespace Prisma {
     format?: SortOrder
     href?: SortOrderInput | SortOrder
     status?: SortOrder
+    featured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EbookCountOrderByAggregateInput
@@ -12511,6 +12529,7 @@ export namespace Prisma {
     format?: StringWithAggregatesFilter<"Ebook"> | string
     href?: StringNullableWithAggregatesFilter<"Ebook"> | string | null
     status?: StringWithAggregatesFilter<"Ebook"> | string
+    featured?: BoolWithAggregatesFilter<"Ebook"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Ebook"> | Date | string
   }
@@ -13247,6 +13266,7 @@ export namespace Prisma {
     format?: string
     href?: string | null
     status?: string
+    featured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13260,6 +13280,7 @@ export namespace Prisma {
     format?: string
     href?: string | null
     status?: string
+    featured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13273,6 +13294,7 @@ export namespace Prisma {
     format?: StringFieldUpdateOperationsInput | string
     href?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    featured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13286,6 +13308,7 @@ export namespace Prisma {
     format?: StringFieldUpdateOperationsInput | string
     href?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    featured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13299,6 +13322,7 @@ export namespace Prisma {
     format?: string
     href?: string | null
     status?: string
+    featured?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13312,6 +13336,7 @@ export namespace Prisma {
     format?: StringFieldUpdateOperationsInput | string
     href?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    featured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13325,6 +13350,7 @@ export namespace Prisma {
     format?: StringFieldUpdateOperationsInput | string
     href?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    featured?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13988,6 +14014,7 @@ export namespace Prisma {
     format?: SortOrder
     href?: SortOrder
     status?: SortOrder
+    featured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14005,6 +14032,7 @@ export namespace Prisma {
     format?: SortOrder
     href?: SortOrder
     status?: SortOrder
+    featured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14018,6 +14046,7 @@ export namespace Prisma {
     format?: SortOrder
     href?: SortOrder
     status?: SortOrder
+    featured?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

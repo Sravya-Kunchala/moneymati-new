@@ -21,6 +21,27 @@ export interface BookMeta {
 
 export const BOOKS: BookMeta[] = [
   {
+    id: 5,
+    title: "Navratri Financial Empowerment Flip Book",
+    subtitle: "Special Edition",
+    description: "Festive-season strategies to align your money goals with discipline, prosperity, and mindful spending.",
+    category: "INVESTING",
+    categoryColor: "#EC5B13",
+    date: "Oct 07, 2023 · By Admin",
+    readTime: "12 min read",
+    pdf: "/FLIP-BOOK.pdf",
+    cover: "/navatri.svg",
+    cardImage: "/navatri.svg",
+    ctaLabel: "Read Guide",
+    ctaIcon: "read",
+    features: [
+      { title: "Budget the Festive Way", description: "Stay celebratory while protecting your monthly surplus." },
+      { title: "Smart Gifting", description: "Tax-aware gifting and cashback stacking for family purchases." },
+      { title: "Short-Term Parking", description: "Where to park idle cash during the festive period." },
+      { title: "Ritual to Routine", description: "Turn festival discipline into year-round investing habits." },
+    ],
+  },
+  {
     id: 1,
     title: "5 Investing Mistakes",
     subtitle: "You Must Avoid",

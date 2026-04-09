@@ -7,507 +7,526 @@ import Footer from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
+// ─── SIP Formula (Annuity Due — investment at START of each period) ───────────
+// FV = P × [((1 + r)^n - 1) / r] × (1 + r)
+function calcSIP(monthly: number, annualRate: number, years: number) {
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  if (r === 0) return monthly * n;
+  return monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+}
+
+function formatCrore(val: number): string {
+  if (val >= 1e7) return `₹${(val / 1e7).toFixed(2)} Cr`;
+  if (val >= 1e5) return `₹${(val / 1e5).toFixed(2)} L`;
+  return `₹${Math.round(val).toLocaleString("en-IN")}`;
+}
+
+function formatShort(val: number): string {
+  if (val >= 1e7) return `₹${(val / 1e7).toFixed(2)} Cr`;
+  if (val >= 1e5) return `₹${(val / 1e5).toFixed(0)}L`;
+  return `₹${Math.round(val).toLocaleString("en-IN")}`;
+}
+
+// Helpers for numeric input ↔ state sync
+const MIN_MONTHLY = 500;
+const MAX_MONTHLY = 500000;
+function parseNumber(input: string): number | null {
+  const num = parseFloat((input || "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(num) ? num : null;
+}
+function formatINR(val: number): string {
+  return val.toLocaleString("en-IN");
+}
+
+// ─── Slider ───────────────────────────────────────────────────────────────────
+function SIPSlider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  displayValue,
+  minLabel,
+  maxLabel,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (v: number) => void;
+  displayValue: string;
+  minLabel: string;
+  maxLabel: string;
+}) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "#888" }}>
+          {label}
+        </span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "#0d3d20" }}>{displayValue}</span>
+      </div>
+      <div style={{ position: "relative", height: 20, display: "flex", alignItems: "center" }}>
+        {/* Track background */}
+        <div style={{ position: "absolute", left: 0, right: 0, height: 4, borderRadius: 99, background: "#e8e4dc" }} />
+        {/* Track fill */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            width: `${pct}%`,
+            height: 4,
+            borderRadius: 99,
+            background: "linear-gradient(90deg, #0d3d20, #11D462)",
+          }}
+        />
+        {/* Thumb dot */}
+        <div
+          style={{
+            position: "absolute",
+            left: `calc(${pct}% - 8px)`,
+            width: 16,
+            height: 16,
+            borderRadius: "50%",
+            background: "#11D462",
+            border: "2.5px solid #fff",
+            boxShadow: "0 2px 8px rgba(17,212,98,0.45)",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(parseFloat(e.target.value))}
+          style={{
+            position: "absolute",
+            inset: "-6px 0",
+            width: "100%",
+            height: "32px",
+            opacity: 0,
+            cursor: "pointer",
+            zIndex: 5,
+            touchAction: "manipulation",
+            pointerEvents: "auto",
+          }}
+        />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+        <span style={{ fontSize: 11, color: "#aaa" }}>{minLabel}</span>
+        <span style={{ fontSize: 11, color: "#aaa" }}>{maxLabel}</span>
+      </div>
+    </div>
+  );
+}
+
 export default function SIPCalculatorPage() {
-  const [targetAmount, setTargetAmount] = useState("50000");
-  const [years, setYears] = useState("10");
-  const [roi, setRoi] = useState("15.1");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [graphProgress, setGraphProgress] = useState(0);
-  // Confirmation modal removed
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const animFrameRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [monthly,    setMonthly]    = useState(10000);
+  const [annualRate, setAnnualRate] = useState(12);
+  const [years,      setYears]      = useState(10);
+  const [investedInput, setInvestedInput] = useState(formatINR(10000 * 12 * 10));
 
-  const _targetAmount = parseFloat(targetAmount) || 0;
-  const _years = parseFloat(years) || 0;
-  const _roi = parseFloat(roi) || 0;
+  const totalInvested    = monthly * years * 12;
+  const futureValue      = calcSIP(monthly, annualRate, years);
+  const estimatedReturns = Math.max(0, futureValue - totalInvested);
 
-  const monthlyRate = _roi / 100 / 12;
-  const months = _years * 12;
-  const monthlySIP =
-    months > 0 && monthlyRate > 0
-      ? Math.round((_targetAmount * monthlyRate) / (Math.pow(1 + monthlyRate, months) - 1))
-      : 0;
-  const totalInvested = monthlySIP * months;
-  const totalReturns = _targetAmount - totalInvested;
+  // Animated counter for Total Corpus
+  const [displayFV, setDisplayFV] = useState(futureValue);
+  const animRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    return () => { if (animFrameRef.current) clearTimeout(animFrameRef.current); };
-  }, []);
-
-  const addRipple = (e: React.MouseEvent, btn: HTMLButtonElement) => {
-    const rect = btn.getBoundingClientRect();
-    const r = document.createElement("span");
-    const size = Math.max(rect.width, rect.height) * 2.2;
-    r.style.cssText = `position:absolute;border-radius:50%;background:rgba(255,255,255,0.22);width:${size}px;height:${size}px;left:${e.clientX - rect.left - size / 2}px;top:${e.clientY - rect.top - size / 2}px;transform:scale(0);animation:rippleAnim 0.55s ease-out forwards;pointer-events:none;`;
-    btn.appendChild(r);
-    setTimeout(() => r.remove(), 600);
-  };
-
-  const runGraphAnimation = (onDone: () => void) => {
-    setGraphProgress(0);
-    const TOTAL_DURATION = 2800;
-    const INTERVAL = 30;
-    const steps = TOTAL_DURATION / INTERVAL;
-    let step = 0;
+    if (animRef.current) clearTimeout(animRef.current);
+    const start = displayFV;
+    const diff  = futureValue - start;
+    const steps = 20;
+    let i = 0;
     const tick = () => {
-      step++;
-      const raw = step / steps;
-      const eased = 1 - Math.pow(1 - raw, 2.5);
-      const pct = Math.min(100, Math.round(eased * 100));
-      setGraphProgress(pct);
-      if (step < steps) {
-        animFrameRef.current = setTimeout(tick, INTERVAL);
-      } else {
-        setTimeout(onDone, 120);
-      }
+      i++;
+      setDisplayFV(start + diff * (1 - Math.pow(1 - i / steps, 3)));
+      if (i < steps) animRef.current = setTimeout(tick, 16);
     };
-    animFrameRef.current = setTimeout(tick, INTERVAL);
+    animRef.current = setTimeout(tick, 16);
+    return () => { if (animRef.current) clearTimeout(animRef.current); };
+  }, [futureValue]);
+
+  // Keep text field in sync when sliders change
+  useEffect(() => {
+    setInvestedInput(formatINR(totalInvested));
+  }, [totalInvested]);
+
+  const handleInvestedChange = (val: string) => {
+    setInvestedInput(val);
+    const parsed = parseNumber(val);
+    if (parsed === null) return;
+    const calcMonthly = parsed / (years * 12);
+    if (!Number.isFinite(calcMonthly)) return;
+    const clamped = Math.min(Math.max(calcMonthly, MIN_MONTHLY), MAX_MONTHLY);
+    // Snap to nearest 500 like the slider step to keep them in sync
+    const snapped = Math.round(clamped / 500) * 500;
+    setMonthly(snapped);
   };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (loading || done) return;
-    const btn = btnRef.current;
-    if (!btn) return;
-    addRipple(e, btn);
-    setLoading(true);
-    setSubmitted(false);
-    setDone(false);
-    runGraphAnimation(() => {
-      setLoading(false);
-      setDone(true);
-      setSubmitted(true);
-      setTimeout(() => setDone(false), 2800);
-      // confirmation removed
-    });
-  };
-
-  // Build line chart data: yearly SIP growth
-  const numYears = Math.max(1, Math.min(Math.round(_years), 15));
-  const chartBars = Array.from({ length: numYears }, (_, i) => {
-    const y = i + 1;
-    const m = y * 12;
-    const invested = monthlySIP * m;
-    const value = monthlyRate > 0
-      ? monthlySIP * ((Math.pow(1 + monthlyRate, m) - 1) / monthlyRate)
-      : invested;
-    return { year: y, value, invested };
-  });
-  const maxValRaw = chartBars.length > 0 ? Math.max(...chartBars.map((b) => b.value)) : 1;
-  const maxVal = Number.isFinite(maxValRaw) && maxValRaw > 0 ? maxValRaw : 1;
-
-  const gp = Number.isFinite(graphProgress) ? graphProgress : 0;
-
-  // SVG line points
-  const svgW = 320; const svgH = 40;
-  const pad = { l: 4, r: 4, t: 4, b: 4 };
-  const mkPoints = (vals: number[]) =>
-    vals.map((v, i) => {
-      const x = pad.l + (i / Math.max(vals.length - 1, 1)) * (svgW - pad.l - pad.r);
-      const y = svgH - pad.b - (v / maxVal) * (svgH - pad.t - pad.b);
-      return `${x},${y}`;
-    }).join(" ");
-  const investedPts = mkPoints(chartBars.map((b) => b.invested));
-  const growthPts   = mkPoints(chartBars.map((b) => b.value));
 
   return (
-    <div className={inter.className} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh", fontFamily: "var(--font-inter), sans-serif" }}>
+    <div
+      className={inter.className}
+      style={{ backgroundColor: "#f5f0e8", minHeight: "100vh", fontFamily: "var(--font-inter), sans-serif" }}
+    >
       <style>{`
-        @keyframes rippleAnim  { to { transform: scale(4); opacity: 0; } }
-        @keyframes spin        { to { transform: rotate(360deg); } }
-        @keyframes drawCheck   { from { stroke-dashoffset:30; opacity:0; } to { stroke-dashoffset:0; opacity:1; } }
-        @keyframes resultIn    { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
-        @keyframes countUp     { from { opacity:0; transform:translateY(8px) scale(0.9); } to { opacity:1; transform:translateY(0) scale(1); } }
-        @keyframes fadeInDown  { from { opacity:0; transform:translateY(-24px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes fadeInUp    { from { opacity:0; transform:translateY(40px);  } to { opacity:1; transform:translateY(0); } }
-        @keyframes fadeIn      { from { opacity:0; } to { opacity:1; } }
-        @keyframes scaleIn     { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
-        @keyframes cardIn      { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes btnPulse    { 0% { box-shadow:0 0 0 0 rgba(17,212,98,0.55); } 70% { box-shadow:0 0 0 14px rgba(17,212,98,0); } 100% { box-shadow:0 0 0 0 rgba(17,212,98,0); } }
-        @keyframes graphIn     { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes scanLine    { 0% { left:0%; opacity:0.8; } 100% { left:100%; opacity:0; } }
-        @keyframes pulseDot    { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.7); opacity:0.4; } }
-        @keyframes tickerBlink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        @keyframes fadeInUp   { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn     { from { opacity:0; } to { opacity:1; } }
+        @keyframes scaleIn    { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
+        @keyframes cardIn     { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInDown { from { opacity:0; transform:translateY(-24px); } to { opacity:1; transform:translateY(0); } }
 
-        .anim-hero         { animation: fadeIn     0.8s ease 0.0s  both; }
-        .anim-hero-text    { animation: fadeInDown 0.7s ease 0.15s both; }
-        .anim-overlap-card { animation: scaleIn    0.7s ease 0.3s  both; }
-        .anim-calculator   { animation: fadeInUp   0.7s ease 0.2s  both; }
-        .anim-sip-section  { animation: fadeInUp   0.7s ease 0.25s both; }
-        .anim-sip-card-0   { animation: cardIn     0.6s ease 0.3s  both; }
-        .anim-sip-card-1   { animation: cardIn     0.6s ease 0.42s both; }
-        .anim-sip-card-2   { animation: cardIn     0.6s ease 0.54s both; }
-        .anim-calc-header  { animation: fadeInUp   0.6s ease 0.25s both; }
-        .anim-calc-card-0  { animation: cardIn     0.5s ease 0.3s  both; }
-        .anim-calc-card-1  { animation: cardIn     0.5s ease 0.38s both; }
-        .anim-calc-card-2  { animation: cardIn     0.5s ease 0.46s both; }
-        .anim-calc-card-3  { animation: cardIn     0.5s ease 0.54s both; }
+        .anim-hero        { animation: fadeIn     0.8s ease 0.00s both; }
+        .anim-hero-text   { animation: fadeInDown 0.7s ease 0.15s both; }
+        .anim-overlap     { animation: scaleIn    0.7s ease 0.30s both; }
+        .anim-calc        { animation: fadeInUp   0.7s ease 0.20s both; }
+        .anim-sip-card-0  { animation: cardIn     0.6s ease 0.30s both; }
+        .anim-sip-card-1  { animation: cardIn     0.6s ease 0.42s both; }
+        .anim-sip-card-2  { animation: cardIn     0.6s ease 0.54s both; }
+        .anim-calc-card-0 { animation: cardIn     0.5s ease 0.30s both; }
+        .anim-calc-card-1 { animation: cardIn     0.5s ease 0.38s both; }
+        .anim-calc-card-2 { animation: cardIn     0.5s ease 0.46s both; }
+        .anim-calc-card-3 { animation: cardIn     0.5s ease 0.54s both; }
 
-        .sip-field { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
-        .sip-field label { font-size:13px; font-weight:600; color:#333; }
-        .sip-input-wrap { display:flex; align-items:center; background:#f0ede8; border-radius:12px; padding:14px 16px; gap:8px; transition:background 0.2s, box-shadow 0.2s; }
-        .sip-input-wrap:focus-within { background:#e8e4de; box-shadow:0 0 0 2px rgba(13,61,32,0.15); }
-        .sip-input-wrap .prefix { font-size:15px; color:#555; font-weight:500; }
-        .sip-input-wrap .suffix { font-size:14px; color:#888; font-weight:500; margin-left:auto; }
-        .sip-input-wrap input { border:none; outline:none; background:transparent; font-size:15px; font-weight:500; color:#222; width:100%; font-family:var(--font-inter),sans-serif; }
-        .sip-input-wrap input:disabled { color:#555; }
+        .why-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        .grid-4col { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
 
-        .submit-btn { width:100%; padding:16px; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; font-family:var(--font-inter),sans-serif; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:10px; transition:background 0.3s, transform 0.1s, box-shadow 0.3s; background:#0d3d20; color:#ffffff; }
-        .submit-btn:hover:not(:disabled) { background:#0a2e18; transform:translateY(-1px); box-shadow:0 6px 20px rgba(13,61,32,0.35); }
-        .submit-btn:active:not(:disabled) { transform:scale(0.98) translateY(0); }
-        .submit-btn.btn-loading { background:#0d3d20; pointer-events:none; }
-        .submit-btn.btn-done   { background:#11803a; animation:btnPulse 0.75s ease; }
-
-        .btn-spinner { width:18px; height:18px; border:2.5px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.65s linear infinite; flex-shrink:0; }
-        .btn-check { width:20px; height:20px; stroke:#fff; stroke-width:2.5; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
-        .btn-check polyline { stroke-dasharray:30; stroke-dashoffset:0; animation:drawCheck 0.35s ease 0.05s both; }
-
-        .result-card    { animation:resultIn 0.5s cubic-bezier(0.34,1.4,0.64,1) both; }
-        .result-value   { animation:countUp  0.4s cubic-bezier(0.34,1.4,0.64,1) both; }
-        .result-value-1 { animation-delay:0.05s; }
-        .result-value-2 { animation-delay:0.13s; }
-        .result-value-3 { animation-delay:0.21s; }
-
-        .grid-3col-result { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; text-align:center; }
-        .grid-4col        { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-        .why-grid         { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        /* Make the hidden range input reliably draggable across browsers */
+        input[type=range] {
+          -webkit-appearance:none;
+          appearance:none;
+          background:transparent;
+          width:100%;
+        }
+        /* Give the invisible thumb a real hit-area so drag works on Safari/Firefox */
+        input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance:none;
+          width:26px;
+          height:26px;
+          background:transparent;
+          cursor:grab;
+        }
+        input[type=range]::-moz-range-thumb {
+          width:26px;
+          height:26px;
+          background:transparent;
+          border:none;
+          cursor:grab;
+        }
+        input[type=range]::-webkit-slider-runnable-track,
+        input[type=range]::-moz-range-track {
+          background:transparent;
+          height:6px;
+        }
 
         @media (max-width:767px) {
-          .hero-section { padding:60px 20px 100px !important; min-height:260px !important; }
-          .hero-section h1 { font-size:32px !important; }
-          .hero-section p  { font-size:13px !important; }
-          .hero-overlap-outer { position:static !important; bottom:auto !important; left:auto !important; transform:none !important; padding:0 16px !important; margin-top:-70px !important; box-sizing:border-box !important; }
-          .hero-overlap-card { padding:24px 18px !important; }
+          .hero-section        { padding:60px 20px 100px !important; min-height:260px !important; }
+          .hero-section h1     { font-size:32px !important; }
+          .hero-overlap-outer  { position:static !important; bottom:auto !important; left:auto !important; transform:none !important; padding:0 16px !important; margin-top:-70px !important; }
+          .hero-overlap-card   { padding:24px 18px !important; }
           .hero-overlap-card h2 { font-size:19px !important; }
-          .hero-spacer { height:32px !important; }
-          .main-content { padding:0 16px 32px !important; }
-          .calc-card { padding:22px 16px !important; }
-          .grid-3col-result { grid-template-columns:1fr !important; gap:10px !important; text-align:left !important; }
-          .grid-3col-result > div { display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:10px; padding:12px 14px; }
-          .grid-3col-result > div > div:first-child { font-size:12px !important; }
-          .grid-3col-result > div > div:last-child  { font-size:15px !important; }
-          .why-section { padding:24px 16px !important; }
-          .why-section h2 { font-size:20px !important; }
-          .why-grid { grid-template-columns:1fr !important; gap:12px !important; }
-          .grid-4col { grid-template-columns:1fr 1fr !important; gap:12px !important; }
-          .other-calc-header { margin-bottom:14px !important; }
-          .other-calc-header h3 { font-size:15px !important; }
-          .sip-input-wrap { padding:12px 14px !important; }
-          .sip-input-wrap input { font-size:14px !important; }
-          .sip-field label { font-size:12px !important; }
-          .submit-btn { font-size:15px !important; padding:14px !important; }
+          .hero-spacer         { height:32px !important; }
+          .main-content        { padding:0 16px 32px !important; }
+          .sip-split           { flex-direction:column !important; }
+          .sip-split > *       { width:100% !important; }
+          .why-grid            { grid-template-columns:1fr !important; gap:12px !important; }
+          .grid-4col           { grid-template-columns:1fr 1fr !important; gap:12px !important; }
+          .why-section         { padding:24px 16px !important; }
         }
         @media (min-width:768px) and (max-width:1023px) {
-          .hero-section { padding:70px 32px 110px !important; }
-          .main-content { padding:0 32px 40px !important; }
-          .hero-overlap-outer { padding:0 32px !important; }
-          .grid-4col { grid-template-columns:1fr 1fr !important; gap:14px !important; }
-          .why-grid  { grid-template-columns:1fr 1fr !important; gap:16px !important; }
+          .hero-section        { padding:70px 32px 110px !important; }
+          .main-content        { padding:0 32px 40px !important; }
+          .hero-overlap-outer  { padding:0 32px !important; }
+          .grid-4col           { grid-template-columns:1fr 1fr !important; }
+          .why-grid            { grid-template-columns:1fr 1fr !important; }
         }
       `}</style>
 
       <Header />
 
+      {/* ── Hero ── */}
       <div style={{ position: "relative" }}>
-        <div className="anim-hero hero-section" style={{ position:"relative", minHeight:"320px", padding:"80px 48px 120px", backgroundColor:"#0d2818" }}>
-          <img src="/financial-planning.svg" alt="" style={{ position:"absolute",top:0,left:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",display:"block",zIndex:0 }} />
-          <div style={{ position:"absolute",inset:0,backgroundColor:"rgba(4,40,28,0.25)",zIndex:1 }} />
-          <div style={{ position:"absolute",inset:0,background:"linear-gradient(135deg,rgba(14,61,39,0.4) 0%,rgba(26,92,58,0.2) 100%)",zIndex:1 }} />
-          <div className="anim-hero-text" style={{ position:"relative",zIndex:2,maxWidth:"1200px",margin:"0 auto" }}>
-            <div style={{ fontSize:13,color:"#11D462",marginBottom:12 }}>
-              <a href="/" style={{ color:"#11D462",textDecoration:"none" }}>Home</a>
-              <span style={{ margin:"0 8px",color:"#ffffff50" }}>›</span>
-              <a href="/calucator" style={{ color:"#11D462",textDecoration:"none" }}>Calculator</a>
-              <span style={{ margin:"0 8px",color:"#ffffff50" }}>›</span>
-              <span style={{ color:"#11D462",fontWeight:600 }}>SIP Calculator</span>
+        <div
+          className="anim-hero hero-section"
+          style={{ position: "relative", minHeight: 320, padding: "80px 48px 120px", backgroundColor: "#0d2818" }}
+        >
+          <img
+            src="/financial-planning.svg"
+            alt=""
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", zIndex: 0 }}
+          />
+          <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(4,40,28,0.25)", zIndex: 1 }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(14,61,39,0.4) 0%,rgba(26,92,58,0.2) 100%)", zIndex: 1 }} />
+
+          <div className="anim-hero-text" style={{ position: "relative", zIndex: 2, maxWidth: 1200, margin: "0 auto" }}>
+            <div style={{ fontSize: 13, color: "#11D462", marginBottom: 12 }}>
+              <a href="/" style={{ color: "#11D462", textDecoration: "none" }}>Home</a>
+              <span style={{ margin: "0 8px", color: "#ffffff50" }}>›</span>
+              <a href="/calucator" style={{ color: "#11D462", textDecoration: "none" }}>Calculator</a>
+              <span style={{ margin: "0 8px", color: "#ffffff50" }}>›</span>
+              <span style={{ color: "#11D462", fontWeight: 600 }}>SIP Calculator</span>
             </div>
-            <h1 style={{ margin:0,fontSize:"clamp(36px,5vw,54px)",color:"#ffffff",fontWeight:800,lineHeight:1.1 }}>
-              SIP <span style={{ color:"#11D462",fontStyle:"italic" }}>Calculator</span>
+            <h1 style={{ margin: 0, fontSize: "clamp(36px,5vw,54px)", color: "#ffffff", fontWeight: 800, lineHeight: 1.1 }}>
+              SIP <span style={{ color: "#11D462", fontStyle: "italic" }}>Calculator</span>
             </h1>
-            <p style={{ color:"rgba(255,255,255,0.7)",fontSize:15,lineHeight:1.7,maxWidth:500,marginTop:16 }}>
-              Plan your path to financial freedom with precision. Our premium tools help you visualize the power of compounded growth and consistent investing.
+            <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 15, lineHeight: 1.7, maxWidth: 500, marginTop: 16 }}>
+              Plan your path to financial freedom with precision. Our premium tools help you visualize
+              the power of compounded growth and consistent investing.
             </p>
           </div>
         </div>
 
-        <div className="hero-overlap-outer" style={{ position:"absolute",bottom:"-140px",left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"680px",zIndex:10,padding:"0 24px",boxSizing:"border-box" }}>
-          <div className="anim-overlap-card hero-overlap-card" style={{ background:"#ffffff",borderRadius:20,padding:"40px",textAlign:"center",boxShadow:"0 8px 40px rgba(0,0,0,0.12)" }}>
-            <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.8px",textTransform:"uppercase",color:"#11D462" }}>INVESTMENT STRATEGY</span>
-            <h2 style={{ fontSize:28,fontWeight:800,color:"#0d1f0d",margin:"12px 0 12px" }}>Plan Your Investment With SIP</h2>
-            <p style={{ fontSize:14,color:"#666",lineHeight:1.7,maxWidth:420,margin:"0 auto" }}>
-              Systematic Investment Plan (SIP) allows you to invest small amounts periodically. Calculate exactly how much you need to contribute monthly to reach your long-term wealth goals.
+        {/* Overlap white card */}
+        <div
+          className="hero-overlap-outer"
+          style={{ position: "absolute", bottom: "-140px", left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 680, zIndex: 10, padding: "0 24px", boxSizing: "border-box" }}
+        >
+          <div
+            className="anim-overlap hero-overlap-card"
+            style={{ background: "#ffffff", borderRadius: 20, padding: "40px", textAlign: "center", boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#11D462" }}>
+              INVESTMENT STRATEGY
+            </span>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1f0d", margin: "12px 0 12px" }}>
+              Plan Your Investment With SIP
+            </h2>
+            <p style={{ fontSize: 14, color: "#666", lineHeight: 1.7, maxWidth: 420, margin: "0 auto" }}>
+              Systematic Investment Plan (SIP) allows you to invest small amounts periodically.
+              See exactly how your wealth compounds over time with our real-time calculator.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="hero-spacer" style={{ height:"180px",backgroundColor:"#f5f0e8" }} />
+      <div className="hero-spacer" style={{ height: 180, backgroundColor: "#f5f0e8" }} />
 
-      <div className="main-content" style={{ maxWidth:"1200px",margin:"0 auto",padding:"0 48px 48px",backgroundColor:"#f5f0e8",position:"relative",zIndex:1 }}>
+      <div
+        className="main-content"
+        style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px 48px", backgroundColor: "#f5f0e8", position: "relative", zIndex: 1 }}
+      >
 
-        <div className="anim-calculator" style={{ marginBottom:32,position:"relative",zIndex:1 }}>
-          <div className="calc-card" style={{ background:"#ffffff",borderRadius:20,padding:"36px 40px",boxShadow:"0 2px 16px rgba(0,0,0,0.07)",maxWidth:680,margin:"0 auto" }}>
+        {/* ── CALCULATOR ── */}
+        <div className="anim-calc" style={{ marginBottom: 32 }}>
 
-            <div className="sip-field">
-              <label>Your Goal or Target (to be reached) <span>*</span></label>
-              <div className="sip-input-wrap">
-                <span className="prefix">₹</span>
-                <input type="number" value={targetAmount}
-                  onChange={(e) => { setTargetAmount(e.target.value); setSubmitted(false); setDone(false); }}
-                  placeholder="50,000" />
-              </div>
+          {/* Section heading */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#0d3d20", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2" />
+                <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0d1f0d" }}>SIP Investments</h2>
+          </div>
+
+          {/* Split: LEFT sliders / RIGHT dark result */}
+          <div className="sip-split" style={{ display: "flex", gap: 20, alignItems: "stretch" }}>
+
+            {/* LEFT — sliders */}
+            <div style={{ flex: "1 1 50%", background: "#ffffff", borderRadius: 20, padding: "32px 36px", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
+
+              <SIPSlider
+                label="Monthly Investment (₹)"
+                value={monthly}
+                min={500}
+                max={500000}
+                step={500}
+                onChange={setMonthly}
+                displayValue={`₹ ${monthly.toLocaleString("en-IN")}`}
+                minLabel="₹500"
+                maxLabel="₹5L"
+              />
+
+              <SIPSlider
+                label="Expected Annual Return (%)"
+                value={annualRate}
+                min={1}
+                max={30}
+                step={0.5}
+                onChange={setAnnualRate}
+                displayValue={`${annualRate}%`}
+                minLabel="1%"
+                maxLabel="30%"
+              />
+
+              <SIPSlider
+                label="Investment Duration (Years)"
+                value={years}
+                min={1}
+                max={40}
+                step={1}
+                onChange={setYears}
+                displayValue={`${years} Years`}
+                minLabel="1yr"
+                maxLabel="40yr"
+              />
             </div>
 
-            <div className="sip-field">
-              <label>Years to reach goal <span>*</span></label>
-              <div className="sip-input-wrap">
-                <input type="number" value={years}
-                  onChange={(e) => { setYears(e.target.value); setSubmitted(false); setDone(false); }}
-                  placeholder="10" />
-                <span className="suffix">Years</span>
-              </div>
-            </div>
-
-            <div className="sip-field">
-              <label>Expected Returns (%)</label>
-              <div className="sip-input-wrap">
-                <input type="number" step={0.1} value={roi}
-                  onChange={(e) => { setRoi(e.target.value); setSubmitted(false); setDone(false); }}
-                  placeholder="15.1" />
-                <span className="suffix">%</span>
-              </div>
-            </div>
-
-            <div className="sip-field">
-              <label>Monthly SIP that needs to be done</label>
-              <div className="sip-input-wrap" style={{ background:"#f0ede8" }}>
-                <input type="text"
-                  value={submitted ? monthlySIP.toLocaleString("en-IN") : ""}
-                  disabled
-                  placeholder={submitted ? "" : "—"}
-                  style={{ color: submitted ? "#0d3d20" : "#aaa", fontWeight: submitted ? 700 : 400 }} />
-                <span className="suffix">/ mo</span>
-              </div>
-            </div>
-
-            <button
-              ref={btnRef}
-              className={`submit-btn${loading ? " btn-loading" : ""}${done ? " btn-done" : ""}`}
-              onClick={handleSubmit}
-              disabled={loading}
+            {/* RIGHT — dark results */}
+            <div
+              style={{ flex: "1 1 50%", background: "#0d2818", borderRadius: 20, padding: "32px 36px", boxShadow: "0 8px 40px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
             >
-              {loading && <span className="btn-spinner" />}
-              {done && (
-                <svg className="btn-check" viewBox="0 0 20 20" width="20" height="20">
-                  <polyline points="3,10 8,15 17,5" />
-                </svg>
-              )}
-              <span>{loading ? "Calculating…" : done ? "Done!" : "Submit"}</span>
-            </button>
+              <div>
+                {/* Badge */}
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(17,212,98,0.12)", border: "1px solid rgba(17,212,98,0.2)", borderRadius: 99, padding: "4px 12px", marginBottom: 24 }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#11D462" }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#11D462" }}>
+                    Calculation Result
+                  </span>
+                </div>
 
-            {/* ── Compact Launch-Style Graph Overlay ── */}
-            {loading && (
-              <div style={{
-                marginTop: 16,
-                background: "#0b2e17",
-                borderRadius: 12,
-                padding: "14px 16px 12px",
-                border: "1px solid rgba(17,212,98,0.12)",
-                position: "relative",
-                overflow: "hidden",
-                animation: "graphIn 0.35s ease both"
-              }}>
-                {/* Scan line */}
-                <div style={{
-                  position: "absolute", top: 0, bottom: 0, width: 2,
-                  background: "linear-gradient(180deg,rgba(17,212,98,0.7) 0%,rgba(17,212,98,0) 100%)",
-                  borderRadius: 1, pointerEvents: "none",
-                  animation: "scanLine 1.6s cubic-bezier(0.4,0,0.6,1) infinite"
-                }} />
+                {/* Amount Invested */}
+                <div style={{ marginBottom: 24 }}>
+                  <p style={{ margin: "0 0 6px", fontSize: 12, color: "rgba(255,255,255,0.45)", fontWeight: 500 }}>Amount invested</p>
+                  <input
+                    value={investedInput}
+                    onChange={(e) => handleInvestedChange(e.target.value)}
+                    onBlur={() => setInvestedInput(formatINR(totalInvested))}
+                    inputMode="decimal"
+                    style={{
+                      width: "100%",
+                      padding: "12px 14px",
+                      borderRadius: 10,
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      background: "rgba(255,255,255,0.08)",
+                      color: "#ffffff",
+                      fontSize: 22,
+                      fontWeight: 800,
+                      letterSpacing: "-0.4px",
+                      outline: "none",
+                      boxShadow: "inset 0 1px 2px rgba(0,0,0,0.18)",
+                    }}
+                  />
+                  <p style={{ margin: "6px 0 0", fontSize: 11, color: "rgba(255,255,255,0.5)" }}>
+                    Type total invested corpus to auto-adjust monthly SIP.
+                  </p>
+                </div>
 
-                {/* Ticker row */}
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                    <div style={{
-                      width: 6, height: 6,
-                      background: "#11D462", borderRadius: "50%",
-                      animation: "pulseDot 1s ease-in-out infinite"
-                    }} />
-                    <span style={{ fontSize:9, fontWeight:700, letterSpacing:"0.7px", textTransform:"uppercase", color:"rgba(255,255,255,0.35)" }}>
-                      Wealth Projection
-                    </span>
-                  </div>
-                  <div style={{ display:"flex", alignItems:"baseline", gap:5 }}>
-                    <span style={{
-                      fontSize: 13, fontWeight: 800, color: "#11D462",
-                      fontVariantNumeric: "tabular-nums",
-                      animation: "tickerBlink 1.2s ease-in-out infinite"
-                    }}>
-                      ₹{Math.round((_targetAmount * graphProgress) / 100).toLocaleString("en-IN")}
-                    </span>
-                    <span style={{ fontSize:9, fontWeight:700, color:"rgba(255,255,255,0.3)" }}>
-                      ↑ {graphProgress}%
+                {/* Estimated Returns */}
+                <div style={{ marginBottom: 28 }}>
+                  <p style={{ margin: "0 0 6px", fontSize: 12, color: "rgba(255,255,255,0.45)", fontWeight: 500 }}>Estimated returns</p>
+                  <p style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.5px" }}>
+                    {formatCrore(estimatedReturns)}
+                  </p>
+                </div>
+
+                <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 24 }} />
+
+                {/* Total Corpus */}
+                <div style={{ marginBottom: 20 }}>
+                  <p style={{ margin: "0 0 10px", fontSize: 14, color: "rgba(255,255,255,0.55)", fontWeight: 500 }}>Total Corpus</p>
+                  <div style={{ background: "#11D462", borderRadius: 14, padding: "18px 24px", textAlign: "center" }}>
+                    <span style={{ fontSize: 28, fontWeight: 900, color: "#0a2015", letterSpacing: "-0.5px" }}>
+                      {formatCrore(displayFV)}
                     </span>
                   </div>
                 </div>
 
-                {/* SVG line chart — compact, launch-page style */}
-                <div style={{ position:"relative", height:40, marginBottom:6 }}>
-                  {[0,1,2].map(i => (
-                    <div key={i} style={{
-                      position:"absolute", left:0, right:0,
-                      top:`${i * 33}%`, height:1,
-                      background:"rgba(255,255,255,0.04)"
-                    }} />
-                  ))}
-                  <svg
-                    style={{ position:"absolute", inset:0, width:"100%", height:"100%", overflow:"visible" }}
-                    viewBox={`0 0 ${svgW} ${svgH}`}
-                    preserveAspectRatio="none"
-                  >
-                    <defs>
-                    <clipPath id="revealClip2">
-                      <rect x="0" y="0" width={svgW * gp / 100} height={svgH} />
-                    </clipPath>
-                  </defs>
-
-                    {/* Invested line */}
-                    {chartBars.length > 1 && (
-                      <polyline
-                        points={investedPts}
-                        fill="none"
-                        stroke="rgba(255,255,255,0.25)"
-                        strokeWidth="1.2"
-                        strokeDasharray={svgW * 3}
-                        strokeDashoffset={svgW * 3 * (1 - gp / 100)}
-                        style={{ transition:"stroke-dashoffset 0.06s linear" }}
-                      />
-                    )}
-
-                    {/* Growth line */}
-                    {chartBars.length > 1 && (
-                      <polyline
-                        points={growthPts}
-                        fill="none"
-                        stroke="#11D462"
-                        strokeWidth="2"
-                        strokeDasharray={svgW * 3}
-                        strokeDashoffset={svgW * 3 * (1 - gp / 100)}
-                        style={{ transition:"stroke-dashoffset 0.06s linear" }}
-                      />
-                    )}
-
-                    {/* Glowing dot at head of growth line */}
-                    {chartBars.length > 1 && graphProgress > 0 && (() => {
-                      const pts = growthPts.split(" ");
-                      const lastIdx = Math.max(0, Math.floor((graphProgress / 100) * (pts.length - 1)));
-                      const coord = pts[Math.min(lastIdx, pts.length - 1)]?.split(",");
-                      if (!coord) return null;
-                      const cx = parseFloat(coord[0]);
-                      const cy = parseFloat(coord[1]);
-                      return (
-                        <>
-                          <circle cx={cx} cy={cy} r="4" fill="#11D462" fillOpacity="0.2" />
-                          <circle cx={cx} cy={cy} r="2.5" fill="#11D462" />
-                        </>
-                      );
-                    })()}
-                  </svg>
-                </div>
-
-                {/* Legend + progress bar */}
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
-                  <div style={{ display:"flex", gap:10 }}>
-                    {([["#11D462", "Growth"], ["rgba(255,255,255,0.2)", "Invested"]] as const).map(([color, label]) => (
-                      <div key={label} style={{ display:"flex", alignItems:"center", gap:4 }}>
-                        <div style={{ width:7, height:7, borderRadius:2, background:color }} />
-                        <span style={{ fontSize:9, color:"rgba(255,255,255,0.35)", fontWeight:600 }}>{label}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ flex:1, height:2, background:"rgba(255,255,255,0.07)", borderRadius:99, overflow:"hidden" }}>
-                    <div style={{
-                      height:"100%",
-                      width:`${graphProgress}%`,
-                      borderRadius:99,
-                      background:"linear-gradient(90deg,#11D462,#34d399)",
-                      transition:"width 0.06s linear"
-                    }} />
-                  </div>
-                </div>
               </div>
-            )}
 
-            {/* Result summary */}
-            {submitted && (
-              <div className="result-card" style={{ marginTop:24,padding:"20px",background:"#f0faf4",borderRadius:12,border:"1px solid #c3e6d0" }}>
-                <div className="grid-3col-result">
-                  <div>
-                    <div style={{ fontSize:12,color:"#666",marginBottom:4 }}>Monthly SIP</div>
-                    <div className="result-value result-value-1" style={{ fontSize:18,fontWeight:800,color:"#0d3d20" }}>
-                      ₹{monthlySIP.toLocaleString("en-IN")}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize:12,color:"#666",marginBottom:4 }}>Total Invested</div>
-                    <div className="result-value result-value-2" style={{ fontSize:18,fontWeight:800,color:"#0d3d20" }}>
-                      ₹{totalInvested.toLocaleString("en-IN")}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize:12,color:"#666",marginBottom:4 }}>Returns Earned</div>
-                    <div className="result-value result-value-3" style={{ fontSize:18,fontWeight:800,color:"#11D462" }}>
-                      ₹{totalReturns.toLocaleString("en-IN")}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
+            </div>
           </div>
         </div>
 
-        {/* Why Invest via SIP */}
-        <div className="anim-sip-section why-section" style={{ marginBottom:32,background:"#ffffff",borderRadius:20,padding:"40px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
-          <h2 style={{ fontSize:28,fontWeight:800,color:"#0d1f0d",textAlign:"center",marginBottom:8 }}>Why Invest via SIP?</h2>
-          <div style={{ width:40,height:3,background:"#11D462",borderRadius:2,margin:"0 auto 32px" }} />
+        {/* ── Why Invest via SIP ── */}
+        <div
+          className="anim-sip-card-0 why-section"
+          style={{ marginBottom: 32, background: "#ffffff", borderRadius: 20, padding: "40px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+        >
+          <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1f0d", textAlign: "center", marginBottom: 8 }}>
+            Why Invest via SIP?
+          </h2>
+          <div style={{ width: 40, height: 3, background: "#11D462", borderRadius: 2, margin: "0 auto 32px" }} />
           <div className="why-grid">
             {[
-              { icon: (<svg width="24" height="25" viewBox="0 0 24 25" fill="none"><path d="M3.75 25V19.625C2.5625 18.5417 1.64062 17.276 0.984375 15.8281C0.328125 14.3802 0 12.8542 0 11.25C0 8.125 1.09375 5.46875 3.28125 3.28125C5.46875 1.09375 8.125 0 11.25 0C13.8542 0 16.1615 0.765625 18.1719 2.29688C20.1823 3.82812 21.4896 5.82292 22.0938 8.28125L23.7188 14.6875C23.8229 15.0833 23.75 15.4427 23.5 15.7656C23.25 16.0885 22.9167 16.25 22.5 16.25H20V20C20 20.6875 19.7552 21.276 19.2656 21.7656C18.776 22.2552 18.1875 22.5 17.5 22.5H15V25H12.5V20H17.5V13.75H20.875L19.6875 8.90625C19.2083 7.01042 18.1875 5.46875 16.625 4.28125C15.0625 3.09375 13.2708 2.5 11.25 2.5C8.83333 2.5 6.77083 3.34375 5.0625 5.03125C3.35417 6.71875 2.5 8.77083 2.5 11.1875C2.5 12.4375 2.75521 13.625 3.26562 14.75C3.77604 15.875 4.5 16.875 5.4375 17.75L6.25 18.5V25H3.75ZM10 16.25H12.5L12.6875 14.6875C12.8542 14.625 13.0052 14.5521 13.1406 14.4688C13.276 14.3854 13.3958 14.2917 13.5 14.1875L14.9375 14.8125L16.1875 12.6875L14.9375 11.75C14.9792 11.5833 15 11.4167 15 11.25C15 11.0833 14.9792 10.9167 14.9375 10.75L16.1875 9.8125L14.9375 7.6875L13.5 8.3125C13.3958 8.20833 13.276 8.11458 13.1406 8.03125C13.0052 7.94792 12.8542 7.875 12.6875 7.8125L12.5 6.25H10L9.8125 7.8125C9.64583 7.875 9.49479 7.94792 9.35938 8.03125C9.22396 8.11458 9.10417 8.20833 9 8.3125L7.5625 7.6875L6.3125 9.8125L7.5625 10.75C7.52083 10.9167 7.5 11.0833 7.5 11.25C7.5 11.4167 7.52083 11.5833 7.5625 11.75L6.3125 12.6875L7.5625 14.8125L9 14.1875C9.10417 14.2917 9.22396 14.3854 9.35938 14.4688C9.49479 14.5521 9.64583 14.625 9.8125 14.6875L10 16.25ZM11.25 13.125C10.7292 13.125 10.2865 12.9427 9.92188 12.5781C9.55729 12.2135 9.375 11.7708 9.375 11.25C9.375 10.7292 9.55729 10.2865 9.92188 9.92188C10.2865 9.55729 10.7292 9.375 11.25 9.375C11.7708 9.375 12.2135 9.55729 12.5781 9.92188C12.9427 10.2865 13.125 10.7292 13.125 11.25C13.125 11.7708 12.9427 12.2135 12.5781 12.5781C12.2135 12.9427 11.7708 13.125 11.25 13.125Z" fill="#11D462"/></svg>), title:"What is SIP?", desc:"A Systematic Investment Plan (SIP) is a method where you invest a fixed amount regularly in a mutual fund scheme.", cls:"anim-sip-card-0" },
-              { icon: (<svg width="20" height="25" viewBox="0 0 20 25" fill="none"><path d="M10 17.5C12.125 15.5833 13.4896 14.2344 14.0938 13.4531C14.6979 12.6719 15 11.8958 15 11.125C15 10.375 14.7292 9.72917 14.1875 9.1875C13.6458 8.64583 13 8.375 12.25 8.375C11.8125 8.375 11.3906 8.46354 10.9844 8.64062C10.5781 8.81771 10.25 9.0625 10 9.375C9.75 9.0625 9.42708 8.81771 9.03125 8.64062C8.63542 8.46354 8.20833 8.375 7.75 8.375C7 8.375 6.35417 8.64583 5.8125 9.1875C5.27083 9.72917 5 10.375 5 11.125C5 11.5208 5.05208 11.8854 5.15625 12.2188C5.26042 12.5521 5.48958 12.9427 5.84375 13.3906C6.19792 13.8385 6.70312 14.3854 7.35938 15.0312C8.01562 15.6771 8.89583 16.5 10 17.5ZM10 25C7.10417 24.2708 4.71354 22.6094 2.82812 20.0156C0.942708 17.4219 0 14.5417 0 11.375V3.75L10 0L20 3.75V11.375C20 14.5417 19.0573 17.4219 17.1719 20.0156C15.2865 22.6094 12.8958 24.2708 10 25ZM10 22.375C12.1667 21.6875 13.9583 20.3125 15.375 18.25C16.7917 16.1875 17.5 13.8958 17.5 11.375V5.46875L10 2.65625L2.5 5.46875V11.375C2.5 13.8958 3.20833 16.1875 4.625 18.25C6.04167 20.3125 7.83333 21.6875 10 22.375Z" fill="#11D462"/></svg>), title:"Why SIP Helps?", desc:"It helps in rupee cost averaging and brings financial discipline by making you save before you spend.", cls:"anim-sip-card-1" },
-              { icon: (<svg width="28" height="24" viewBox="0 0 28 24" fill="none"><path d="M9.375 8.75L8 5.75L5 4.375L8 3L9.375 0L10.75 3L13.75 4.375L10.75 5.75L9.375 8.75ZM17.5 12.5L16.3125 9.9375L13.75 8.75L16.3125 7.5625L17.5 5L18.6875 7.5625L21.25 8.75L18.6875 9.9375L17.5 12.5ZM3.75 15L2.5625 12.4375L0 11.25L2.5625 10.0625L3.75 7.5L4.9375 10.0625L7.5 11.25L4.9375 12.4375L3.75 15ZM4.375 23.125L2.5 21.25L11.875 11.875L16.875 16.875L25.75 6.90625L27.5 8.65625L16.875 20.625L11.875 15.625L4.375 23.125Z" fill="#11D462"/></svg>), title:"The Benefits", desc:"The power of compounding is most effective with SIPs, potentially turning small monthly amounts into massive wealth.", cls:"anim-sip-card-2" },
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="#11D462" />
+                  </svg>
+                ),
+                title: "What is SIP?",
+                desc: "A Systematic Investment Plan (SIP) is a method where you invest a fixed amount regularly in a mutual fund scheme.",
+                cls: "anim-sip-card-0",
+              },
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#11D462" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "Why SIP Helps?",
+                desc: "It helps in rupee cost averaging and brings financial discipline by making you save before you spend.",
+                cls: "anim-sip-card-1",
+              },
+              {
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#11D462" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                title: "The Benefits",
+                desc: "The power of compounding is most effective with SIPs, potentially turning small monthly amounts into massive wealth.",
+                cls: "anim-sip-card-2",
+              },
             ].map((item) => (
-              <div key={item.title} className={item.cls} style={{ background:"#FDFBF7",borderRadius:24,padding:"28px 24px",border:"1px solid rgba(6,40,23,0.05)" }}>
-                <div style={{ width:44,height:44,background:"#ffffff",borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16 }}>{item.icon}</div>
-                <h3 style={{ fontSize:16,fontWeight:700,color:"#0d1f0d",marginBottom:10 }}>{item.title}</h3>
-                <p style={{ fontSize:13,color:"#666",lineHeight:1.7,margin:0 }}>{item.desc}</p>
+              <div
+                key={item.title}
+                className={item.cls}
+                style={{ background: "#FDFBF7", borderRadius: 24, padding: "28px 24px", border: "1px solid rgba(6,40,23,0.05)" }}
+              >
+                <div style={{ width: 44, height: 44, background: "#ffffff", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                  {item.icon}
+                </div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0d1f0d", marginBottom: 10 }}>{item.title}</h3>
+                <p style={{ fontSize: 13, color: "#666", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Other Calculators */}
+        {/* ── Other Calculators ── */}
         <div>
-          <div className="anim-calc-header other-calc-header" style={{ display:"flex",alignItems:"center",gap:10,marginBottom:20 }}>
+          <div className="anim-calc-card-0" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2"/>
-              <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round"/>
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2" />
+              <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            <h3 style={{ fontSize:18,fontWeight:800,color:"#0d1f0d",margin:0 }}>Other Powerful Calculators</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0d1f0d", margin: 0 }}>Other Powerful Calculators</h3>
           </div>
+
           <div className="grid-4col">
             {[
-              { icon: (<svg width="21" height="21" viewBox="0 0 21 21" fill="none"><path d="M9.7 16C8.1 15.9167 6.75 15.3 5.65 14.15C4.55 13 4 11.6167 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C11.6167 4 13 4.55 14.15 5.65C15.3 6.75 15.9167 8.1 16 9.7L13.9 9.075C13.6833 8.175 13.2167 7.4375 12.5 6.8625C11.7833 6.2875 10.95 6 10 6C8.9 6 7.95833 6.39167 7.175 7.175C6.39167 7.95833 6 8.9 6 10C6 10.95 6.2875 11.7833 6.8625 12.5C7.4375 13.2167 8.175 13.6833 9.075 13.9L9.7 16ZM10.9 19.95C10.75 19.9833 10.6 20 10.45 20C10.3 20 10.15 20 10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10.125C0 8.825 0.241667 7.55833 0.725 6.325C1.20833 5.09167 1.95 3.975 2.95 2.975C3.95 1.975 5.07083 1.22917 6.3125 0.7375C7.55417 0.245833 8.825 0 10.125 0C11.425 0 12.6958 0.245833 13.9375 0.7375C15.1792 1.22917 16.3 1.975 17.3 2.975L2.95 17.325ZM3.15 14.275L4.5 12.925C4.23333 12.575 3.97917 12.2167 3.7375 11.85C3.49583 11.4833 3.275 11.1167 3.075 10.75C2.875 10.3833 2.7 10.0167 2.55 9.65C2.4 9.28333 2.26667 8.925 2.15 8.575C1.96667 9.55833 1.95417 10.5417 2.1125 11.525C2.27083 12.5083 2.61667 13.425 3.15 14.275ZM5.95 11.525L11.5 5.925C10.7833 5.375 10.0625 4.92917 9.3375 4.5875C8.6125 4.24583 7.93333 4.0125 7.3 3.8875C6.66667 3.7625 6.09583 3.74167 5.5875 3.825C5.07917 3.90833 4.68333 4.09167 4.4 4.375C4.11667 4.675 3.93333 5.07917 3.85 5.5875C3.76667 6.09583 3.7875 6.67083 3.9125 7.3125C4.0375 7.95417 4.27083 8.63333 4.6125 9.35C4.95417 10.0667 5.4 10.7917 5.95 11.525ZM12.9 4.525L14.3 3.175C13.4167 2.64167 12.4833 2.29167 11.5 2.125C10.5167 1.95833 9.53333 1.975 8.55 2.175C8.91667 2.29167 9.28333 2.425 9.65 2.575C10.0167 2.725 10.3833 2.89583 10.75 3.0875C11.1167 3.27917 11.4792 3.49583 11.8375 3.7375C12.1958 3.97917 12.55 4.24167 12.9 4.525Z" fill="#11D462"/></svg>), title:"Goal Calculator", desc:"Target your dreams precisely.", cls:"anim-calc-card-0" },
-              { icon: (<svg width="18" height="19" viewBox="0 0 18 19" fill="none"><path d="M16.6 18.025L10.25 11.675L11.65 10.275L18 16.625L16.6 18.025ZM2.95 17.325C1.95 16.325 1.20833 15.2 0.725 13.95C0.241667 12.7 0 11.425 0 10.125C0 8.825 0.241667 7.55833 0.725 6.325C1.20833 5.09167 1.95 3.975 2.95 2.975C3.95 1.975 5.07083 1.22917 6.3125 0.7375C7.55417 0.245833 8.825 0 10.125 0C11.425 0 12.6958 0.245833 13.9375 0.7375C15.1792 1.22917 16.3 1.975 17.3 2.975L2.95 17.325ZM3.15 14.275L4.5 12.925C4.23333 12.575 3.97917 12.2167 3.7375 11.85C3.49583 11.4833 3.275 11.1167 3.075 10.75C2.875 10.3833 2.7 10.0167 2.55 9.65C2.4 9.28333 2.26667 8.925 2.15 8.575C1.96667 9.55833 1.95417 10.5417 2.1125 11.525C2.27083 12.5083 2.61667 13.425 3.15 14.275ZM5.95 11.525L11.5 5.925C10.7833 5.375 10.0625 4.92917 9.3375 4.5875C8.6125 4.24583 7.93333 4.0125 7.3 3.8875C6.66667 3.7625 6.09583 3.74167 5.5875 3.825C5.07917 3.90833 4.68333 4.09167 4.4 4.375C4.11667 4.675 3.93333 5.07917 3.85 5.5875C3.76667 6.09583 3.7875 6.67083 3.9125 7.3125C4.0375 7.95417 4.27083 8.63333 4.6125 9.35C4.95417 10.0667 5.4 10.7917 5.95 11.525ZM12.9 4.525L14.3 3.175C13.4167 2.64167 12.4833 2.29167 11.5 2.125C10.5167 1.95833 9.53333 1.975 8.55 2.175C8.91667 2.29167 9.28333 2.425 9.65 2.575C10.0167 2.725 10.3833 2.89583 10.75 3.0875C11.1167 3.27917 11.4792 3.49583 11.8375 3.7375C12.1958 3.97917 12.55 4.24167 12.9 4.525Z" fill="#11D462"/></svg>), title:"Retirement Calculator", desc:"Build your post-work nest egg.", cls:"anim-calc-card-1" },
-              { icon: (<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11.5 8.75C11.15 8.75 10.8542 8.62917 10.6125 8.3875C10.3708 8.14583 10.25 7.85 10.25 7.5C10.25 7.15 10.3708 6.85417 10.6125 6.6125C10.8542 6.37083 11.15 6.25 11.5 6.25C11.85 6.25 12.1458 6.37083 12.3875 6.6125C12.6292 6.85417 12.75 7.15 12.75 7.5C12.75 7.85 12.6292 8.14583 12.3875 8.3875C12.1458 8.62917 11.85 8.75 11.5 8.75ZM6.5 8.75C6.15 8.75 5.85417 8.62917 5.6125 8.3875C5.37083 8.14583 5.25 7.85 5.25 7.5C5.25 7.15 5.37083 6.85417 5.6125 6.6125C5.85417 6.37083 6.15 6.25 6.5 6.25C6.85 6.25 7.14583 6.37083 7.3875 6.6125C7.62917 6.85417 7.75 7.15 7.75 7.5C7.75 7.85 7.62917 8.14583 7.3875 8.3875C7.14583 8.62917 6.85 8.75 6.5 8.75ZM9 14C8 14 7.09583 13.725 6.2875 13.175C5.47917 12.625 4.88333 11.9 4.5 11H13.5C13.1167 11.9 12.5208 12.625 11.7125 13.175C10.9042 13.725 10 14 9 14ZM9 18C7.75 18 6.57917 17.7625 5.4875 17.2875C4.39583 16.8125 3.44583 16.1708 2.6375 15.3625C1.82917 14.5542 1.1875 13.6042 0.7125 12.5125C0.2375 11.4208 0 10.25 0 9C0 7.75 0.2375 6.57917 0.7125 5.4875C1.1875 4.39583 1.82917 3.44583 2.6375 2.6375C3.44583 1.82917 4.39583 1.1875 5.4875 0.7125C6.57917 0.2375 7.75 0 9 0C10.25 0 11.4208 0.2375 12.5125 0.7125C13.6042 1.1875 14.5542 1.82917 15.3625 2.6375C16.1708 3.44583 16.8125 4.39583 17.2875 5.4875C17.7625 6.57917 18 7.75 18 9C18 10.25 17.7625 11.4208 17.2875 12.5125C16.8125 13.6042 16.1708 14.5542 15.3625 15.3625C14.5542 16.1708 13.6042 16.8125 12.5125 17.2875C11.4208 17.7625 10.25 18 9 18ZM9 16C10.9333 16 12.5833 15.3167 13.95 13.95C15.3167 12.5833 16 10.9333 16 9C16 7.06667 15.3167 5.41667 13.95 4.05C12.5833 2.68333 10.9333 2 9 2C7.06667 2 5.41667 2.68333 4.05 4.05C2.68333 5.41667 2 7.06667 2 9C2 10.9333 2.68333 12.5833 4.05 13.95C5.41667 15.3167 7.06667 16 9 16Z" fill="#11D462"/></svg>), title:"Sukanya Samriddhi", desc:"Secure your daughter's future.", cls:"anim-calc-card-2" },
-              { icon: (<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 7C2.53333 7 1.70833 6.65833 1.025 5.975C0.341667 5.29167 0 4.46667 0 3.5C0 2.53333 0.341667 1.70833 1.025 1.025C1.70833 0.341667 2.53333 0 3.5 0C4.46667 0 5.29167 0.341667 5.975 1.025C6.65833 1.70833 7 2.53333 7 3.5C7 4.46667 6.65833 5.29167 5.975 5.975C5.29167 6.65833 4.46667 7 3.5 7ZM3.5 5C3.91667 5 4.27083 4.85417 4.5625 4.5625C4.85417 4.27083 5 3.91667 5 3.5C5 3.08333 4.85417 2.72917 4.5625 2.4375C4.27083 2.14583 3.91667 2 3.5 2C3.08333 2 2.72917 2.14583 2.4375 2.4375C2.14583 2.72917 2 3.08333 2 3.5C2 3.91667 2.14583 4.27083 2.4375 4.5625C2.72917 4.85417 3.08333 5 3.5 5ZM12.5 16C11.5333 16 10.7083 15.6583 10.025 14.975C9.34167 14.2917 9 13.4667 9 12.5C9 11.5333 9.34167 10.7083 10.025 10.025C10.7083 9.34167 11.5333 9 12.5 9C13.4667 9 14.2917 9.34167 14.975 10.025C15.6583 10.7083 16 11.5333 16 12.5C16 13.4667 15.6583 14.2917 14.975 14.975C14.2917 15.6583 13.4667 16 12.5 16ZM12.5 14C12.9167 14 13.2708 13.8542 13.5625 13.5625C13.8542 13.2708 14 12.9167 14 12.5C14 12.0833 13.8542 11.7292 13.5625 11.4375C13.2708 11.1458 12.9167 11 12.5 11C12.0833 11 11.7292 11.1458 11.4375 11.4375C11.1458 11.7292 11 12.0833 11 12.5C11 12.9167 11.1458 13.2708 11.4375 13.5625C11.7292 13.8542 12.0833 14 12.5 14ZM1.4 16L0 14.6L14.6 0L16 1.4L1.4 16Z" fill="#11D462"/></svg>), title:"CAGR Calculator", desc:"Find annual compound returns.", cls:"anim-calc-card-3" },
+              { title: "Goal Calculator",       desc: "Target your dreams precisely.",   cls: "anim-calc-card-0", href: "/goal-calucator" },
+              { title: "Retirement Calculator",  desc: "Build your post-work nest egg.",  cls: "anim-calc-card-1", href: "/reteriment" },
+              { title: "Sukanya Samriddhi",      desc: "Secure your daughter's future.", cls: "anim-calc-card-2", href: "/sukanya" },
+              { title: "CAGR Calculator",        desc: "Find annual compound returns.",  cls: "anim-calc-card-3", href: "/cgarcalucator" },
             ].map((item) => (
-              <div key={item.title} className={item.cls} style={{ background:"#ffffff",borderRadius:14,padding:"20px",boxShadow:"0 2px 8px rgba(0,0,0,0.05)",cursor:"pointer" }}>
-                <div style={{ width:40,height:40,background:"#f0faf4",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12 }}>{item.icon}</div>
-                <p style={{ fontSize:14,fontWeight:700,color:"#0d1f0d",margin:"0 0 6px" }}>{item.title}</p>
-                <p style={{ fontSize:12,color:"#888",margin:0 }}>{item.desc}</p>
-              </div>
+              <a
+                key={item.title}
+                className={item.cls}
+                href={item.href}
+                style={{ background: "#ffffff", borderRadius: 14, padding: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", cursor: "pointer", textDecoration: "none", color: "inherit", display: "block" }}
+              >
+                <div style={{ width: 40, height: 40, background: "#f0faf4", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="3" width="18" height="18" rx="3" stroke="#11D462" strokeWidth="2" />
+                    <path d="M8 12h8M12 8v8" stroke="#11D462" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#0d1f0d", margin: "0 0 6px" }}>{item.title}</p>
+                <p style={{ fontSize: 12, color: "#888", margin: 0 }}>{item.desc}</p>
+              </a>
             ))}
           </div>
         </div>
@@ -517,3 +536,8 @@ export default function SIPCalculatorPage() {
     </div>
   );
 }
+
+
+
+
+

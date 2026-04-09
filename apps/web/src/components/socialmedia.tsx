@@ -44,15 +44,6 @@ const socialLinks = [
       </svg>
     ),
   },
-  {
-    name: "X",
-    href: "https://x.com/imoneymati",
-    svg: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.738l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    ),
-  },
 ];
 
 const formatDate = (timestamp?: string) => {
@@ -138,7 +129,7 @@ export default function FinancialCommunity() {
   }, []);
 
   const displayedPosts = useMemo(() => {
-    const priority: Record<string, number> = { linkedin: 0, instagram: 1, twitter: 2, facebook: 3 };
+    const priority: Record<string, number> = { linkedin: 0, instagram: 1, facebook: 2 };
 
     const detectSource = (post: SocialPost) => post.source ?? detectSourceFromLink(post.permalink) ?? "other";
 
@@ -156,7 +147,7 @@ export default function FinancialCommunity() {
       return 0;
     });
 
-    // Keep only one post per platform (LinkedIn, Instagram, Twitter, Facebook)
+    // Keep only one post per platform (LinkedIn, Instagram, Facebook)
     const seen = new Set<string>();
     const unique: SocialPost[] = [];
     for (const post of sorted) {
@@ -164,7 +155,7 @@ export default function FinancialCommunity() {
       if (seen.has(src)) continue;
       seen.add(src);
       unique.push(post);
-      if (seen.has("linkedin") && seen.has("instagram") && seen.has("twitter") && seen.has("facebook")) break;
+      if (seen.has("linkedin") && seen.has("instagram") && seen.has("facebook")) break;
     }
 
     return unique;
@@ -174,7 +165,6 @@ export default function FinancialCommunity() {
     if (!url) return undefined;
     if (url.includes("instagram.com")) return "Instagram";
     if (url.includes("linkedin.com")) return "LinkedIn";
-    if (url.includes("twitter.com") || url.includes("x.com")) return "Twitter";
     if (url.includes("facebook.com") || url.includes("fb.com")) return "Facebook";
     return undefined;
   };
@@ -182,7 +172,6 @@ export default function FinancialCommunity() {
   const displayName = (post: SocialPost) => {
     if (post.source === "instagram") return "Instagram";
     if (post.source === "linkedin") return "LinkedIn";
-    if (post.source === "twitter") return "Twitter";
     if (post.source === "facebook") return "Facebook";
     const byLink = detectSourceFromLink(post.permalink);
     if (byLink) return byLink;

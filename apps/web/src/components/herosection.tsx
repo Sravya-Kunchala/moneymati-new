@@ -463,9 +463,12 @@ export default function HeroSection() {
           {/* LEFT: Text Content */}
           <div className="flex-1 flex flex-col justify-center max-w-xl">
 
-            <p data-animate className="mb-6" style={{ color: "#C6A553", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "20px", letterSpacing: "0.7px", textTransform: "uppercase", verticalAlign: "middle" }}>
-              Empowering Women to Take Control of Their Finances
-            </p>
+            <p data-animate className="mb-6" style={{ color: "#C6A553", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "28px", letterSpacing: "0.7px", verticalAlign: "middle" }}>
+  Empowering Women to Take Control of Their Finances{" "}
+  <span style={{ textTransform: "uppercase", fontWeight: 500, fontSize: "14px", lineHeight: "28px", letterSpacing: "0.7px" }}>
+    "Own your wallet, own your life"
+  </span>
+</p>
 
             <h1 data-animate className="mb-6" style={{ color: "#ffffff" }}>
               <span className="block font-bold" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.15, fontFamily: "var(--font-playfair), serif" }}>Build Wealth</span>

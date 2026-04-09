@@ -23,6 +23,7 @@ interface EBook {
   coverAccent: string;
   status: EBookStatus;
   href?: string;
+  featured?: boolean;
 }
 
 const CATEGORY_COLORS: Record<Category, { bg: string; color: string }> = {
@@ -36,12 +37,28 @@ const CATEGORY_COLORS: Record<Category, { bg: string; color: string }> = {
   Planning: { bg: "#e0f7ff", color: "#0ea5e9" },
 };
 
+const NAV_EBOOK: EBook = {
+  id: "navratri-flip-book",
+  title: "Navratri Financial Empowerment Flip Book",
+  description: "Festive-season strategies to align your money goals with discipline, prosperity, and mindful spending.",
+  category: "Wealth",
+  pages: 10,
+  format: "PDF Format",
+  lastUpdated: "Oct 07, 2023",
+  coverBg: "#f97316",
+  coverAccent: "#ea580c",
+  status: "Published",
+  href: "/FLIP-BOOK.pdf",
+  featured: true,
+};
+
 const EBOOKS: EBook[] = [
-  { id: "1", title: "Navaratri Financials FlipBook", description: "A comprehensive guide to financial planning during festive seasons.", category: "Financials", pages: 24, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#7c2d12", coverAccent: "#f97316", status: "Published" },
-  { id: "2", title: "5 Investing Mistakes You Must Avoid", description: "Learn the most common pitfalls new investors face and how to sidestep them.", category: "Investment", pages: 12, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#1c1917", coverAccent: "#22c55e", status: "Published" },
-  { id: "3", title: "Top Government Saving Schemes", description: "An overview of the best government-backed saving schemes available today.", category: "Government", pages: 10, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#f5f0e8", coverAccent: "#d97706", status: "Draft" },
-  { id: "4", title: "Tax Planning for Salaried Employees", description: "Optimize your tax liability with proven strategies for salaried professionals.", category: "Tax", pages: 18, format: "PDF Format", lastUpdated: "Apr 20, 2026", coverBg: "#0c4a6e", coverAccent: "#38bdf8", status: "Published" },
-  { id: "5", title: "Crypto Investment Guide 2026", description: "Everything you need to know about investing in crypto assets in 2026.", category: "Crypto", pages: 32, format: "PDF Format", lastUpdated: "Apr 18, 2026", coverBg: "#1e1b4b", coverAccent: "#a78bfa", status: "Archived" },
+  NAV_EBOOK,
+  { id: "1", title: "5 Investing Mistakes You Must Avoid", description: "Protect your capital by understanding common psychological and technical pitfalls in modern markets.", category: "Investment", pages: 24, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#7c2d12", coverAccent: "#f97316", status: "Published", href: "/ebook1.pdf", featured: false },
+  { id: "2", title: "5 Investing Mistakes You Must Avoid", description: "Learn the most common pitfalls new investors face and how to sidestep them.", category: "Investment", pages: 12, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#1c1917", coverAccent: "#22c55e", status: "Published", href: "/ebook2.pdf", featured: false },
+  { id: "3", title: "Top Government Saving Schemes", description: "An overview of the best government-backed saving schemes available today.", category: "Government", pages: 10, format: "PDF Format", lastUpdated: "Apr 24, 2026", coverBg: "#f5f0e8", coverAccent: "#d97706", status: "Draft", href: "/ebook3.pdf", featured: false },
+  { id: "4", title: "Tax Planning for Salaried Employees", description: "Optimize your tax liability with proven strategies for salaried professionals.", category: "Tax", pages: 18, format: "PDF Format", lastUpdated: "Apr 20, 2026", coverBg: "#0c4a6e", coverAccent: "#38bdf8", status: "Published", href: "/ebook.pdf", featured: false },
+  { id: "5", title: "Crypto Investment Guide 2026", description: "Everything you need to know about investing in crypto assets in 2026.", category: "Crypto", pages: 32, format: "PDF Format", lastUpdated: "Apr 18, 2026", coverBg: "#1e1b4b", coverAccent: "#a78bfa", status: "Archived", href: "/ebook.pdf", featured: false },
 ];
 
 // ─── Shared Styles ────────────────────────────────────────────────────────────
@@ -82,6 +99,7 @@ const BoldIcon = () => <svg width="14" height="14" viewBox="0 0 14 14" fill="non
 const ItalicIcon = () => <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M6 3h4M4 11h4M8 3L6 11" stroke="#374151" strokeWidth="1.3" strokeLinecap="round" /></svg>;
 const ListIcon = () => <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 4h7M5 7h7M5 10h7M2 4h.5M2 7h.5M2 10h.5" stroke="#374151" strokeWidth="1.3" strokeLinecap="round" /></svg>;
 const LinkEditorIcon = () => <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 8.5l3-3M7.5 4.5l1-1a2.121 2.121 0 113 3l-1 1M6.5 9.5l-1 1a2.121 2.121 0 11-3-3l1-1" stroke="#374151" strokeWidth="1.2" strokeLinecap="round" /></svg>;
+const ViewIcon = () => <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="#6b7280" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /><circle cx="10" cy="10" r="2.5" stroke="#6b7280" strokeWidth="1.3" /></svg>;
 const ExternalIcon = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 1h4v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /><path d="M5 8l6.5-6.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /><path d="M10 8.5V11H2V3h2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
 // ─── Edit E-Book Page ─────────────────────────────────────────────────────────
@@ -89,14 +107,35 @@ function EditEBookPage({ ebook, onCancel, onSave }: { ebook: EBook; onCancel: ()
   const [title, setTitle] = useState(ebook.title);
   const [description, setDescription] = useState(ebook.description ?? "");
   const [status, setStatus] = useState<EBookStatus>(ebook.status);
+  const [href, setHref] = useState<string>(ebook.href ?? "");
+  const [featured, setFeatured] = useState<boolean>(!!ebook.featured);
   const [pdfName, setPdfName] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const uploadPdf = async (file: File) => {
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/admin/ebooks/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok || !data?.href) throw new Error(data?.error || "Upload failed");
+      setHref(data.href);
+      setPdfName(file.name);
+    } catch (err) {
+      console.error("pdf upload failed", err);
+      alert("PDF upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = () => {
     onSave({
-      ...ebook, title, description, status,
+      ...ebook, title, description, status, href: href.trim() || undefined, featured,
       lastUpdated: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
     });
   };
@@ -150,26 +189,43 @@ function EditEBookPage({ ebook, onCancel, onSave }: { ebook: EBook; onCancel: ()
             </div>
           </div>
 
+          {/* View / Download Link */}
+          <div style={{ marginBottom: 22 }}>
+            <label style={labelStyle}>View / Download Link</label>
+            <input
+              value={href}
+              onChange={(e) => setHref(e.target.value)}
+              placeholder="https://... or /ebook1.pdf"
+              style={inputStyle}
+              onFocus={(e) => { e.target.style.borderColor = BRAND; e.target.style.background = "white"; e.target.style.boxShadow = `0 0 0 3px ${BRAND}18`; }}
+              onBlur={(e) => { e.target.style.borderColor = "#e5e7eb"; e.target.style.background = "#f9fafb"; e.target.style.boxShadow = "none"; }}
+            />
+            <p style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 6 }}>Link users to the hosted PDF or preview page.</p>
+          </div>
+
           {/* Upload Row */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
             {/* PDF */}
             <div>
-              <label style={labelStyle}>Upload PDF</label>
-              <div style={{ display: "flex", alignItems: "center", border: "1.5px dashed #d1d5db", borderRadius: 10, overflow: "hidden", background: "#f9fafb", transition: "border-color 0.15s" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BRAND; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#d1d5db"; }}>
-                <button onClick={() => pdfInputRef.current?.click()}
-                  style={{ padding: "9px 14px", background: "white", border: "none", borderRight: "1px solid #e5e7eb", fontSize: 12.5, fontWeight: 500, color: "#374151", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap", flexShrink: 0, transition: "background 0.15s" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#f3f4f6"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "white"; }}>
-                  Choose File
-                </button>
-                <span style={{ padding: "9px 12px", fontSize: 12.5, color: "#9ca3af", fontFamily: "'DM Sans', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {pdfName ?? "No file chosen"}
-                </span>
-                <input ref={pdfInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => setPdfName(e.target.files?.[0]?.name ?? null)} />
-              </div>
+            <label style={labelStyle}>Upload PDF</label>
+            <div style={{ display: "flex", alignItems: "center", border: "1.5px dashed #d1d5db", borderRadius: 10, overflow: "hidden", background: "#f9fafb", transition: "border-color 0.15s" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BRAND; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#d1d5db"; }}>
+              <button onClick={() => pdfInputRef.current?.click()}
+                style={{ padding: "9px 14px", background: "white", border: "none", borderRight: "1px solid #e5e7eb", fontSize: 12.5, fontWeight: 500, color: "#374151", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap", flexShrink: 0, transition: "background 0.15s" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#f3f4f6"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "white"; }}>
+                {uploading ? "Uploading..." : "Choose File"}
+              </button>
+              <span style={{ padding: "9px 12px", fontSize: 12.5, color: "#9ca3af", fontFamily: "'DM Sans', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {pdfName ?? "No file chosen"}
+              </span>
+              <input ref={pdfInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadPdf(file);
+              }} />
             </div>
+          </div>
             {/* Cover Image */}
             <div>
               <label style={labelStyle}>Upload Cover Image</label>
@@ -233,12 +289,33 @@ function AddEBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (book: 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<Category>("Financials");
   const [description, setDescription] = useState("");
+  const [href, setHref] = useState("");
+  const [featured, setFeatured] = useState(false);
   const [pdfName, setPdfName] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string | null>(null);
   const [pdfDrag, setPdfDrag] = useState(false);
   const [imgDrag, setImgDrag] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const pdfInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const uploadPdf = async (file: File) => {
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/admin/ebooks/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok || !data?.href) throw new Error(data?.error || "Upload failed");
+      setHref(data.href);
+      setPdfName(file.name);
+    } catch (err) {
+      console.error("pdf upload failed", err);
+      alert("PDF upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleAdd = () => {
     if (!title.trim()) return;
@@ -253,6 +330,8 @@ function AddEBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (book: 
       pages: 10, format: "PDF Format",
       lastUpdated: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       coverBg: c.bg, coverAccent: c.accent, status: "Draft",
+      href: href.trim() || undefined,
+      featured,
     });
     onClose();
   };
@@ -361,6 +440,38 @@ function AddEBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (book: 
             </div>
           </div>
 
+          {/* Featured toggle */}
+          <div style={{ marginBottom: 22 }}>
+            <label style={labelStyle}>Featured</label>
+            <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", color: "#374151", fontSize: 14 }}>
+              <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+              <span>Show this as the featured e-book on the public page</span>
+            </label>
+          </div>
+
+          {/* Link */}
+          <div style={{ marginBottom: 18 }}>
+            <label style={labelStyle}>View / Download Link</label>
+            <input
+              value={href}
+              onChange={(e) => setHref(e.target.value)}
+              placeholder="https://... or /ebook1.pdf"
+              style={inputStyle}
+              onFocus={(e) => { e.target.style.borderColor = BRAND; e.target.style.background = "white"; e.target.style.boxShadow = `0 0 0 3px ${BRAND}18`; }}
+              onBlur={(e) => { e.target.style.borderColor = "#e5e7eb"; e.target.style.background = "#f9fafb"; e.target.style.boxShadow = "none"; }}
+            />
+            <p style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 6 }}>Paste the public PDF link or hosted path users will open.</p>
+          </div>
+
+          {/* Featured */}
+          <div style={{ marginBottom: 18 }}>
+            <label style={labelStyle}>Featured</label>
+            <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", color: "#374151", fontSize: 14 }}>
+              <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+              <span>Mark as featured e-book on homepage</span>
+            </label>
+          </div>
+
           {/* Upload Zones */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
 
@@ -392,25 +503,28 @@ function AddEBookModal({ onClose, onAdd }: { onClose: () => void; onAdd: (book: 
             {/* PDF */}
             <div>
               <label style={labelStyle}>Upload PDF</label>
-              <div
-                style={dropZoneStyle(pdfDrag)}
-                onClick={() => pdfInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setPdfDrag(true); }}
-                onDragLeave={() => setPdfDrag(false)}
-                onDrop={(e) => { e.preventDefault(); setPdfDrag(false); const f = e.dataTransfer.files[0]; if (f) setPdfName(f.name); }}
-                onMouseEnter={(e) => { if (!pdfDrag) { (e.currentTarget as HTMLElement).style.borderColor = BRAND; (e.currentTarget as HTMLElement).style.background = BRAND_LIGHT; } }}
-                onMouseLeave={(e) => { if (!pdfDrag) { (e.currentTarget as HTMLElement).style.borderColor = "#d1d5db"; (e.currentTarget as HTMLElement).style.background = "#f9fafb"; } }}
-              >
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <rect width="32" height="32" rx="8" fill={BRAND_LIGHT} />
+            <div
+              style={dropZoneStyle(pdfDrag)}
+              onClick={() => pdfInputRef.current?.click()}
+              onDragOver={(e) => { e.preventDefault(); setPdfDrag(true); }}
+              onDragLeave={() => setPdfDrag(false)}
+              onDrop={(e) => { e.preventDefault(); setPdfDrag(false); const f = e.dataTransfer.files[0]; if (f) uploadPdf(f); }}
+              onMouseEnter={(e) => { if (!pdfDrag) { (e.currentTarget as HTMLElement).style.borderColor = BRAND; (e.currentTarget as HTMLElement).style.background = BRAND_LIGHT; } }}
+              onMouseLeave={(e) => { if (!pdfDrag) { (e.currentTarget as HTMLElement).style.borderColor = "#d1d5db"; (e.currentTarget as HTMLElement).style.background = "#f9fafb"; } }}
+            >
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill={BRAND_LIGHT} />
                   <path d="M11 10h6l5 5v9a1 1 0 01-1 1H11a1 1 0 01-1-1V11a1 1 0 011-1z" stroke={BRAND} strokeWidth="1.4" strokeLinejoin="round" />
                   <path d="M17 10v5h5" stroke={BRAND} strokeWidth="1.4" strokeLinejoin="round" />
                   <path d="M13 19h6M13 17h3" stroke={BRAND} strokeWidth="1.2" strokeLinecap="round" />
                 </svg>
                 <p style={{ fontSize: 12.5, color: pdfName ? "#111827" : "#6b7280", margin: 0, fontWeight: 500, wordBreak: "break-all", textAlign: "center" }}>
-                  {pdfName ?? <><span style={{ color: BRAND }}>PDF file</span> up to 50MB</>}
+                  {uploading ? "Uploading..." : pdfName ?? <><span style={{ color: BRAND }}>PDF file</span> up to 50MB</>}
                 </p>
-                <input ref={pdfInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => setPdfName(e.target.files?.[0]?.name ?? null)} />
+                <input ref={pdfInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadPdf(f);
+                }} />
               </div>
             </div>
           </div>
@@ -459,7 +573,19 @@ export default function EBooksManager() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleDelete = (id: string) => setEbooks((prev) => prev.filter((b) => b.id !== id));
+  const handleDelete = async (id: string) => {
+    const prev = ebooks;
+    setEbooks((p) => p.filter((b) => b.id !== id));
+    try {
+      const res = await fetch(`/api/admin/ebooks?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      showToast("E-Book Deleted");
+    } catch (err) {
+      console.error("delete failed", err);
+      setEbooks(prev); // revert
+      showToast("Unable to delete");
+    }
+  };
   const handleAdd = async (book: EBook) => {
     try {
       const res = await fetch("/api/admin/ebooks", {
@@ -473,6 +599,7 @@ export default function EBooksManager() {
           format: book.format,
           href: book.href,
           status: book.status,
+          featured: book.featured ?? false,
         }),
       });
       const created = res.ok ? await res.json() : null;
@@ -482,7 +609,14 @@ export default function EBooksManager() {
         coverBg: book.coverBg,
         coverAccent: book.coverAccent,
       };
-      setEbooks((prev) => [merged, ...prev]);
+      // Persist featured choice locally so it survives reloads even if backend ignores the flag
+      if (merged.featured) {
+        try { localStorage.setItem("featuredEbookId", String(merged.id)); } catch {}
+      }
+      setEbooks((prev) => {
+        const base = merged.featured ? prev.map((b) => ({ ...b, featured: false })) : prev;
+        return [merged, ...base];
+      });
       setCurrentPage(1);
       showToast("New E-Book Added");
     } catch (error) {
@@ -493,38 +627,166 @@ export default function EBooksManager() {
       showToast("Saved locally; sync failed");
     }
   };
-  const handleEditSave = (updated: EBook) => { setEbooks((prev) => prev.map((b) => (b.id === updated.id ? updated : b))); setEditingEBook(null); showToast("Changes Saved"); };
+  const handleEditSave = (updated: EBook) => {
+    const stored = (() => { try { return localStorage.getItem("featuredEbookId"); } catch { return null; } })();
+    if (updated.featured) {
+      try { localStorage.setItem("featuredEbookId", String(updated.id)); } catch {}
+    } else if (stored === String(updated.id)) {
+      try { localStorage.removeItem("featuredEbookId"); } catch {}
+    }
+
+    // Persist edit (best-effort)
+    fetch("/api/admin/ebooks", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: updated.id,
+        title: updated.title,
+        description: updated.description,
+        category: updated.category,
+        pages: updated.pages,
+        format: updated.format,
+        href: updated.href,
+        status: updated.status,
+        featured: updated.featured,
+      }),
+    }).catch((err) => {
+      console.warn("edit save failed; kept locally", err);
+    });
+
+    setEbooks((prev) =>
+      prev.map((b) => {
+        if (b.id === updated.id) return updated;
+        return updated.featured ? { ...b, featured: false } : b;
+      }),
+    );
+
+    fetch("/api/admin/ebooks", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: updated.id, featured: updated.featured }),
+    }).catch((err) => {
+      console.warn("featured update (edit) failed; keeping local state", err);
+    });
+
+    setEditingEBook(null);
+    showToast("Changes Saved");
+  };
+
+  const handleSetFeatured = (id: string) => {
+    setEbooks((prev) => {
+      const target = prev.find((b) => b.id === id);
+      const willFeature = !(target?.featured ?? false); // toggle
+      const next = prev.map((b) => {
+        if (b.id === id) return { ...b, featured: willFeature };
+        // If we are featuring a new one, clear others; if unfeaturing, leave others as-is
+        return willFeature ? { ...b, featured: false } : b;
+      });
+      try {
+        if (willFeature) {
+          localStorage.setItem("featuredEbookId", id);
+        } else {
+          localStorage.removeItem("featuredEbookId");
+        }
+      } catch {}
+      // fire-and-forget persistence
+      fetch("/api/admin/ebooks", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, featured: willFeature }),
+      }).catch((err) => {
+        console.warn("featured update failed (kept locally)", err);
+        showToast("Featured state saved locally (backend failed)");
+      });
+      showToast(willFeature ? "Featured e-book updated" : "E-book unstarred");
+      return next;
+    });
+  };
 
   useEffect(() => {
+    const getStoredFeaturedId = () => {
+      try {
+        return localStorage.getItem("featuredEbookId");
+      } catch {
+        return null;
+      }
+    };
+
+    const normalizeFeatured = (list: EBook[]) => {
+      if (!list.length) return list;
+      const stored = getStoredFeaturedId();
+      const loweredStored = stored?.toLowerCase() ?? null;
+
+      const isNav = (b: EBook) =>
+        String(b.id).toLowerCase() === NAV_EBOOK.id.toLowerCase() ||
+        (b.href ?? "").toLowerCase() === (NAV_EBOOK.href ?? "").toLowerCase();
+
+      // 1) If stored ID matches AND is currently featured, respect it
+      let pickedId: EBook["id"] | undefined;
+      if (stored) {
+        const match = list.find(
+          (b) => String(b.id) === stored || (b.href ?? "").toLowerCase() === loweredStored,
+        );
+        if (match && match.featured) pickedId = match.id;
+      }
+
+      // 2) Otherwise, prefer a featured item that is NOT the default Nav ebook
+      if (!pickedId) {
+        const nonNavFeatured = list.find((b) => b.featured && !isNav(b));
+        pickedId = nonNavFeatured?.id;
+      }
+
+      // 3) Fallback to any featured item
+      if (!pickedId) {
+        pickedId = list.find((b) => b.featured)?.id;
+      }
+
+      return list.map((b) => ({ ...b, featured: String(b.id) === String(pickedId) }));
+    };
+
     const fetchEbooks = async () => {
       try {
-        const res = await fetch("/api/admin/ebooks");
+        const res = await fetch("/api/admin/ebooks", { cache: "no-store" });
         if (!res.ok) throw new Error(`Failed to load e-books (HTTP ${res.status})`);
         const data = await res.json();
         const fmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
-        const items: EBook[] = (data.items ?? []).map((item: any, idx: number) => ({
-          id: item.id ?? String(idx),
-          title: item.title ?? "Untitled E-Book",
-          description: item.description ?? "",
-          category: (item.category ?? "Financials") as Category,
-          pages: item.pages ?? 10,
-          format: item.format ?? "PDF Format",
-          lastUpdated: item.lastUpdated ? fmt.format(new Date(item.lastUpdated)) : "—",
-          coverBg: item.coverBg ?? "#0f172a",
-          coverAccent: item.coverAccent ?? "#22c55e",
-          status: "Published",
-          href: item.href,
-        }));
+        const items: EBook[] = (data.items ?? []).map((item: any, idx: number) => {
+          const id = item.id ?? String(idx);
+          return {
+            id,
+            title: item.title ?? "Untitled E-Book",
+            description: item.description ?? "",
+            category: (item.category ?? "Financials") as Category,
+            pages: item.pages ?? 10,
+            format: item.format ?? "PDF Format",
+            lastUpdated: (() => {
+              const raw = item.updatedAt ?? item.lastUpdated ?? item.createdAt;
+              return raw ? fmt.format(new Date(raw)) : "—";
+            })(),
+            coverBg: item.coverBg ?? "#0f172a",
+            coverAccent: item.coverAccent ?? "#22c55e",
+            status: (item.status as EBookStatus | undefined) ?? "Published",
+            href: item.href,
+            featured: !!item.featured,
+          };
+        });
+
         if (items.length > 0) {
-          setEbooks(items);
+          const hasNav = items.some(
+            (b) =>
+              String(b.id).toLowerCase() === NAV_EBOOK.id.toLowerCase() ||
+              (b.href ?? "").toLowerCase() === NAV_EBOOK.href.toLowerCase(),
+          );
+          const merged = hasNav ? items : [NAV_EBOOK, ...items];
+          setEbooks(normalizeFeatured(merged));
           setLoadError(null);
         } else {
-          setEbooks(EBOOKS);
+          setEbooks(normalizeFeatured(EBOOKS));
           setLoadError("No PDFs found; showing sample e-books.");
         }
       } catch (error: any) {
         console.warn("ebooks load failed", error);
-        setEbooks(EBOOKS);
+        setEbooks(normalizeFeatured(EBOOKS));
         setLoadError("Unable to load PDFs; showing sample e-books.");
       }
     };
@@ -602,6 +864,9 @@ export default function EBooksManager() {
                   <tbody>
                     {paged.map((book, i) => {
                       const cat = CATEGORY_COLORS[book.category];
+                      const viewHref =
+                        book.href ??
+                        (String(book.id).toLowerCase().endsWith(".pdf") ? `/ebooks/${book.id}` : undefined);
                       return (
                         <tr key={book.id} className="eb-row-enter"
                           style={{ borderBottom: i < paged.length - 1 ? "1px solid #f9fafb" : "none", animationDelay: `${i * 0.05}s` }}
@@ -613,14 +878,9 @@ export default function EBooksManager() {
                             </div>
                           </td>
                           <td style={{ padding: "16px 24px", background: hoveredRow === book.id ? "#fafafa" : "transparent", transition: "background 0.15s", maxWidth: 260 }}>
-                            {book.href ? (
-                              <a href={book.href} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: BRAND, marginBottom: 3, lineHeight: 1.4, textDecoration: "none" }}>
-                                <ExternalIcon />
-                                {book.title}
-                              </a>
-                            ) : (
-                              <p style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 3, lineHeight: 1.4 }}>{book.title}</p>
-                            )}
+                            <p style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 3, lineHeight: 1.4 }}>
+                              {book.title}
+                            </p>
                             <p style={{ fontSize: 12, color: "#9ca3af" }}>{book.pages} Pages • {book.format}</p>
                           </td>
                           <td style={{ padding: "16px 24px", background: hoveredRow === book.id ? "#fafafa" : "transparent", transition: "background 0.15s" }}>
@@ -631,6 +891,35 @@ export default function EBooksManager() {
                           </td>
                           <td style={{ padding: "16px 24px", background: hoveredRow === book.id ? "#fafafa" : "transparent", transition: "background 0.15s" }}>
                             <div style={{ display: "flex", gap: 8 }}>
+                              <button
+                                className="eb-act-btn"
+                                title={book.featured ? "Featured" : "Mark as Featured"}
+                                style={{ background: book.featured ? BRAND_LIGHT : "white", borderColor: book.featured ? BRAND : "#e5e7eb" }}
+                                onClick={() => handleSetFeatured(book.id)}
+                              >
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill={book.featured ? BRAND : "none"} stroke={book.featured ? BRAND_DARK : "#6b7280"} strokeWidth="1.2"><path d="M7 1l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.2l-3.2 1.7.6-3.6L1.8 4.8l3.6-.5L7 1z" /></svg>
+                              </button>
+                              {viewHref ? (
+                                <a
+                                  href={viewHref}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="eb-act-btn"
+                                  title="View"
+                                  style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                                >
+                                  <ViewIcon />
+                                </a>
+                              ) : (
+                                <button
+                                  className="eb-act-btn"
+                                  title="No link set"
+                                  style={{ opacity: 0.35, cursor: "not-allowed" }}
+                                  onClick={() => showToast("No PDF link set for this e-book")}
+                                >
+                                  <ViewIcon />
+                                </button>
+                              )}
                               <button className="eb-act-btn" title="Edit" onClick={() => setEditingEBook(book)}><EditIcon /></button>
                               <button className="eb-act-btn delete" title="Delete" onClick={() => handleDelete(book.id)}><TrashIcon /></button>
                             </div>

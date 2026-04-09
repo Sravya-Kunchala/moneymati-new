@@ -7,43 +7,70 @@ import { useRouter } from "next/navigation";
 const dancing = Dancing_Script({ subsets: ["latin"], weight: ["700"], variable: "--font-dancing" });
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
-/* ── icons ── */
+/* ─────────────────────── Icons ─────────────────────── */
 const InvestmentIcon = () => (
-  <svg width="19" height="14" viewBox="0 0 19 14" fill="none"><path d="M10.8333 7.5C10.1389 7.5 9.54861 7.25694 9.0625 6.77083C8.57639 6.28472 8.33333 5.69444 8.33333 5C8.33333 4.30556 8.57639 3.71528 9.0625 3.22917C9.54861 2.74306 10.1389 2.5 10.8333 2.5C11.5278 2.5 12.1181 2.74306 12.6042 3.22917C13.0903 3.71528 13.3333 4.30556 13.3333 5C13.3333 5.69444 13.0903 6.28472 12.6042 6.77083C12.1181 7.25694 11.5278 7.5 10.8333 7.5ZM5 10C4.54167 10 4.14931 9.83681 3.82292 9.51042C3.49653 9.18403 3.33333 8.79167 3.33333 8.33333V1.66667C3.33333 1.20833 3.49653 0.815972 3.82292 0.489583C4.14931 0.163194 4.54167 0 5 0H16.6667C17.125 0 17.5174 0.163194 17.8438 0.489583C18.1701 0.815972 18.3333 1.20833 18.3333 1.66667V8.33333C18.3333 8.79167 18.1701 9.18403 17.8438 9.51042C17.5174 9.83681 17.125 10 16.6667 10H5ZM6.66667 8.33333H15C15 7.875 15.1632 7.48264 15.4896 7.15625C15.816 6.82986 16.2083 6.66667 16.6667 6.66667V3.33333C16.2083 3.33333 15.816 3.17014 15.4896 2.84375C15.1632 2.51736 15 2.125 15 1.66667H6.66667C6.66667 2.125 6.50347 2.51736 6.17708 2.84375C5.85069 3.17014 5.45833 3.33333 5 3.33333V6.66667C5.45833 6.66667 5.85069 6.82986 6.17708 7.15625C6.50347 7.48264 6.66667 7.875 6.66667 8.33333ZM15.8333 13.3333H1.66667C1.20833 13.3333 0.815972 13.1701 0.489583 12.8438C0.163194 12.5174 0 12.125 0 11.6667V2.5H1.66667V11.6667H15.8333V13.3333ZM5 8.33333V1.66667V8.33333Z" fill="#214533"/></svg>
+  <svg width="19" height="14" viewBox="0 0 19 14" fill="none">
+    <path d="M10.8333 7.5C10.1389 7.5 9.54861 7.25694 9.0625 6.77083C8.57639 6.28472 8.33333 5.69444 8.33333 5C8.33333 4.30556 8.57639 3.71528 9.0625 3.22917C9.54861 2.74306 10.1389 2.5 10.8333 2.5C11.5278 2.5 12.1181 2.74306 12.6042 3.22917C13.0903 3.71528 13.3333 4.30556 13.3333 5C13.3333 5.69444 13.0903 6.28472 12.6042 6.77083C12.1181 7.25694 11.5278 7.5 10.8333 7.5ZM5 10C4.54167 10 4.14931 9.83681 3.82292 9.51042C3.49653 9.18403 3.33333 8.79167 3.33333 8.33333V1.66667C3.33333 1.20833 3.49653 0.815972 3.82292 0.489583C4.14931 0.163194 4.54167 0 5 0H16.6667C17.125 0 17.5174 0.163194 17.8438 0.489583C18.1701 0.815972 18.3333 1.20833 18.3333 1.66667V8.33333C18.3333 8.79167 18.1701 9.18403 17.8438 9.51042C17.5174 9.83681 17.125 10 16.6667 10H5ZM6.66667 8.33333H15C15 7.875 15.1632 7.48264 15.4896 7.15625C15.816 6.82986 16.2083 6.66667 16.6667 6.66667V3.33333C16.2083 3.33333 15.816 3.17014 15.4896 2.84375C15.1632 2.51736 15 2.125 15 1.66667H6.66667C6.66667 2.125 6.50347 2.51736 6.17708 2.84375C5.85069 3.17014 5.45833 3.33333 5 3.33333V6.66667C5.45833 6.66667 5.85069 6.82986 6.17708 7.15625C6.50347 7.48264 6.66667 7.875 6.66667 8.33333ZM15.8333 13.3333H1.66667C1.20833 13.3333 0.815972 13.1701 0.489583 12.8438C0.163194 12.5174 0 12.125 0 11.6667V2.5H1.66667V11.6667H15.8333V13.3333ZM5 8.33333V1.66667V8.33333Z" fill="#214533" />
+  </svg>
 );
 const TaxIcon = () => (
-  <svg width="14" height="17" viewBox="0 0 14 17" fill="none"><path d="M3.33333 13.3333H10V11.6667H3.33333V13.3333ZM3.33333 10H10V8.33333H3.33333V10ZM1.66667 16.6667C1.20833 16.6667 0.815972 16.5035 0.489583 16.1771C0.163194 15.8507 0 15.4583 0 15V1.66667C0 1.20833 0.163194 0.815972 0.489583 0.489583C0.815972 0.163194 1.20833 0 1.66667 0H8.33333L13.3333 5V15C13.3333 15.4583 13.1701 15.8507 12.8438 16.1771C12.5174 16.5035 12.125 16.6667 11.6667 16.6667H1.66667ZM7.5 5.83333V1.66667H1.66667V15H11.6667V5.83333H7.5Z" fill="#475569"/></svg>
+  <svg width="14" height="17" viewBox="0 0 14 17" fill="none">
+    <path d="M3.33333 13.3333H10V11.6667H3.33333V13.3333ZM3.33333 10H10V8.33333H3.33333V10ZM1.66667 16.6667C1.20833 16.6667 0.815972 16.5035 0.489583 16.1771C0.163194 15.8507 0 15.4583 0 15V1.66667C0 1.20833 0.163194 0.815972 0.489583 0.489583C0.815972 0.163194 1.20833 0 1.66667 0H8.33333L13.3333 5V15C13.3333 15.4583 13.1701 15.8507 12.8438 16.1771C12.5174 16.5035 12.125 16.6667 11.6667 16.6667H1.66667ZM7.5 5.83333V1.66667H1.66667V15H11.6667V5.83333H7.5Z" fill="#475569" />
+  </svg>
 );
 const InsuranceIcon = () => (
-  <svg width="14" height="17" viewBox="0 0 14 17" fill="none"><path d="M6.66667 9.16667C5.84722 9.16667 5.15625 8.88542 4.59375 8.32292C4.03125 7.76042 3.75 7.06944 3.75 6.25C3.75 5.43056 4.03125 4.73958 4.59375 4.17708C5.15625 3.61458 5.84722 3.33333 6.66667 3.33333C7.48611 3.33333 8.17708 3.61458 8.73958 4.17708C9.30208 4.73958 9.58333 5.43056 9.58333 6.25C9.58333 7.06944 9.30208 7.76042 8.73958 8.32292C8.17708 8.88542 7.48611 9.16667 6.66667 9.16667ZM6.66667 16.6667C4.73611 16.1806 3.14236 15.0729 1.88542 13.3438C0.628472 11.6146 0 9.69444 0 7.58333V2.5L6.66667 0L13.3333 2.5V7.58333C13.3333 9.69444 12.7049 11.6146 11.4479 13.3438C10.191 15.0729 8.59722 16.1806 6.66667 16.6667Z" fill="#475569"/></svg>
+  <svg width="14" height="17" viewBox="0 0 14 17" fill="none">
+    <path d="M6.66667 9.16667C5.84722 9.16667 5.15625 8.88542 4.59375 8.32292C4.03125 7.76042 3.75 7.06944 3.75 6.25C3.75 5.43056 4.03125 4.73958 4.59375 4.17708C5.15625 3.61458 5.84722 3.33333 6.66667 3.33333C7.48611 3.33333 8.17708 3.61458 8.73958 4.17708C9.30208 4.73958 9.58333 5.43056 9.58333 6.25C9.58333 7.06944 9.30208 7.76042 8.73958 8.32292C8.17708 8.88542 7.48611 9.16667 6.66667 9.16667ZM6.66667 16.6667C4.73611 16.1806 3.14236 15.0729 1.88542 13.3438C0.628472 11.6146 0 9.69444 0 7.58333V2.5L6.66667 0L13.3333 2.5V7.58333C13.3333 9.69444 12.7049 11.6146 11.4479 13.3438C10.191 15.0729 8.59722 16.1806 6.66667 16.6667Z" fill="#475569" />
+  </svg>
 );
 const RetirementIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="2,13 6,8 10,10 15,4" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><polyline points="12,4 15,4 15,7" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <polyline points="2,13 6,8 10,10 15,4" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    <polyline points="12,4 15,4 15,7" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+  </svg>
 );
 const DownloadIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M4 6l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 11h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M7 2v7M4 6l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 11h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
 );
 const ReadIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h4c1 0 1.5.5 1.5 1.5v7c0-1-1-1.5-1.5-1.5H2V3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="none"/><path d="M12 3H8c-1 0-1.5.5-1.5 1.5v7c0-1 1-1.5 1.5-1.5h4V3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="none"/></svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M2 3h4c1 0 1.5.5 1.5 1.5v7c0-1-1-1.5-1.5-1.5H2V3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="none" />
+    <path d="M12 3H8c-1 0-1.5.5-1.5 1.5v7c0-1 1-1.5 1.5-1.5h4V3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="none" />
+  </svg>
 );
 const StarIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.2l-3.2 1.7.6-3.6L1.8 4.8l3.6-.5L7 1z" stroke="#D4AF37" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M7 1l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.2l-3.2 1.7.6-3.6L1.8 4.8l3.6-.5L7 1z" stroke="#D4AF37" strokeWidth="1.2" strokeLinejoin="round" />
+  </svg>
 );
 const EyeIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4 6-4 6 4 6 4-2.5 4-6 4-6-4-6-4z" stroke="#94a3b8" strokeWidth="1.2" fill="none"/><circle cx="7" cy="7" r="1.5" stroke="#94a3b8" strokeWidth="1.2" fill="none"/></svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M1 7s2.5-4 6-4 6 4 6 4-2.5 4-6 4-6-4-6-4z" stroke="#94a3b8" strokeWidth="1.2" fill="none" />
+    <circle cx="7" cy="7" r="1.5" stroke="#94a3b8" strokeWidth="1.2" fill="none" />
+  </svg>
 );
 const ArrowRight = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#047857" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3 8h10M9 4l4 4-4 4" stroke="#047857" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 );
 
-// Map category labels to an icon
-const categoryIcon = (label: string) => {
-  const key = label.toLowerCase();
-  if (key.includes("invest")) return <InvestmentIcon />;
-  if (key.includes("tax")) return <TaxIcon />;
-  if (key.includes("insurance") || key.includes("protect")) return <InsuranceIcon />;
-  if (key.includes("retire") || key.includes("plan")) return <RetirementIcon />;
-  return <EyeIcon />;
+/* ─────────────────────── Types & Data ─────────────────────── */
+type Publication = {
+  id: number | string;
+  category: string;
+  categoryColor: string;
+  date: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaIcon: "read" | "download";
+  href: string;
+  featured?: boolean;
+  cover?: string;
 };
 
 const TAGS = ["Equity", "SIP", "Money Mati", "Money", "Budget Planning", "Invest"];
@@ -55,7 +82,74 @@ const CARD_IMAGES: Record<number, string> = {
   4: "/i4 (2).svg",
 };
 
-/* ── shared download button style ── */
+// ── All publications including the "early blog" entries ──────────────────────
+const PUBLICATIONS_LIST: Publication[] = [
+  {
+    id: 1,
+    category: "INVESTING",
+    categoryColor: "#EC5B13",
+    date: "Oct 24, 2023 · By Admin",
+    title: "5 Investing Mistakes You Must Avoid",
+    description: "Protect your capital by understanding common psychological and technical pitfalls in modern markets.",
+    ctaLabel: "Read Guide",
+    ctaIcon: "read",
+    href: "/ebook1.pdf",
+    cover: "/i1.svg",
+  },
+  {
+    id: 2,
+    category: "GOVERNMENT",
+    categoryColor: "#EC5B13",
+    date: "Oct 20, 2023 · By Admin",
+    title: "Top Government Saving Schemes",
+    description: "Detailed comparison of PPF, SSY, and SCSS for risk-free long-term wealth accumulation.",
+    ctaLabel: "Download PDF",
+    ctaIcon: "download",
+    href: "/ebook2.pdf",
+    cover: "/i2 (2).svg",
+  },
+  {
+    id: 3,
+    category: "CAREER",
+    categoryColor: "#EC5B13",
+    date: "Oct 15, 2023 · By Admin",
+    title: "Highest Paying Jobs of 2024",
+    description: "A roadmap to high-income careers in fintech, AI, and sustainable energy sectors.",
+    ctaLabel: "Download PDF",
+    ctaIcon: "download",
+    href: "/ebook3.pdf",
+    cover: "/i3 (2).svg",
+  },
+  {
+    id: 4,
+    category: "PLANNING",
+    categoryColor: "#EC5B13",
+    date: "Oct 12, 2023 · By Admin",
+    title: "Start Early, Be Wealthy!",
+    description: "The math behind compounding and why starting at 20 is better than starting at 30.",
+    ctaLabel: "Read Online",
+    ctaIcon: "read",
+    href: "/ebook.pdf",
+    cover: "/i4 (2).svg",
+  },
+];
+
+// ── Navratri featured publication ───────────────────────────────────────────
+const NAV_PUBLICATION: Publication = {
+  id: 5,
+  category: "INVESTING",
+  categoryColor: "#EC5B13",
+  date: "Oct 07, 2023 · By Admin",
+  title: "Navratri Financial Empowerment Flip Book",
+  description: "Festive-season strategies to align your money goals with discipline, prosperity, and mindful spending.",
+  ctaLabel: "Read Guide",
+  ctaIcon: "read",
+  href: "/FLIP-BOOK.pdf",
+  featured: true,
+  cover: "/navatri.svg",
+};
+
+/* ─────────────────────── Shared styles ─────────────────────── */
 const downloadBtnStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
@@ -72,57 +166,151 @@ const downloadBtnStyle: React.CSSProperties = {
   textDecoration: "none",
 };
 
-function PublicationCard({ pub }: { pub: { id: number; category: string; categoryColor: string; date: string; title: string; description: string; ctaLabel: string; ctaIcon: "read" | "download" } }) {
+/* ─────────────────────── Category icon helper ─────────────────────── */
+function categoryIconFn(label: string) {
+  const key = label.toLowerCase();
+  if (key.includes("invest")) return <InvestmentIcon />;
+  if (key.includes("tax")) return <TaxIcon />;
+  if (key.includes("insurance") || key.includes("protect")) return <InsuranceIcon />;
+  if (key.includes("retire") || key.includes("plan")) return <RetirementIcon />;
+  return <EyeIcon />;
+}
+
+/* ─────────────────────── PublicationCard ─────────────────────── */
+function PublicationCard({ pub, forceRoute: _forceRoute }: { pub: Publication; forceRoute?: boolean }) {
   const router = useRouter();
+  const ctaLabel = (pub.ctaLabel || "").trim() || (pub.ctaIcon === "download" ? "Download PDF" : "Read Now");
+  const imgSrc = (Number.isFinite(Number(pub.id)) && CARD_IMAGES[Number(pub.id)]) ? CARD_IMAGES[Number(pub.id)] : (pub.cover ?? "/i1.svg");
+
+  const openAction = () => {
+    const encodedId = encodeURIComponent(String(pub.id));
+    router.push(`/e-book/${encodedId}`);
+  };
+
   return (
     <div
-      onClick={() => router.push(`/e-book/${pub.id}`)}
-      style={{ backgroundColor: "#ffffff", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)", display: "flex", flexDirection: "column", cursor: "pointer", transition: "box-shadow 0.2s, transform 0.2s" }}
-      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 24px rgba(0,0,0,0.12)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"; }}
+      onClick={openAction}
+      style={{
+        backgroundColor: "#ffffff",
+        borderRadius: "14px",
+        overflow: "hidden",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+        border: "1px solid rgba(0,0,0,0.05)",
+        display: "flex",
+        flexDirection: "column",
+        cursor: "pointer",
+        transition: "box-shadow 0.2s, transform 0.2s",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 24px rgba(0,0,0,0.12)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
+      }}
     >
-      <div style={{ width: "100%", height: "160px", position: "relative", overflow: "hidden" }}>
-        <img src={CARD_IMAGES[pub.id] ?? "/i1.svg"} alt={pub.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      {/* Cover image */}
+      <div style={{ width: "100%", height: "160px", overflow: "hidden" }}>
+        <img src={imgSrc} alt={pub.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       </div>
+
+      {/* Content */}
       <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em", color: pub.categoryColor, textTransform: "uppercase" }}>{pub.category}</span>
+          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em", color: pub.categoryColor, textTransform: "uppercase" }}>
+            {pub.category}
+          </span>
           <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", color: "#94a3b8" }}>{pub.date}</span>
         </div>
-        <h4 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "15px", lineHeight: "22px", color: "#1e293b" }}>{pub.title}</h4>
-        <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "12.5px", lineHeight: "19px", color: "#64748b", flex: 1 }}>{pub.description}</p>
+
+        <h4 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "15px", lineHeight: "22px", color: "#1e293b" }}>
+          {pub.title}
+        </h4>
+
+        <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "12.5px", lineHeight: "19px", color: "#64748b", flex: 1 }}>
+          {pub.description}
+        </p>
+
         <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "4px 0" }} />
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: "#1e293b" }}>
+
+        <button
+          onClick={(e) => { e.stopPropagation(); openAction(); }}
+          style={{
+            marginTop: "auto",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            padding: "10px 14px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#0d4f35",
+            color: "#fff",
+            fontFamily: "var(--font-inter), sans-serif",
+            fontSize: "13px",
+            fontWeight: 700,
+            cursor: "pointer",
+            boxShadow: "0 6px 20px rgba(13,79,53,0.18)",
+            transition: "transform 0.15s ease, box-shadow 0.15s ease",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(13,79,53,0.22)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 20px rgba(13,79,53,0.18)";
+          }}
+        >
           {pub.ctaIcon === "download" ? <DownloadIcon /> : <ReadIcon />}
-          {pub.ctaLabel}
-        </div>
+          {ctaLabel}
+        </button>
       </div>
     </div>
   );
 }
 
+/* ─────────────────────── Sidebar ─────────────────────── */
 function Sidebar({ categories }: { categories: { label: string; count: number }[] }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Categories */}
       <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)" }}>
-        <p style={{ margin: "0 0 16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>Categories</p>
+        <p style={{ margin: "0 0 16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>
+          Categories
+        </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           {categories.map((cat, idx) => (
-            <div key={cat.label} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", backgroundColor: idx === 0 ? "#f0fdf4" : "transparent", cursor: "pointer" }}>
-              <span style={{ flexShrink: 0 }}>{categoryIcon(cat.label)}</span>
-              <span style={{ flex: 1, fontFamily: "var(--font-inter), sans-serif", fontSize: "14px", fontWeight: idx === 0 ? 700 : 500, color: idx === 0 ? "#1e293b" : "#475569" }}>{cat.label}</span>
-              <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: idx === 0 ? "#047857" : "#94a3b8", minWidth: "24px", textAlign: "right" }}>{String(cat.count).padStart(2, "0")}</span>
+            <div
+              key={cat.label}
+              style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "10px", backgroundColor: idx === 0 ? "#f0fdf4" : "transparent", cursor: "pointer" }}
+            >
+              <span style={{ flexShrink: 0 }}>{categoryIconFn(cat.label)}</span>
+              <span style={{ flex: 1, fontFamily: "var(--font-inter), sans-serif", fontSize: "14px", fontWeight: idx === 0 ? 700 : 500, color: idx === 0 ? "#1e293b" : "#475569" }}>
+                {cat.label}
+              </span>
+              <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: idx === 0 ? "#047857" : "#94a3b8", minWidth: "24px", textAlign: "right" }}>
+                {String(cat.count).padStart(2, "0")}
+              </span>
             </div>
           ))}
         </div>
       </div>
+
       {/* Popular Tags */}
       <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)" }}>
-        <p style={{ margin: "0 0 14px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>Popular Tags</p>
+        <p style={{ margin: "0 0 14px", fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8" }}>
+          Popular Tags
+        </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {TAGS.map((tag) => (
-            <button key={tag} style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "9999px", padding: "6px 14px", fontFamily: "var(--font-inter), sans-serif", fontSize: "12.5px", fontWeight: 500, color: "#475569", cursor: "pointer" }}>{tag}</button>
+            <button
+              key={tag}
+              style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "9999px", padding: "6px 14px", fontFamily: "var(--font-inter), sans-serif", fontSize: "12.5px", fontWeight: 500, color: "#475569", cursor: "pointer" }}
+            >
+              {tag}
+            </button>
           ))}
         </div>
       </div>
@@ -130,40 +318,156 @@ function Sidebar({ categories }: { categories: { label: string; count: number }[
   );
 }
 
-const PUBLICATIONS_LIST = [
-  { id: 1, category: "INVESTING",   categoryColor: "#EC5B13", date: "Oct 24, 2023 · By Admin", title: "5 Investing Mistakes You Must Avoid",  description: "Protect your capital by understanding common psychological and technical pitfalls in modern markets.", ctaLabel: "Read Guide",   ctaIcon: "read"     as const },
-  { id: 2, category: "GOVERNMENT",  categoryColor: "#EC5B13", date: "Oct 20, 2023 · By Admin", title: "Top Government Saving Schemes",        description: "Detailed comparison of PPF, SSY, and SCSS for risk-free long-term wealth accumulation.",         ctaLabel: "Download PDF", ctaIcon: "download" as const },
-  { id: 3, category: "CAREER",      categoryColor: "#EC5B13", date: "Oct 15, 2023 · By Admin", title: "Highest Paying Jobs of 2024",          description: "A roadmap to high-income careers in fintech, AI, and sustainable energy sectors.",                  ctaLabel: "Download PDF", ctaIcon: "download" as const },
-  { id: 4, category: "PLANNING",    categoryColor: "#EC5B13", date: "Oct 12, 2023 · By Admin", title: "Start Early, Be Wealthy!",             description: "The math behind compounding and why starting at 20 is better than starting at 30.",               ctaLabel: "Read Online",  ctaIcon: "read"     as const },
-];
-
+/* ─────────────────────── Page ─────────────────────── */
 export default function FinancialResources() {
   const router = useRouter();
-  const publications = PUBLICATIONS_LIST;
-  const featured = publications[0];
-  const openFlipBook = () => {
-    if (typeof window !== "undefined") {
-      window.open("/FLIP-BOOK.pdf", "_blank", "noopener,noreferrer");
-    }
-  };
 
-  const [categories, setCategories] = React.useState<
-    { label: string; count: number }[]
-  >([
+  // ── State ──
+  const [publications, setPublications] = React.useState<Publication[]>(PUBLICATIONS_LIST);
+  const [featuredList, setFeaturedList] = React.useState<Publication[]>([NAV_PUBLICATION]);
+  const [featuredIndex, setFeaturedIndex] = React.useState(0);
+  const [categories, setCategories] = React.useState<{ label: string; count: number }[]>([
     { label: "Investment", count: 24 },
     { label: "Tax Planning", count: 12 },
     { label: "Insurance", count: 8 },
     { label: "Retirement", count: 15 },
   ]);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
+  // ── Derived ──
+  const perPage = 4;
+  const activeFeaturedPool = featuredList.length ? featuredList : publications;
+  const featured = activeFeaturedPool[featuredIndex % activeFeaturedPool.length];
+  const totalPages = Math.max(1, Math.ceil(Math.max(publications.length, 1) / perPage));
+  const startIdx = (currentPage - 1) * perPage;
+  const pagedPublications = publications.slice(startIdx, startIdx + perPage);
+
+  const featuredCover =
+    featured.cover ??
+    (Number.isFinite(Number(featured.id)) && CARD_IMAGES[Number(featured.id)]
+      ? CARD_IMAGES[Number(featured.id)]
+      : "/navatri.svg");
+
+  const cycle = (dir: 1 | -1) => {
+    const len = activeFeaturedPool.length || 1;
+    setFeaturedIndex((i) => (i + dir + len) % len);
+  };
+
+  const openFeatured = () => {
+    if (featured?.id !== undefined && featured?.id !== null) {
+      const encodedId = encodeURIComponent(String(featured.id));
+      router.push(`/e-book/${encodedId}`);
+      return;
+    }
+    if (featured?.href) {
+      window.open(featured.href, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  // ── Load from API ──
   React.useEffect(() => {
-    const loadCounts = async () => {
+    const loadData = async () => {
       try {
-        const res = await fetch("/api/admin/ebooks");
-        if (!res.ok) throw new Error("Failed to fetch categories");
+        let storedFeaturedId: string | null = null;
+        try { storedFeaturedId = localStorage.getItem("featuredEbookId"); } catch {}
+
+        const res = await fetch("/api/admin/ebooks", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        const items: { category?: string }[] = data?.items ?? [];
+        const items: {
+          id?: string; title?: string; description?: string;
+          category?: string; href?: string; lastUpdated?: string; featured?: boolean;
+        }[] = data?.items ?? [];
+
         if (!items.length) return;
+
+        const resolveId = (it: { id?: string; href?: string; title?: string }, fallbackIdx: number) => {
+          if (Number.isFinite(Number(it.id))) return Number(it.id);
+          const pdfMatch = (it.href ?? "").match(/ebook(\d+)\.pdf/i);
+          if (pdfMatch) return Number(pdfMatch[1]);
+          const isNav = (it.title ?? "").toLowerCase().includes("navratri") || (it.href ?? "").toLowerCase().includes("flip-book");
+          if (isNav) return 5;
+          return it.id ?? `temp-${fallbackIdx}`;
+        };
+
+        const mapped: Publication[] = items.map((it, idx) => {
+          const isNav = (it.title ?? "").toLowerCase().includes("navratri") || (it.href ?? "").toLowerCase().includes("flip-book");
+          const resolvedId = resolveId(it, idx + 1000);
+          const defaultCover = Number.isFinite(Number(resolvedId)) && CARD_IMAGES[Number(resolvedId)]
+            ? CARD_IMAGES[Number(resolvedId)]
+            : `/ebooks/ebook${resolvedId}.jpg`;
+          return {
+            id: resolvedId,
+            category: ((it.category ?? (isNav ? "INVESTING" : "EBOOK"))).toUpperCase(),
+            categoryColor: "#EC5B13",
+            date: it.lastUpdated
+              ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(it.lastUpdated))
+              : "By Admin",
+            title: isNav ? NAV_PUBLICATION.title : it.title ?? "Untitled E-Book",
+            description: isNav ? NAV_PUBLICATION.description : it.description ?? "Download the latest resource.",
+            ctaLabel: it.href ? "Download PDF" : "Read Guide",
+            ctaIcon: it.href ? ("download" as const) : ("read" as const),
+            href: isNav ? "/FLIP-BOOK.pdf" : it.href ?? "/ebook.pdf",
+            featured: Boolean(it.featured) || isNav,
+            cover: isNav ? "/navatri.svg" : defaultCover,
+          };
+        }).filter((p) => {
+          const title = (p.title ?? "").trim().toLowerCase();
+          const href = (p.href ?? "").trim().toLowerCase();
+          // Drop the auto-generated generic "Ebook" entry unless it has been marked featured
+          return !(title === "ebook" && href === "/ebook.pdf" && !p.featured);
+        });
+
+        // Build featured pool — always start with NAV_PUBLICATION
+        let featuredItems = mapped.filter((p) => p.featured);
+        if (storedFeaturedId) {
+          const match = mapped.find((p) => String(p.id) === storedFeaturedId);
+          // Honor localStorage only if the item is actually marked featured in API (avoids stale ids)
+          if (match && match.featured && !featuredItems.some((f) => f.id === match.id)) {
+            featuredItems.push({ ...match, featured: true });
+          }
+        }
+
+        const dedup = (list: Publication[]) => {
+          const seen = new Set<string>();
+          return list.filter((p) => {
+            const key = `${p.id}-${(p.href ?? p.title ?? "").toLowerCase()}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+        };
+
+        // NAV_PUBLICATION always first in featured pool
+        const featuredPool = dedup([NAV_PUBLICATION, ...featuredItems]);
+
+        // Merge API items with local PUBLICATIONS_LIST; deduplicate
+        const seen = new Set<string>();
+        const merged = [...PUBLICATIONS_LIST, ...mapped].filter((p) => {
+          const key = `${p.id}-${(p.href ?? p.title ?? "").trim().toLowerCase()}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        // Latest = everything NOT in featured pool (so featured items stay only in Featured section)
+        const latest = merged.filter(
+          (p) => !featuredPool.some((f) => String(f.id) === String(p.id))
+        );
+
+        setFeaturedList(featuredPool);
+        setPublications(latest);
+
+        // Show the stored featured item first if present
+        if (storedFeaturedId) {
+          const idx = featuredPool.findIndex((p) => String(p.id) === storedFeaturedId);
+          setFeaturedIndex(idx >= 0 ? idx : 0);
+        } else {
+          setFeaturedIndex(0);
+        }
+        setCurrentPage(1);
+
+        // Categories from API
         const map: Record<string, number> = {};
         items.forEach((it) => {
           const cat = (it.category ?? "Uncategorized").trim();
@@ -172,40 +476,38 @@ export default function FinancialResources() {
         const sorted = Object.entries(map)
           .map(([label, count]) => ({ label, count }))
           .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
-        setCategories(sorted);
+        if (sorted.length) setCategories(sorted);
       } catch {
-        // keep fallback counts on error
+        // Keep fallback data on error
       }
     };
-    loadCounts();
+    loadData();
   }, []);
 
-  const categoryIcon = (label: string) => {
-    const key = label.toLowerCase();
-    if (key.includes("invest")) return <InvestmentIcon />;
-    if (key.includes("tax")) return <TaxIcon />;
-    if (key.includes("insurance") || key.includes("protect")) return <InsuranceIcon />;
-    if (key.includes("retire") || key.includes("plan")) return <RetirementIcon />;
-    return <EyeIcon />;
-  };
+  // Keep currentPage in range when publications change
+  React.useEffect(() => {
+    const total = Math.max(1, Math.ceil(Math.max(publications.length, 1) / perPage));
+    setCurrentPage((p) => Math.min(Math.max(p, 1), total));
+  }, [publications.length]);
 
+  /* ── Render ── */
   return (
     <>
       <style>{`
-        .fr-featured-mobile { display: none; }
+        .fr-featured-mobile  { display: none; }
         .fr-featured-desktop { display: flex; }
-        .fr-mobile-sidebar { display: none; }
+        .fr-mobile-sidebar   { display: none; }
 
         @media (max-width: 768px) {
           .fr-featured-mobile  { display: block !important; }
-          .fr-featured-desktop { display: none  !important; }
+          .fr-featured-desktop { display: none   !important; }
           .fr-outer-grid {
             grid-template-columns: 1fr !important;
             padding: 24px 16px 48px !important;
             gap: 24px !important;
           }
           .fr-desktop-sidebar { display: none !important; }
-          .fr-mobile-sidebar { display: block !important; }
+          .fr-mobile-sidebar  { display: block !important; }
           .fr-pubs-grid {
             grid-template-columns: 1fr !important;
             gap: 16px !important;
@@ -216,55 +518,80 @@ export default function FinancialResources() {
       <div className={`${inter.className} ${dancing.variable}`} style={{ backgroundColor: "#f5f0e8", minHeight: "100vh" }}>
         <div
           className="fr-outer-grid"
-          style={{
-            maxWidth: "1100px",
-            margin: "0 auto",
-            padding: "40px 24px 64px",
-            display: "grid",
-            gridTemplateColumns: "1fr 280px",
-            gap: "32px",
-            alignItems: "start",
-          }}
+          style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 24px 64px", display: "grid", gridTemplateColumns: "1fr 280px", gap: "32px", alignItems: "start" }}
         >
           {/* ── Left / main column ── */}
           <div>
 
-            {/* Featured E-Book */}
+            {/* ── Featured E-Book ── */}
             <div style={{ marginBottom: "40px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
-                <StarIcon />
-                <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 700, color: "#1e293b", letterSpacing: "0.01em" }}>Featured E-Book</span>
+              {/* Header row with prev/next controls */}
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <StarIcon />
+                  <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 700, color: "#1e293b", letterSpacing: "0.01em" }}>
+                    Featured E-Book
+                  </span>
+                  {featuredList.length > 1 && (
+                    <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "11px", color: "#94a3b8", marginLeft: 4 }}>
+                      {featuredIndex + 1} / {featuredList.length}
+                    </span>
+                  )}
+                </div>
+                {featuredList.length > 1 && (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      aria-label="Previous featured ebook"
+                      onClick={() => cycle(-1)}
+                      style={{ width: 34, height: 34, borderRadius: 10, border: "1px solid #e5e7eb", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="#1f2937" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </button>
+                    <button
+                      aria-label="Next featured ebook"
+                      onClick={() => cycle(1)}
+                      style={{ width: 34, height: 34, borderRadius: 10, border: "1px solid #e5e7eb", background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="#1f2937" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* ── Desktop featured card ── */}
+              {/* Desktop featured card */}
               <div
                 className="fr-featured-desktop"
-                onClick={openFlipBook}
+                onClick={openFeatured}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "56px 40px", gap: "32px", alignItems: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", minHeight: "260px", cursor: "pointer" }}
               >
-                {/* Book cover image */}
+                {/* Book cover */}
                 <div style={{ width: "160px", minWidth: "160px", height: "240px", borderRadius: "8px", position: "relative", overflow: "hidden", flexShrink: 0 }}>
-                  <img src="/navatri.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  <div style={{ position: "absolute", bottom: "10px", left: "8px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
+                  <img src={featuredCover} alt={featured.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", bottom: "10px", left: "8px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>
+                    Special Edition
+                  </div>
                 </div>
 
-                {/* Text + actions */}
+                {/* Text */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "18px", lineHeight: "26px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
-                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
+                  <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em", color: featured.categoryColor, textTransform: "uppercase" }}>
+                    {featured.category}
+                  </span>
+                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "18px", lineHeight: "26px", color: "#1e293b" }}>
+                    {featured.title}
+                  </h3>
+                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>
+                    {featured.description}
+                  </p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-
-                    {/* ✅ Download button — opens PDF and stops card navigation */}
                     <a
-                      href="/FLIP-BOOK.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => { e.stopPropagation(); }}
+                      href={`/e-book/${encodeURIComponent(String(featured.id))}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); openFeatured(); }}
                       style={downloadBtnStyle}
                     >
-                      <DownloadIcon />Open Flip Book
+                      {featured.ctaIcon === "download" ? <DownloadIcon /> : <ReadIcon />}
+                      {featured.ctaLabel}
                     </a>
-
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                       <EyeIcon />
                       <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
@@ -273,32 +600,37 @@ export default function FinancialResources() {
                 </div>
               </div>
 
-              {/* ── Mobile featured card ── */}
+              {/* Mobile featured card */}
               <div
                 className="fr-featured-mobile"
-                onClick={openFlipBook}
+                onClick={openFeatured}
                 style={{ backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.05)", cursor: "pointer" }}
               >
                 <div style={{ width: "100%", height: "220px", position: "relative", overflow: "hidden" }}>
-                  <img src="/navatri.svg" alt="Navratri Financial Empowerment Flip Book" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>Special Edition</div>
+                  <img src={featuredCover} alt={featured.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "#f97316", color: "#fff", fontSize: "8px", fontWeight: 700, letterSpacing: "0.5px", padding: "3px 8px", borderRadius: "4px", fontFamily: "var(--font-inter), sans-serif", textTransform: "uppercase" }}>
+                    Special Edition
+                  </div>
                 </div>
                 <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "16px", lineHeight: "24px", color: "#1e293b" }}>Navratri Financial Empowerment Flip Book</h3>
-                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>A special guide focused on financial empowerment and wealth creation strategies during the festive season. Learn how to align your goals with discipline and prosperity.</p>
+                  <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.08em", color: featured.categoryColor, textTransform: "uppercase" }}>
+                    {featured.category}
+                  </span>
+                  <h3 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "16px", lineHeight: "24px", color: "#1e293b" }}>
+                    {featured.title}
+                  </h3>
+                  <p style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", lineHeight: "20px", color: "#64748b" }}>
+                    {featured.description}
+                  </p>
                   <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
-
-                    {/* ✅ Download button — opens PDF and stops card navigation */}
                     <a
-                      href="/FLIP-BOOK.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => { e.stopPropagation(); }}
+                      href={`/e-book/${encodeURIComponent(String(featured.id))}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); openFeatured(); }}
                       style={downloadBtnStyle}
                     >
-                      <DownloadIcon />Open Flip Book
+                      {featured.ctaIcon === "download" ? <DownloadIcon /> : <ReadIcon />}
+                      {featured.ctaLabel}
                     </a>
-
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                       <EyeIcon />
                       <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "12px", color: "#94a3b8" }}>12.4k Views</span>
@@ -313,19 +645,78 @@ export default function FinancialResources() {
               <Sidebar categories={categories} />
             </div>
 
-            {/* Latest Publications */}
+            {/* ── Latest Publications (includes all early blog entries) ── */}
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                <h2 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "20px", color: "#1e293b" }}>Latest Publications</h2>
-                <button style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: "#047857" }}>
+                <h2 style={{ margin: 0, fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "20px", color: "#1e293b" }}>
+                  Latest Publications
+                </h2>
+                <button
+                  onClick={() => router.push("/e-book")}
+                  style={{ display: "flex", alignItems: "center", gap: "4px", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", fontWeight: 600, color: "#047857" }}
+                >
                   View All <ArrowRight />
                 </button>
               </div>
-              <div className="fr-pubs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                {publications.map((pub) => (
-                  <PublicationCard key={pub.id} pub={pub} />
+
+              <div
+                className="fr-pubs-grid"
+                style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}
+              >
+                {/* ✅ Show paginated publications */}
+                {pagedPublications.map((pub) => (
+                  <PublicationCard
+                    key={String(pub.id)}
+                    pub={pub}
+                    // Route internally only when no direct href is present; otherwise open the provided link (PDF)
+                    forceRoute={!pub.href}
+                  />
                 ))}
               </div>
+
+              {totalPages > 1 && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginTop: "18px" }}>
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: "10px",
+                      border: "1px solid #e2e8f0",
+                      background: currentPage === 1 ? "#f8fafc" : "#ffffff",
+                      color: "#0f172a",
+                      fontFamily: "var(--font-inter), sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                      opacity: currentPage === 1 ? 0.5 : 1,
+                    }}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "13px", color: "#64748b" }}>
+                    Page {currentPage} / {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: "10px",
+                      border: "1px solid #e2e8f0",
+                      background: currentPage === totalPages ? "#f8fafc" : "#ffffff",
+                      color: "#0f172a",
+                      fontFamily: "var(--font-inter), sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                      opacity: currentPage === totalPages ? 0.5 : 1,
+                    }}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

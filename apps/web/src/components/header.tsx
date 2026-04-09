@@ -317,9 +317,9 @@ export default function Header() {
         style={{ position: "relative", zIndex: 50 }}
       >
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img src="/best new moneymati logo.svg" alt="Money Mati" className="h-10 w-10" />
-        </div>
+        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+  <img src="/best new moneymati logo.svg" alt="Money Mati" className="h-10 w-10" />
+</Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:block">

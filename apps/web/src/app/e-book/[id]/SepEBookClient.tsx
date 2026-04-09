@@ -41,9 +41,9 @@ function Breadcrumb({ title }: { title: string }) {
   );
 }
 
-function MoreGuides({ currentId }: { currentId: number }) {
+function MoreGuides({ currentId }: { currentId: number | string }) {
   const router = useRouter();
-  const others = BOOKS.filter((b) => b.id !== currentId).slice(0, 3);
+  const others = BOOKS.filter((b) => String(b.id) !== String(currentId)).slice(0, 3);
 
   return (
     <section className="more-guides-section">
@@ -59,8 +59,17 @@ function MoreGuides({ currentId }: { currentId: number }) {
           {others.map((book) => (
             <div
               key={book.id}
-              style={{ background: "#fff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", cursor: "pointer" }}
-              onClick={() => router.push(`/e-book/${book.id}`)}
+              style={{
+                background: "#fff",
+                borderRadius: "16px",
+                overflow: "hidden",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+              onClick={() => router.push(`/e-book/${encodeURIComponent(String(book.id))}`)}
             >
               <div style={{ position: "relative", height: "180px", background: "#0A2E24", overflow: "hidden" }}>
                 <Image src={book.cardImage} alt={book.title} fill style={{ objectFit: "cover" }} />
@@ -68,14 +77,14 @@ function MoreGuides({ currentId }: { currentId: number }) {
                   {book.category}
                 </span>
               </div>
-              <div style={{ padding: "20px 20px 16px" }}>
+              <div style={{ padding: "20px 20px 16px", display: "flex", flexDirection: "column", height: "100%" }}>
                 <h3 style={{ margin: "0 0 8px", fontFamily: "'Inter', sans-serif", fontSize: "18px", fontWeight: 400, lineHeight: "28px", color: "#064E3B" }}>
                   {book.title} {book.subtitle}
                 </h3>
                 <p style={{ margin: "0 0 16px", fontFamily: "'Inter', sans-serif", fontSize: "14px", lineHeight: "20px", color: "#64748B" }}>
                   {book.description}
                 </p>
-                <button style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ddd", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "#0A2E24" }}>
+                <button style={{ width: "100%", marginTop: "auto", padding: "10px", borderRadius: "8px", border: "1px solid #ddd", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "#0A2E24" }}>
                   Read Now
                 </button>
               </div>
@@ -87,7 +96,7 @@ function MoreGuides({ currentId }: { currentId: number }) {
   );
 }
 
-type Book = NonNullable<ReturnType<typeof import("@/app/lib/books").getBook>>;
+type Book = Omit<import("@/app/lib/books").BookMeta, "id"> & { id: number | string };
 
 export default function SepEBookClient({ book }: { book: Book }) {
   return (

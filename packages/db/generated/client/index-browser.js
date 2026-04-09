@@ -224,6 +224,7 @@ exports.Prisma.EbookScalarFieldEnum = {
   format: 'format',
   href: 'href',
   status: 'status',
+  featured: 'featured',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
