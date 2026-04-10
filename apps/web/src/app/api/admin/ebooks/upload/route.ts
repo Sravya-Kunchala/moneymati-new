@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { randomBytes } from "node:crypto";
+import { v2 as cloudinary } from "cloudinary";
 
 export const runtime = "nodejs";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: Request) {
   try {
     const form = await req.formData();
     const file = form.get("file");
+
     if (!file || !(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
@@ -16,36 +21,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Only PDF uploads are allowed" }, { status: 400 });
     }
 
+    // Convert file to base64 data URI for Cloudinary
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const safeName = `${Date.now()}-${randomBytes(4).toString("hex")}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "")}`;
+    const base64 = Buffer.from(bytes).toString("base64");
+    const dataUri = `data:application/pdf;base64,${base64}`;
 
-    const cwd = process.cwd();
-    const candidateDirs = [
-      path.join(cwd, "public", "ebooks"),
-      path.join(cwd, "apps", "web", "public", "ebooks"),
-    ];
-    let uploadDir = candidateDirs[0];
-    for (const dir of candidateDirs) {
-      try {
-        const stat = await fs.stat(dir.replace(/ebooks$/, "")); // parent exists?
-        if (stat.isDirectory()) {
-          uploadDir = dir;
-          break;
-        }
-      } catch {
-        // continue to next
-      }
-    }
+    // Upload to Cloudinary as raw resource (required for PDFs)
+    const result = await cloudinary.uploader.upload(dataUri, {
+      resource_type: "raw",
+      folder: "moneymati/ebooks",
+      use_filename: true,
+      unique_filename: true,
+      public_id: `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "")}`,
+    });
 
-    await fs.mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, safeName);
-    await fs.writeFile(filePath, buffer);
-
-    const href = `/ebooks/${safeName}`;
-    return NextResponse.json({ href, filename: safeName, storedAt: uploadDir });
+    return NextResponse.json({
+      href: result.secure_url,
+      filename: result.public_id,
+      storedAt: "cloudinary",
+    });
   } catch (error: any) {
     console.error("ebook upload error", error);
-    return NextResponse.json({ error: "Upload failed", detail: String(error?.message ?? error) }, { status: 500 });
+    return NextResponse.json(
+      { error: "Upload failed", detail: String(error?.message ?? error) },
+      { status: 500 }
+    );
   }
 }

@@ -372,7 +372,7 @@ export async function POST(req: Request) {
             const ebook = await (prisma as any).ebook.create({ data: fallbackData });
             deletedIds.delete(String(ebook.id));
             try { await saveDeleted(deletedIds); } catch {}
-            return NextResponse.json(ebook, { status: 201, warning: "Featured flag ignored (column missing)." });
+            return NextResponse.json({ ...ebook, warning: "Featured flag ignored (column missing)." }, { status: 201 });
           } catch {
             // fall through to in-memory echo
           }
