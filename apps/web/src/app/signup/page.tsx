@@ -32,7 +32,6 @@ export default function SignupPage() {
         name: fullName,
         email,
         password,
-        role: "USER",
         callbackURL: "/",
       });
       if (res.error) {
@@ -307,7 +306,7 @@ export default function SignupPage() {
               </span>
               <input
                 type="text"
-                placeholder="Sanjana"
+                placeholder="Enter the Name"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
               />
@@ -326,7 +325,7 @@ export default function SignupPage() {
               </span>
               <input
                 type="email"
-                placeholder="sanju@gmail.com"
+                placeholder="Enter the Email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />

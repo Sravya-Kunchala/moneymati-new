@@ -3,7 +3,7 @@
 import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { authClient } from "@/app/lib/auth-client";
+import { adminAuthClient } from "@/app/lib/auth-client-admin";
 
 const inter = Inter({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
@@ -31,7 +31,7 @@ export default function AdminSigninPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await authClient.signIn.email({
+      const res = await adminAuthClient.signIn.email({
         email,
         password,
         callbackURL: "/dashboard",

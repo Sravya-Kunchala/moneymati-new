@@ -18,6 +18,7 @@ import PersonalizeModal from "@/components/confrimation";
 export default function Home() {
   const [showScroll, setShowScroll] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,12 +29,29 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (typeof window === "undefined") return;
-      const already = window.localStorage.getItem("personalize_submitted") === "1";
-      if (!already) setShowConfirm(true);
-    }, 5000);
-    return () => clearTimeout(timer);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const loadSession = async () => {
+      try {
+        const res = await fetch("/api/auth/get-session", { credentials: "include" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const hasUser = Boolean(data?.user);
+        setIsLoggedIn(hasUser);
+
+        if (hasUser) {
+          const already = window.localStorage.getItem("personalize_submitted") === "1";
+          if (!already) {
+            timer = setTimeout(() => setShowConfirm(true), 5000);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    loadSession();
+    return () => { if (timer) clearTimeout(timer); };
   }, []);
 
   const scrollToTop = () => {

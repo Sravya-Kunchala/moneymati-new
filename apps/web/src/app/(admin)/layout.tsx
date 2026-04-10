@@ -2,12 +2,12 @@ import { ReactNode } from "react";
 // @ts-expect-error next/navigation exports redirect at runtime; suppress stale type error
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { auth } from "@/app/lib/auth";
+import { authAdmin } from "@/app/lib/auth-admin";
 
 // Protect all routes inside the (admin) group.
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const hdrs = await headers();
-  const session = await auth.api.getSession({
+  const session = await authAdmin.api.getSession({
     headers: Object.fromEntries(hdrs.entries()),
   });
 
