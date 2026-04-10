@@ -1,6 +1,17 @@
-import Image from "next/image";
+"use client";
 
-const resources = [
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+type ResourceCard = {
+  category: string;
+  title: string;
+  description: string;
+  image: string;
+  href?: string;
+};
+
+const fallbackResources: ResourceCard[] = [
   {
     category: "BUDGETING",
     title: "The Beginner's Guide to Your First Financial Plan",
@@ -24,7 +35,67 @@ const resources = [
   },
 ];
 
+function normalisePublishedBlogs(rows: any[]): ResourceCard[] {
+  return rows
+    .filter((row) => row?.title)
+    .map((row) => {
+      const tag =
+        Array.isArray(row?.tags) && row.tags.length
+          ? row.tags[0]
+          : typeof row?.tags === "string" && row.tags.trim() !== ""
+            ? row.tags.split(",")[0]
+            : "BLOG";
+      const excerpt =
+        row?.excerpt && typeof row.excerpt === "string"
+          ? row.excerpt
+          : row?.content && typeof row.content === "string"
+            ? `${row.content.slice(0, 120)}...`
+            : "Fresh insight from our latest blog post.";
+
+      return {
+        category: (tag || "BLOG").toString().toUpperCase(),
+        title: row.title,
+        description: excerpt,
+        image:
+          (row?.coverImage && typeof row.coverImage === "string" && row.coverImage.trim() !== "")
+            ? row.coverImage
+            : "/blog1.svg",
+        href: row?.slug ? `/sepblog/${row.slug}` : undefined,
+      };
+    });
+}
+
 export default function ResourcesSection() {
+  const [resources, setResources] = useState<ResourceCard[]>(fallbackResources);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/blog?published=true")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        const published = Array.isArray(data?.data) ? normalisePublishedBlogs(data.data) : [];
+        if (!published.length) return;
+        const merged = [...published, ...fallbackResources].reduce<ResourceCard[]>((acc, item) => {
+          const key = (item.title || "").toLowerCase();
+          if (key && !acc.some((r) => (r.title || "").toLowerCase() === key)) {
+            acc.push(item);
+          }
+          return acc;
+        }, []);
+        setResources(merged.slice(0, 3));
+      })
+      .catch(() => {
+        /* If the API fails, we stay on the fallback cards */
+        setResources(fallbackResources);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="w-full bg-[#1a3a2a] py-16 px-8">
       <style>{`
@@ -60,11 +131,15 @@ export default function ResourcesSection() {
 
         {/* Cards */}
         <div className="resources-grid grid grid-cols-3 gap-6">
-          {resources.map(({ category, title, description, image }) => (
-            <div
-              key={title}
-              className="bg-white rounded-2xl overflow-hidden flex flex-col"
-            >
+          {resources.map(({ category, title, description, image, href }) => {
+            const CardWrapper = href ? "a" : "div";
+            return (
+              <CardWrapper
+                key={title}
+                className="bg-white rounded-2xl overflow-hidden flex flex-col"
+                {...(href ? { href } : {})}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
               {/* Image */}
               <div className="h-48 overflow-hidden">
                 <Image
@@ -88,8 +163,9 @@ export default function ResourcesSection() {
                   {description}
                 </p>
               </div>
-            </div>
-          ))}
+              </CardWrapper>
+            );
+          })}
         </div>
 
       </div>

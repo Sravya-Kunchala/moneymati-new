@@ -24,12 +24,25 @@ async function ensureUniqueSlug(base: string) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const published = searchParams.get("published");
+  const slug = searchParams.get("slug");
   const where =
     published === null
       ? undefined
       : { published: published === "true" };
 
   try {
+    if (slug) {
+      if ((prisma as any)?.blogPost?.findUnique) {
+        const post = await prisma.blogPost.findUnique({ where: { slug } });
+        if (post) return NextResponse.json({ data: post });
+      }
+      const sample = blogArticles.find(
+        (b: any) => b.slug === slug || b.href?.replace(/^\//, "") === slug
+      );
+      if (sample) return NextResponse.json({ data: sample, warning: "DB missing; serving static sample." });
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
     if (!(prisma as any)?.blogPost?.findMany) {
       return NextResponse.json({ data: blogArticles, warning: "Blog model missing; showing static data." }, { status: 200 });
     }

@@ -354,21 +354,26 @@ export default function Footer() {
             {/* Socials */}
             <div className="mm-socials-row">
               <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="mm-link" style={{ color: "#fff", display: "flex" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
-                  <circle cx="4" cy="4" r="2"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="4" fill="white"/>
+                  <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" fill="#214533"/>
+                  <path d="M6 9H2V21H6V9Z" fill="#214533"/>
+                  <circle cx="4" cy="4" r="2" fill="#214533"/>
                 </svg>
               </a>
+
               <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="mm-link" style={{ color: "#fff", display: "flex" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect x="1" y="1" width="22" height="22" rx="6" stroke="white" strokeWidth="2"/>
+                  <circle cx="12" cy="12" r="4" stroke="white" strokeWidth="2"/>
+                  <circle cx="17.5" cy="6.5" r="1.5" fill="white"/>
                 </svg>
               </a>
+
               <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="mm-link" style={{ color: "#fff", display: "flex" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="11" fill="white"/>
+                  <path d="M15.5 8H13C12.4477 8 12 8.44772 12 9V11H15.5L15 14H12V22H9V14H7V11H9V9C9 7.34315 10.3431 6 12 6H15.5V8Z" fill="#214533"/>
                 </svg>
               </a>
             </div>

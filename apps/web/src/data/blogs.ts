@@ -10,6 +10,7 @@ export type BlogArticle = {
   published?: boolean;
   status?: "published" | "draft" | "hidden";
   tags?: string;
+  slug?: string;
 };
 
 // Shared blog seed data used by public Blog pages and admin manage blog.
@@ -22,6 +23,7 @@ export const blogArticles: BlogArticle[] = [
     author: "Amit Sharma",
     readTime: "5 min read",
     href: "/sepblog-family",
+    slug: "sepblog-family",
     date: "2025-10-24",
     status: "published",
     tags: "Family, Goals, Planning",
@@ -34,6 +36,7 @@ export const blogArticles: BlogArticle[] = [
     author: "Priya Kapur",
     readTime: "8 min read",
     href: "/sepblog-tax",
+    slug: "sepblog-tax",
     date: "2025-10-21",
     status: "hidden",
     tags: "Risk, Markets, Crisis",
@@ -46,6 +49,7 @@ export const blogArticles: BlogArticle[] = [
     author: "Rajesh V.",
     readTime: "6 min read",
     href: "/sepblog-mutual",
+    slug: "sepblog-mutual",
     date: "2025-10-19",
     status: "draft",
     tags: "Investing, Mutual Funds",
@@ -58,6 +62,7 @@ export const blogArticles: BlogArticle[] = [
     author: "Sarah M.",
     readTime: "10 min read",
     href: "/sepblog-ulips",
+    slug: "sepblog-ulips",
     date: "2025-10-15",
     status: "published",
     tags: "Insurance, ULIP",

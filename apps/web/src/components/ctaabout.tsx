@@ -505,6 +505,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
 // ─── CTA Section ──────────────────────────────────────────────────────────────
 export default function CTASection() {
   const [showBooking, setShowBooking] = useState(false);
+  const router = useRouter();
 
   return (
     <section
@@ -604,7 +605,12 @@ export default function CTASection() {
           wealth-building strategy, MoneyMati has the tools and community to help you succeed.
         </p>
         <div className="cta-buttons">
-          <button className={`${dmSans.className} cta-btn-primary`}>Start Learning Now</button>
+          <button
+            className={`${dmSans.className} cta-btn-primary`}
+            onClick={() => router.push("/services")}
+          >
+            Start Learning Now
+          </button>
           <button className={`${dmSans.className} cta-btn-secondary`} onClick={() => setShowBooking(true)}>
             Book a Consultation
           </button>

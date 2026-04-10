@@ -364,7 +364,12 @@ export default function LatestArticles() {
       .then((data) => {
         if (cancelled) return;
         const incoming = Array.isArray(data?.data) ? data.data : [];
-        const published = incoming.filter((p) => p.published !== false);
+        const published = incoming
+          .filter((p) => p.published !== false)
+          .map((p) => ({
+            ...p,
+            href: p?.href ?? (p?.slug ? `/sepblog/${p.slug}` : "/sepblog"),
+          }));
         const merged = [...published, ...blogArticles].reduce((acc, item) => {
           const key = (item.slug ?? item.id ?? item.title ?? "").toString();
           if (!key) return acc;

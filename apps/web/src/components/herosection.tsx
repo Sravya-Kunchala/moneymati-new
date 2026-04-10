@@ -159,7 +159,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
           background: "#fff",
         }}
       >
-        {/* LEFT PANEL — hidden on mobile via CSS */}
+        {/* LEFT PANEL */}
         <div
           className="booking-left-panel"
           style={{
@@ -202,7 +202,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
           className="booking-right-panel"
           style={{ flex: 1, padding: 36, position: "relative", background: "#fff", overflowY: "auto", maxHeight: "90vh" }}
         >
-          {/* Mobile top bar — hidden on desktop via CSS */}
+          {/* Mobile top bar */}
           <div
             className="booking-mobile-topbar"
             style={{ display: "none", alignItems: "center", gap: 10, marginBottom: 20 }}
@@ -221,7 +221,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
           <h2 className="booking-title" style={{ margin: "8px 0 4px", fontSize: 28, color: "#0b2f24", lineHeight: 1.1 }}>Book Consultation</h2>
           <p style={{ margin: "0 0 16px", color: "#6b7280", fontSize: 14 }}>Fill the form and we'll reach out to confirm your appointment.</p>
 
-          {/* Mobile benefit pills — hidden on desktop via CSS */}
+          {/* Mobile benefit pills */}
           <div
             className="booking-mobile-benefits"
             style={{ display: "none", flexWrap: "wrap" as const, gap: 8, marginBottom: 16 }}
@@ -362,10 +362,13 @@ export default function HeroSection() {
     });
   }, []);
 
+  function handleWebinarScroll() {
+    document.getElementById("upcoming-webinars")?.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
     <>
       <style>{`
-        /* ── Hero CTA buttons ── */
         @media (max-width: 1023px) {
           .hero-mobile-image-section {
             display: flex !important;
@@ -419,7 +422,6 @@ export default function HeroSection() {
           }
         }
 
-        /* ── Booking modal mobile ── */
         @media (max-width: 767px) {
           .booking-left-panel {
             display: none !important;
@@ -463,12 +465,13 @@ export default function HeroSection() {
           {/* LEFT: Text Content */}
           <div className="flex-1 flex flex-col justify-center max-w-xl">
 
-            <p data-animate className="mb-6" style={{ color: "#C6A553", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "28px", letterSpacing: "0.7px", verticalAlign: "middle" }}>
-  Empowering Women to Take Control of Their Finances{" "}
-  <span style={{ textTransform: "uppercase", fontWeight: 500, fontSize: "14px", lineHeight: "28px", letterSpacing: "0.7px" }}>
-    "Own your wallet, own your life"
-  </span>
-</p>
+            {/* ── Tagline — font size increased to 18px ── */}
+            <p data-animate className="mb-6" style={{ color: "#C6A553", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 500, fontSize: "20px", lineHeight: "32px", letterSpacing: "0.7px", verticalAlign: "middle" }}>
+              Empowering Women to Take Control of Their Finances{" "}
+              <span style={{ textTransform: "uppercase", fontWeight: 500, fontSize: "18px", lineHeight: "32px", letterSpacing: "0.7px" }}>
+                "Own your wallet, own your life"
+              </span>
+            </p>
 
             <h1 data-animate className="mb-6" style={{ color: "#ffffff" }}>
               <span className="block font-bold" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.15, fontFamily: "var(--font-playfair), serif" }}>Build Wealth</span>
@@ -510,7 +513,9 @@ export default function HeroSection() {
 
               {showBooking && <BookingModal onClose={() => setShowBooking(false)} />}
 
+              {/* ── Register for Webinar — scrolls to #upcoming-webinars ── */}
               <button
+                onClick={handleWebinarScroll}
                 className="px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-white/10 hero-cta-btn-secondary"
                 style={{
                   backgroundColor: "transparent",

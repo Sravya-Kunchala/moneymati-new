@@ -1,45 +1,129 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { BOOKS } from "@/app/lib/books";
 
-const ebooks = [
-  {
-    id: 1,
-    title: "Navratri Financial Empowerment Flip Book",
-    badge: "SPECIAL EDITION",
-    badgeColor: "#e05a2b",
-    file: "/FLIP-BOOK.pdf",
-    filename: "FLIP-BOOK.pdf",
-    image: "/navatri.svg",  // ← add this
-  },
-  {
-    id: 2,
-    title: "5 Investing Mistakes You Must Avoid",
-    badge: "INVESTMENT",
-    badgeColor: "#0d3d20",
-    file: "/ebook1.pdf",
-    filename: "ebook1.pdf",
-    image: "/guide-investing-mistakes.svg",   // ← add this
-  },
-  {
-    id: 3,
-    title: "Top Government Saving Schemes",
-    badge: "GOVERNMENT",
-    badgeColor: "#0d3d20",
-    file: "/ebook2.pdf",
-    filename: "ebook2.pdf",
-    image: "/piggybank.svg",   // ← add this
-  },
-];
+type EbookCard = {
+  id: number | string;
+  title: string;
+  badge: string;
+  badgeColor: string;
+  file: string;
+  filename: string;
+  image: string;
+  featured?: boolean;
+  status?: string;
+};
+
+const featuredIds = [5, 1, 2]; // Navratri, Investing Mistakes, Gov Schemes
+const defaultEbooks: EbookCard[] = featuredIds
+  .map((id) => BOOKS.find((b) => b.id === id))
+  .filter(Boolean)
+  .map((b) => ({
+    id: b!.id,
+    title: `${b!.title}${b!.subtitle ? " " + b!.subtitle : ""}`.trim(),
+    badge: b!.category || "E-BOOK",
+    badgeColor: b!.categoryColor || "#0d3d20",
+    file: b!.pdf,
+    filename: (b!.pdf || "").split("/").pop() || "ebook.pdf",
+    image: b!.cardImage || b!.cover || "/placeholder.svg",
+  }));
 
 
 export default function TopEbooks() {
-  const [wishlisted, setWishlisted] = useState<number[]>([]);
+  const [wishlisted, setWishlisted] = useState<string[]>([]);
+  const [ebooks, setEbooks] = useState<EbookCard[]>(defaultEbooks);
+  const router = useRouter();
 
-  const toggleWishlist = (book: typeof ebooks[number]) => {
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        let storedFeaturedId: string | null = null;
+        try { storedFeaturedId = localStorage.getItem("featuredEbookId"); } catch {}
+
+        const res = await fetch("/api/admin/ebooks", { cache: "no-store" });
+        const data = await res.json().catch(() => ({}));
+        const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : [];
+
+        const resolveId = (item: any, idx: number) => {
+          if (Number.isFinite(Number(item?.id))) return Number(item.id);
+          const pdfMatch = (item?.href ?? "").match(/ebook(\d+)\.pdf/i);
+          if (pdfMatch) return Number(pdfMatch[1]);
+          const isNav = (item?.title ?? "").toLowerCase().includes("navratri") || (item?.href ?? "").toLowerCase().includes("flip-book");
+          if (isNav) return 5;
+          return item?.id ?? `temp-${idx}`;
+        };
+
+        const mapped: EbookCard[] = items
+          .map((item: any, idx: number) => {
+            const resolvedId = resolveId(item, idx + 1000);
+            const isNav = String(resolvedId) === "5" ||
+              (item?.title ?? "").toLowerCase().includes("navratri") ||
+              (item?.href ?? "").toLowerCase().includes("flip-book");
+
+            const fallbackImg =
+              Number.isFinite(Number(resolvedId)) ? `/ebooks/ebook${resolvedId}.jpg` : "/placeholder.svg";
+
+            return {
+              id: resolvedId,
+              title: item?.title || "E-Book",
+              badge: item?.category || (isNav ? "INVESTING" : "E-BOOK"),
+              badgeColor: item?.categoryColor || "#0d3d20",
+              file: item?.href || `/ebooks/${resolvedId}.pdf`,
+              filename: (item?.href || "").split("/").pop() || "ebook.pdf",
+              image: item?.cardImage || item?.cover || item?.coverUrl || (isNav ? "/navatri.svg" : fallbackImg),
+              featured: Boolean(item?.featured) || isNav,
+              status: item?.status,
+            };
+          })
+          .filter((b) => {
+            if (!b.file) return false;
+            // Allow featured cards through even if status is Draft
+            if (b.featured) return true;
+            return (b.status ?? "Published") !== "Draft";
+          });
+
+        const featuredPool: EbookCard[] = [];
+        mapped.forEach((b) => { if (b.featured) featuredPool.push(b); });
+
+        // If admin marked a featured ebook, keep it pinned even if backend ignores the flag.
+        if (storedFeaturedId) {
+          const manual = mapped.find((b) => String(b.id) === storedFeaturedId);
+          if (manual && !featuredPool.some((f) => String(f.id) === String(manual.id))) {
+            featuredPool.unshift({ ...manual, featured: true });
+          }
+        }
+
+        // Always fill the grid with up to 3 cards: featured first, then the rest.
+        const nonFeatured = mapped.filter((b) => !featuredPool.some((f) => String(f.id) === String(b.id)));
+        const ordered = [...featuredPool, ...nonFeatured];
+
+        // Ensure we always show three cards: top from API, then fill from defaults without dupes.
+        const fillPool = [...ordered];
+        if (fillPool.length < 3) {
+          defaultEbooks.forEach((d) => {
+            if (fillPool.length >= 3) return;
+            const exists = fillPool.some((b) => String(b.id) === String(d.id));
+            if (!exists) fillPool.push(d);
+          });
+        }
+
+        const chosen = fillPool.slice(0, 3);
+        if (!cancelled && chosen.length) setEbooks(chosen);
+      } catch (err) {
+        console.warn("TopEbooks: failed to load featured ebooks, using defaults", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const toggleWishlist = (book: EbookCard) => {
+    const key = String(book.id);
     setWishlisted((prev) => {
-      const exists = prev.includes(book.id);
-      const next = exists ? prev.filter((x) => x !== book.id) : [...prev, book.id];
+      const exists = prev.includes(key);
+      const next = exists ? prev.filter((x) => x !== key) : [...prev, key];
 
       if (typeof window !== "undefined") {
         const storageKey = "savedResources";
@@ -48,10 +132,10 @@ export default function TopEbooks() {
           catch { return []; }
         })();
 
-        const cleaned = Array.isArray(current) ? current.filter((item) => item && typeof item.id === "number") : [];
+        const cleaned = Array.isArray(current) ? current.filter((item) => item && item.id) : [];
         const updated = exists
-          ? cleaned.filter((item) => item.id !== book.id)
-          : [{ id: book.id, title: book.title, file: book.file, filename: book.filename, badge: book.badge, badgeColor: book.badgeColor }, ...cleaned.filter((item) => item.id !== book.id)];
+          ? cleaned.filter((item) => String(item.id) !== key)
+          : [{ id: book.id, title: book.title, file: book.file, filename: book.filename, badge: book.badge, badgeColor: book.badgeColor }, ...cleaned.filter((item) => String(item.id) !== key)];
 
         localStorage.setItem(storageKey, JSON.stringify(updated));
       }
@@ -60,13 +144,8 @@ export default function TopEbooks() {
     });
   };
 
-  const handleDownload = (file: string, filename: string) => {
-    const link = document.createElement("a");
-    link.href = file;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const openBook = (id: number | string) => {
+    router.push(`/e-book/${encodeURIComponent(String(id))}`);
   };
 
   return (
@@ -194,7 +273,14 @@ export default function TopEbooks() {
       {/* Grid */}
       <div className="ebook-grid">
         {ebooks.map((book) => (
-          <div key={book.id} className="ebook-card">
+          <div
+            key={book.id}
+            className="ebook-card"
+            onClick={() => openBook(book.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter") openBook(book.id); }}
+          >
 
             {/* Thumbnail */}
             <div className="ebook-thumb">
@@ -212,7 +298,7 @@ export default function TopEbooks() {
 
               {/* Wishlist toggle */}
               <button
-                className={`ebook-wishlist-btn${wishlisted.includes(book.id) ? " active" : ""}`}
+                className={`ebook-wishlist-btn${wishlisted.includes(String(book.id)) ? " active" : ""}`}
                 onClick={(e) => { e.stopPropagation(); toggleWishlist(book); }}
                 aria-label="Add to wishlist"
               >
@@ -237,12 +323,11 @@ export default function TopEbooks() {
               <p className="ebook-title">{book.title}</p>
               <button
                 className="ebook-download-btn"
-                onClick={() => handleDownload(book.file, book.filename)}
+                onClick={(e) => { e.stopPropagation(); openBook(book.id); }}
               >
-                Download PDF
+                View E-Book
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 2v8M5 7l3 3 3-3" stroke="#11803a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M3 13h10" stroke="#11803a" strokeWidth="1.8" strokeLinecap="round"/>
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#11803a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
             </div>

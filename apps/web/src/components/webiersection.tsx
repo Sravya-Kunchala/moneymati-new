@@ -149,7 +149,7 @@ export default function WebinarsSection() {
   }, []);
 
   return (
-    <section className={`${playfair.variable} w-full bg-[#f5f0e8] py-16 px-8`}>
+     <section id="upcoming-webinars" className={`${playfair.variable} w-full bg-[#f5f0e8] py-16 px-8`}>
       <style>{`
         @media (max-width: 767px) {
           .webinars-grid {
