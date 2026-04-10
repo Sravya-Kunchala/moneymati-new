@@ -46,6 +46,7 @@ const baseURL = (() => {
 
 export const authAdmin = betterAuth({
   baseURL,
+  basePath: "/api/admin/auth",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
