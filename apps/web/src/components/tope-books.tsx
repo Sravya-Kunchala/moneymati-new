@@ -97,11 +97,8 @@ export default function TopEbooks() {
         }
 
         // Always fill the grid with up to 3 cards: featured first, then the rest.
-        const nonFeatured = mapped.filter((b) => !featuredPool.some((f) => String(f.id) === String(b.id)));
-        const ordered = [...featuredPool, ...nonFeatured];
-
-        // Ensure we always show three cards: top from API, then fill from defaults without dupes.
-        const fillPool = [...ordered];
+        // We show featured only; back-fill with defaults (predefined featured) if fewer than 3.
+        const fillPool = [...featuredPool];
         if (fillPool.length < 3) {
           defaultEbooks.forEach((d) => {
             if (fillPool.length >= 3) return;

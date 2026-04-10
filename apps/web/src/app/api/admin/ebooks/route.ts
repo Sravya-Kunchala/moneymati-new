@@ -250,10 +250,19 @@ export async function DELETE(req: Request) {
         await (prisma as any).ebook.delete({ where: { id } });
         deletedIds.add(idStr);
         try { await saveDeleted(deletedIds); } catch {}
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ ok: true, deleted: "prisma" });
       } catch (err: any) {
-        // fall through to file delete or noop if not found
-        console.warn("prisma delete failed", err?.message ?? err);
+        const msg = String(err?.message ?? err ?? "");
+        const notFound =
+          msg.toLowerCase().includes("record") && msg.toLowerCase().includes("not found");
+        // Treat missing rows as successful no-op to avoid noisy deploy logs
+        if (notFound) {
+          deletedIds.add(idStr);
+          try { await saveDeleted(deletedIds); } catch {}
+          return NextResponse.json({ ok: true, deleted: "prisma-miss" });
+        }
+        // fall through to file delete or noop for other errors
+        console.warn("prisma delete failed", msg);
       }
     }
 
