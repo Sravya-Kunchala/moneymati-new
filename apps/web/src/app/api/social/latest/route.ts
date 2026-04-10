@@ -164,9 +164,8 @@ async function fetchFromApify(): Promise<SocialPost[]> {
     const data = await res.json();
     const items = Array.isArray(data) ? data : [];
     const mapped = items
-      .map(mapApify)
-      // Allow posts without permalink so they still render; component already shows "No Link" state.
-      .filter((p) => p.image);
+  .map((item) => mapApify(item))
+  .filter((p) => p.image);
 
     // Newest first by timestamp; fallback to original order if no timestamp
     mapped.sort((a, b) => {

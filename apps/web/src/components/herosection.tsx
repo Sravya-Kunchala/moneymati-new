@@ -402,17 +402,20 @@ export default function HeroSection() {
           .hero-cta-wrap {
             flex-direction: column !important;
             gap: 12px !important;
+            align-items: stretch !important;
             width: 100% !important;
           }
           .hero-cta-btn-primary,
           .hero-cta-btn-secondary {
             width: 100% !important;
-            flex: 1 1 100% !important;
-            height: 72px !important;
-            font-size: 17px !important;
+            max-width: 420px !important;
+            height: 56px !important;
+            font-size: 15px !important;
             font-weight: 700 !important;
             padding: 0 24px !important;
             box-sizing: border-box !important;
+            white-space: nowrap !important;
+            align-self: center !important;
           }
         }
         @media (min-width: 1024px) {
@@ -465,7 +468,6 @@ export default function HeroSection() {
           {/* LEFT: Text Content */}
           <div className="flex-1 flex flex-col justify-center max-w-xl">
 
-            {/* ── Tagline — font size increased to 18px ── */}
             <p data-animate className="mb-6" style={{ color: "#C6A553", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 500, fontSize: "20px", lineHeight: "32px", letterSpacing: "0.7px", verticalAlign: "middle" }}>
               Empowering Women to Take Control of Their Finances{" "}
               <span style={{ textTransform: "uppercase", fontWeight: 500, fontSize: "18px", lineHeight: "32px", letterSpacing: "0.7px" }}>
@@ -513,7 +515,6 @@ export default function HeroSection() {
 
               {showBooking && <BookingModal onClose={() => setShowBooking(false)} />}
 
-              {/* ── Register for Webinar — scrolls to #upcoming-webinars ── */}
               <button
                 onClick={handleWebinarScroll}
                 className="px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-white/10 hero-cta-btn-secondary"
