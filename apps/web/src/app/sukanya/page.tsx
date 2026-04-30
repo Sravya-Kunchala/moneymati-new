@@ -80,20 +80,24 @@ export default function SukanyaSamriddhiCalculatorPage() {
 
   const r = interestRate / 100;
 
-  let maturityValue = 0;
+  let corpusAt15 = 0;
   if (frequency === "Yearly") {
-    maturityValue = tenure > 0 ? amountInvested * ((((Math.pow(1 + r, tenure) - 1) / r)) * (1 + r)) : 0;
+    corpusAt15 = tenure > 0 ? amountInvested * (((Math.pow(1 + r, tenure) - 1) / r) * (1 + r)) : 0;
   } else if (frequency === "Monthly") {
     const mr = r / 12;
     const m = tenure * 12;
     const ma = amountInvested / 12;
-    maturityValue = ma * (((Math.pow(1 + mr, m) - 1) / mr) * (1 + mr));
+    corpusAt15 = ma * (((Math.pow(1 + mr, m) - 1) / mr) * (1 + mr));
   } else {
     const qr = r / 4;
     const q = tenure * 4;
     const qa = amountInvested / 4;
-    maturityValue = qa * (((Math.pow(1 + qr, q) - 1) / qr) * (1 + qr));
+    corpusAt15 = qa * (((Math.pow(1 + qr, q) - 1) / qr) * (1 + qr));
   }
+
+  // SSY: corpus compounds for remaining years until year 21 with no deposits
+  const tailYears = Math.max(0, 21 - tenure);
+  const maturityValue = corpusAt15 * Math.pow(1 + r, tailYears);
 
   const totalInvested = amountInvested * tenure;
   const totalReturns = maturityValue - totalInvested;
