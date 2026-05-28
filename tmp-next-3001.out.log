@@ -1,0 +1,36 @@
+
+> moneymati@0.1.0 dev
+> next dev -p 3001
+
+   ▲ Next.js 15.5.14
+   - Local:        http://localhost:3001
+   - Network:      http://10.26.0.208:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 5.4s
+ ○ Compiling /admin/signin ...
+ ✓ Compiled /admin/signin in 21.5s (720 modules)
+ GET /admin/signin 200 in 24247ms
+ ○ Compiling /api/reviews ...
+ ✓ Compiled /api/reviews in 6.9s (743 modules)
+ GET /api/reviews 200 in 11364ms
+ ✓ Compiled in 3.3s (279 modules)
+ ✓ Compiled in 2.2s (279 modules)
+ ✓ Compiled in 3.7s (265 modules)
+ ✓ Compiled in 1222ms (279 modules)
+ ✓ Compiled in 518ms (279 modules)
+ ✓ Compiled in 1668ms (279 modules)
+ ✓ Compiled in 8.1s (279 modules)
+ ✓ Compiled in 4s (279 modules)
+ ✓ Compiled in 1809ms (279 modules)
+ ✓ Compiled in 399ms (279 modules)
+ ✓ Compiled in 9.5s (279 modules)
+ ✓ Compiled in 3.9s (279 modules)
+ ✓ Compiled in 1470ms (279 modules)
+ ✓ Compiled in 504ms (279 modules)
+ ✓ Compiled in 2.1s (279 modules)
+ ✓ Compiled in 626ms (279 modules)
+ ✓ Compiled in 956ms (279 modules)
+ ✓ Compiled in 689ms (279 modules)
+ ✓ Compiled in 321ms (279 modules)

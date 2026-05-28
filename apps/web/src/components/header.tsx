@@ -236,7 +236,7 @@ export default function Header() {
 
             {/* Drawer header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid rgba(201,168,76,0.2)", flexShrink: 0 }}>
-              <img src="/best new moneymati logo.svg" alt="MoneyMati" style={{ height: 36, width: 36 }} />
+              <img src="/best new moneymati logo.svg" alt="MoneyMati" style={{ height: 72, width: 72 }} />
               <button type="button" aria-label="Close menu" onClick={() => setMobileMenuOpen(false)}
                 style={{ background: "rgba(255,255,255,0.08)", border: "none", borderRadius: "50%", width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#fff" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -313,12 +313,12 @@ export default function Header() {
   return (
     <>
       <header
-        className={`w-full bg-[#122B1F] px-4 py-3 md:px-8 flex items-center justify-between md:grid md:[grid-template-columns:1fr_auto_1fr] ${inriaSerif.variable} ${dmSans.variable}`}
+        className={`w-full bg-[#122B1F] px-4 py-2 md:px-8 flex items-center justify-between md:grid md:[grid-template-columns:1fr_auto_1fr] ${inriaSerif.variable} ${dmSans.variable}`}
         style={{ position: "relative", zIndex: 50 }}
       >
         {/* Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center" }}>
-  <img src="/best new moneymati logo.svg" alt="Money Mati" className="h-10 w-10" />
+  <img src="/best new moneymati logo.svg" alt="Money Mati" style={{ height: 150, width: 150 }} />
 </Link>
 
         {/* Desktop nav */}

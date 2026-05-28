@@ -6,8 +6,9 @@
     "pdfjs-dist": "3.11.174"
   },
   "scripts": {
+    "clean": "node scripts/clean-next.cjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/clean-next.cjs && next build",
     "start": "next start",
     "lint": "eslint"
   },

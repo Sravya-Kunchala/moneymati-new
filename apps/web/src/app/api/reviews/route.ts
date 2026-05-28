@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/db";
 
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : "Unknown reviews database error";
+
 async function ensureTable() {
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "reviews" (
@@ -34,9 +37,9 @@ export async function GET() {
       created_at: r.created_at ? new Date(r.created_at).toISOString() : null,
     }));
     return NextResponse.json({ items: safe });
-  } catch (error: any) {
-    console.error("reviews GET error", error);
-    return NextResponse.json({ items: [], error: "Unable to load reviews" }, { status: 500 });
+  } catch (error: unknown) {
+    console.warn("reviews GET unavailable:", getErrorMessage(error));
+    return NextResponse.json({ items: [], source: "fallback" });
   }
 }
 
@@ -63,8 +66,8 @@ export async function POST(request: Request) {
 
     const item = inserted?.[0];
     return NextResponse.json({ item }, { status: 201 });
-  } catch (error: any) {
-    console.error("reviews POST error", error);
-    return NextResponse.json({ error: "Unable to save review" }, { status: 500 });
+  } catch (error: unknown) {
+    console.warn("reviews POST unavailable:", getErrorMessage(error));
+    return NextResponse.json({ error: "Unable to save review" }, { status: 503 });
   }
 }

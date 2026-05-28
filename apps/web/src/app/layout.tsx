@@ -35,12 +35,6 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Moneymati | Smarter money decisions, made simple",
-    description: "Workshops, tools, and guidance to help you plan and invest with confidence.",
-    images: [ogImage],
-  },
 };
 
 export default function RootLayout({

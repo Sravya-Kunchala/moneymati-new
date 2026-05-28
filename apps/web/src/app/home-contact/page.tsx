@@ -25,7 +25,7 @@ const socialLinks = [
   },
   {
     name: "Instagram",
-    href: "https://www.instagram.com/moneymati2022/",
+    href: "https://www.instagram.com/moneymatiofficial/",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <rect x="1" y="1" width="22" height="22" rx="6" stroke="#0d2818" strokeWidth="2"/>

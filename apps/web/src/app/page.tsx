@@ -65,16 +65,29 @@ export default function Home() {
           from { opacity: 0; transform: translateY(40px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in-up-1  { animation: fadeInUp 0.7s ease 0.1s  forwards; opacity: 0; }
-        .fade-in-up-2  { animation: fadeInUp 0.7s ease 0.2s  forwards; opacity: 0; }
-        .fade-in-up-3  { animation: fadeInUp 0.7s ease 0.3s  forwards; opacity: 0; }
-        .fade-in-up-4  { animation: fadeInUp 0.7s ease 0.4s  forwards; opacity: 0; }
-        .fade-in-up-5  { animation: fadeInUp 0.7s ease 0.5s  forwards; opacity: 0; }
-        .fade-in-up-6  { animation: fadeInUp 0.7s ease 0.6s  forwards; opacity: 0; }
-        .fade-in-up-7  { animation: fadeInUp 0.7s ease 0.7s  forwards; opacity: 0; }
-        .fade-in-up-8  { animation: fadeInUp 0.7s ease 0.8s  forwards; opacity: 0; }
-        .fade-in-up-9  { animation: fadeInUp 0.7s ease 0.9s  forwards; opacity: 0; }
-        .fade-in-up-10 { animation: fadeInUp 0.7s ease 1.0s  forwards; opacity: 0; }
+        .fade-in-up-1,
+        .fade-in-up-2,
+        .fade-in-up-3,
+        .fade-in-up-4,
+        .fade-in-up-5,
+        .fade-in-up-6,
+        .fade-in-up-7,
+        .fade-in-up-8,
+        .fade-in-up-9,
+        .fade-in-up-10 { opacity: 1; }
+
+        @media (prefers-reduced-motion: no-preference) {
+          .fade-in-up-1  { animation: fadeInUp 0.7s ease 0.1s both; }
+          .fade-in-up-2  { animation: fadeInUp 0.7s ease 0.2s both; }
+          .fade-in-up-3  { animation: fadeInUp 0.7s ease 0.3s both; }
+          .fade-in-up-4  { animation: fadeInUp 0.7s ease 0.4s both; }
+          .fade-in-up-5  { animation: fadeInUp 0.7s ease 0.5s both; }
+          .fade-in-up-6  { animation: fadeInUp 0.7s ease 0.6s both; }
+          .fade-in-up-7  { animation: fadeInUp 0.7s ease 0.7s both; }
+          .fade-in-up-8  { animation: fadeInUp 0.7s ease 0.8s both; }
+          .fade-in-up-9  { animation: fadeInUp 0.7s ease 0.9s both; }
+          .fade-in-up-10 { animation: fadeInUp 0.7s ease 1.0s both; }
+        }
 
         .scroll-top-btn {
           position: fixed;

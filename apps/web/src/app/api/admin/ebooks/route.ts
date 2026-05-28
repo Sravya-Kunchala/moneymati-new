@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/db";
+import { hasDatabaseUrl } from "@/app/lib/db-url";
 import path from "node:path";
 import { promises as fs } from "node:fs";
 
@@ -113,7 +114,7 @@ const nicifyTitle = (name: string) =>
 
 export async function GET() {
   try {
-    const hasDb = Boolean(process.env.DATABASE_URL && process.env.DATABASE_URL.trim()) && !skipDb;
+    const hasDb = hasDatabaseUrl() && !skipDb;
 
     // Try DB first
     if (hasDb && (prisma as any)?.ebook?.findMany) {
